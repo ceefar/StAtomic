@@ -1,0 +1,12 @@
+
+*******************************************
+****************** VENV! ******************
+*******************************************
+
+
+obvs should have some kind of onboarding that will make you write in (and clarify the importance of) identity over goal
+plus other stuff like contracts ig (obvs and notifications like email or whatever)
+and then even some preset task stuff here too (aka adhd, quit smoking, exercise more, programmer, etc)
+
+obvs a general introduction in there too with vids at timestamps and even little other things like images ig
+- book would be awesome here but couldnt really get it to work, might be a v1.0 problem tho?
