@@ -1,0 +1,3 @@
+- get view working with create on a db level
+    - maybe at this point try test the custom styling code 
+- then 0.2 update for new things in project notes
