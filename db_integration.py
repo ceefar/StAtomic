@@ -71,6 +71,24 @@ def add_habit_to_db_v0():
     pass
 
 
+
+
+# ---- T0DO LIST ----
+ 
+def create_todo_v0_db():
+    """ stores todo only, for now anyway, focusing this first since its waaaay easier """
+    create_table_query = "CREATE TABLE IF NOT EXISTS todo_v0 (todoid INT AUTO_INCREMENT, user_title VARCHAR(255), user_todo TEXT, todo_status ENUM('in_progress', 'completed', 'paused'), created TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, PRIMARY KEY (todoid))"                             
+
+
+def add_todo_v0_db(todo_title, todo_entry):
+    """ add todo v0, simple af but just starting simple af duh """
+    add_table_query = f"INSERT INTO todo_v0 (user_title, user_todo, todo_status) VALUES ('{todo_title}', '{todo_entry}', 1)"
+    add_to_db(add_table_query)                             
+
+# OBVS TAGS AND SHIT BUT JUST START SIMPLE DUHHHH!
+
+
+
 def get_base_habit_data_v0():
     """ grabs just the data from the habits_v0 table """
     #get_habit_data_query = "SELECT * FROM habits_v0 LIMIT 1"
