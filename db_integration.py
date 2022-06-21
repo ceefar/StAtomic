@@ -98,22 +98,22 @@ def add_habit_to_db_v0():
 def create_new_todo_list_db(username:str = "default"):
     """ main list, stores todo items and subtasks, for now anyway """
     final_table_name = convert_todo_list_name_to_table_name(username)
-    create_table_query = (f"CREATE TABLE IF NOT EXISTS {username}_todo (taskid INT AUTO_INCREMENT, todoListID INT, todoListName VARCHAR(255), taskTitle VARCHAR(255), taskDetail TEXT,\
-                            taskType ENUM('main_task', 'sub_task', 'toggle_task'), taskStatus ENUM('in_progress', 'completed', 'paused'),\
+    create_table_query = (f"CREATE TABLE IF NOT EXISTS {username}_todo (taskid INT AUTO_INCREMENT, todoListID INT, taskTitle VARCHAR(255), taskDetail TEXT,\
+                            taskType ENUM('main_task', 'sub_task', 'toggle_task'), taskParentID INT, \
+                            taskStatus ENUM('in_progress', 'completed', 'paused'),\
                             taskUrgency ENUM('critical', 'urgent', 'moderate', 'low', 'none'),\
                             taskImpact ENUM('massive', 'significant', 'limited', 'minor'),\
                             taskDifficulty ENUM('complicated','complex','average','simple'),\
                             taskAlignment ENUM('add_positive', 'neutral', 'remove_negative'),\
                             isTimeSensitive BOOL, dueDate TIMESTAMP, dueDateTime TIMESTAMP, created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\
-                            updated TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, PRIMARY KEY (taskid))")        
+                            updated TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, CONSTRAINT todoID PRIMARY KEY (taskid))")        
     add_to_db(create_table_query)                      
 
 
-def create_todo_id_name_db():
-    pass
-###################################################
-# T0DO LIST ID -> T0DO LIST NAME RELATIONAL TABLE #
-###################################################
+def create_todo_id_name_relational_db(username):
+    """ links todoListID (_todo) with todoListName (here) """
+    create_table_query = f"CREATE TABLE IF NOT EXISTS {username}_todo_id_name (todoListID INT, todoListName VARCHAR(255))"
+    add_to_db(create_table_query)  
 
 
 # so for this now ig tag type will be stuff like UI or the page name in question or like the debug/fixme, etc
@@ -159,7 +159,7 @@ def main():
     create_new_todo_list_db(username)
     create_tags_list_db(username)
     create_todo_tags_relational_db(username)
-
+    create_todo_id_name_relational_db(username)
 
 
 

@@ -54,17 +54,57 @@ def run():
 
             st.write("---")
 
-            col1B,col3B = st.columns([2,3])
-            col1B.write("What Is The Task's Alignment?")
-            col3B.write("What Are Alignments?")
 
-            col1C,_,col3C = st.columns([1,1,3])
-            with col1C:
-                habit_alignment = st.radio("Choose 1",
-                ('Positive', 'Neutral', 'Negative'))
-            with col3C:
-                if habit_alignment == "Positive":
-                    st.write(":white_check_mark: Positive habits are ones that you **want** to develop, these are things that will improve your life in some way or another, however small or big. Think things like 'Read More', 'Meditate', 'Practice Coding', 'Work Out'.")
+            with st.expander("Task Urgency", expanded=True):
+                col1B,col3B = st.columns([2,3])
+                col1B.write("How Urgent Is This Task?")
+                col3B.write("What Is Urgency")
+
+                col1C,_,col3C = st.columns([1,1,3])
+                with col1C:
+                    todo_type = st.selectbox("Set The Urgency",
+                    ('critical', 'urgent', 'moderate', 'low', 'none'))
+                with col3C:
+                    if todo_type == "critical":
+                        st.write("critical - Describe me daddy")
+                    elif todo_type == "urgent":
+                        st.write("urgent - A description")
+                    elif todo_type == "moderate":
+                        st.write("moderate - Another description")
+
+
+            with st.expander("Task Type", expanded=True):
+                col1B,_,col3B = st.columns([2,1,4])
+                col1B.write("Choose A Task Type ")
+                col3B.write("What Are Task Types?")
+
+                col1C,_,col3C = st.columns([2,1,4])
+                with col1C:
+                    todo_type = st.radio("Choose 1",
+                    ('Main Task', 'Sub Task', 'Toggle Task'))
+                with col3C:
+                    if todo_type == "Main Task":
+                        st.write("Main Task - A task like nameatask that blah lorem is a parent tho")
+                    elif todo_type == "Sub Task":
+                        st.write("Sub Task - A description")
+                    elif todo_type == "Toggle Task":
+                        st.write("Toggle Task - A toggle task repeats and can be completed for a day but will reset the next, just do like that for now dw")
+
+
+            with st.expander("Task Alignment", expanded=True):
+                col1B,col3B = st.columns([2,3])
+                col1B.write("What Is The Task's Alignment?")
+                col3B.write("What Are Alignments?")
+
+                col1C,_,col3C = st.columns([1,1,3])
+                with col1C:
+                    todo_alignment = st.radio("Choose 1",
+                    ('Positive', 'Neutral', 'Negative'))
+                with col3C:
+                    if todo_alignment == "Positive":
+                        # FIXME: NEED TO REDO 
+                        st.write(":white_check_mark: Positive habits are ones that you **want** to develop, these are things that will improve your life in some way or another, however small or big. Think things like 'Read More', 'Meditate', 'Practice Coding', 'Work Out'.")
+
 
             st.write("---")
             st.write("**Optional Enhancements**")
@@ -81,7 +121,6 @@ def run():
             submit_habit_form = st.form_submit_button(label="Coming Soon")
 
             task_type = st.selectbox("Your Tasks Lists", ('Habit', 'Preset Habit', 'Classic Todo'))
-
 
             if submit_habit_form:
                 add_todo_task_to_db()
