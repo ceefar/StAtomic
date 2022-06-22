@@ -55,7 +55,7 @@ def get_main_tasks_for_todo_list_from_db(username:str, formatted_list_name:str) 
     return(main_tasks_for_todo_list)
         
 
-def add_basic_task_to_db(username:str, todoListID:int, taskTitle:str, taskDetail:str, taskParentID:int):
+def add_basic_task_to_db(username:str, todoListID:int, taskTitle:str, taskDetail:str = "", taskParentID:int = ""):
     """ write me pls """
     db.add_todo_task_to_db_basic(username, todoListID, taskTitle, taskDetail, taskParentID)
 
@@ -144,8 +144,8 @@ def run():
             subtaskcol1, subtaskcol2 = st.columns([3,2])
             with subtaskcol1:
                 todo_lists_main_tasks_listed = get_main_tasks_for_todo_list_from_db(user_name, assigned_todo_list)
-                taskparentID = st.selectbox("Choose A Main Task To Assign To",todo_lists_main_tasks_listed)
-                print("{}")
+                taskparentID = st.selectbox("Choose A Main Task To Assign To",todo_lists_main_tasks_listed)        
+                # print(f"{taskparentID = }")
             with subtaskcol2:
                 st.write("**What's A Sub Task?**")
                 st.write("Explain it to me senpai")
@@ -223,16 +223,33 @@ def run():
 
         todo_title = st.text_input("Here Is Your Task Title", value=todo_faux_title, key="td_title")
 
-        todo_detail = st.text_area("Here Are The Task Details", value="a more thorough example", key="td_detail")
+        todo_detail = st.text_area("Here Are The Task Details", value=todo_faux_detail, key="td_detail")
         
         submit_habit_form = st.form_submit_button(label="Add Task")
 
         todolistid = get_id_numb_from_formatted_list_name(assigned_todo_list)
 
-        print(f"{todolistid = }")
+        db_username = user_name.lower()
+
+        if is_subtask:
+            parentID = db.get_parent_id_from_title(db_username, taskparentID, todolistid)
+        else:
+            parentID = ""
+
+        taskStatus = 1 # << ADD DISSSS!
 
         if submit_habit_form:
-            add_basic_task_to_db(user_name, todolistid, todo_title, todo_detail)
+            if parentID == "":
+                add_basic_task_to_db(db_username, todolistid, todo_title, todo_detail)
+            else:
+                add_basic_task_to_db(db_username, todolistid, todo_title, todo_detail, parentID)
+            
+            # FIRST CONFIRMATION AND CLEAR FOR - MAYBE A QUERY FOR CONFIRMATION BTW!
+            # ALSO BOTTOM PAGE BIT NEEDS INDICATOR FOR THE CURRENT TD LIST AND PARENT ETC
+            # CAN LEGIT BE TEXT NOT DDS, BUT THEN INCLUDE AN ACHOR OR SKIP TO TOP BUTTON!
+            #
+            # THEN GET THE TOGGLE ACTUALLY MAKING ADD AS A PARENT THEN GET THE DISPLAY FOR THAT
+            # MAYBE ACTUALLY JUST IN PRINT PAGE THO DUH AND FFS FORGET ANY FORMATTING RN!
 
 
         # SO NEED ADD STANDARD, THEN ADD IF IS PARENT CHILD WITH PROPER RELATIONSHIP

@@ -173,17 +173,24 @@ def add_todo_task_to_db_basic(username:str, todoListID, taskTitle, taskDetail=""
     # can do very easy if blank stuff, but just starting with parent id stuff for now
     if taskDetail == "":
         if taskParentID == "":
-            add_table_query = f"INSERT INTO {username}_todo VALUES ({todoListID}, '{taskTitle}')"
+            add_table_query = f"INSERT INTO {username}_todo (todoListID, taskTitle) VALUES ({todoListID}, '{taskTitle}')"
         else:
-            add_table_query = f"INSERT INTO {username}_todo VALUES ({todoListID}, '{taskTitle}', {taskParentID})"
+            add_table_query = f"INSERT INTO {username}_todo (todoListID, taskTitle, taskParentID) VALUES ({todoListID}, '{taskTitle}', {taskParentID})"
     else:
         if taskParentID == "":
-            add_table_query = f"INSERT INTO {username}_todo VALUES ({todoListID}, '{taskTitle}', '{taskDetail}')"
+            add_table_query = f"INSERT INTO {username}_todo (todoListID, taskTitle, taskDetail) VALUES ({todoListID}, '{taskTitle}', '{taskDetail}')"
         else:
-            add_table_query = f"INSERT INTO {username}_todo VALUES ({todoListID}, '{taskTitle}', '{taskDetail}', {taskParentID})"
+            add_table_query = f"INSERT INTO {username}_todo (todoListID, taskTitle, taskDetail, taskParentID) VALUES ({todoListID}, '{taskTitle}', '{taskDetail}', {taskParentID})"
 
     add_to_db(add_table_query)
 
+
+def get_parent_id_from_title(username:str, taskParentTitle:str, listID:int) -> int:
+    """ write me plis """
+    get_parent_id_query = f"SELECT taskid FROM {username}_todo WHERE taskTitle = '{taskParentTitle}' AND todoListID = {listID} AND taskType = 'main_task'"
+    parent_id = get_from_db(get_parent_id_query)
+    parentID = parent_id[0][0]
+    return(parentID)
 
 
 # ---- main ----
