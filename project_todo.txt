@@ -4,11 +4,16 @@
 
 
 
+- still need to get working create and ig new working view tbf but...
+- first, removing alignment here for todo as makes little sense
+- moving task type up into check box and a selectbox of parent (probably unworking or rudimentary working)
+    - and removing toggle task for now tho do want back?!
 
 
 
-
-
+CONSIDER CLASS BASED STRUCTURE
+- create task, update task... etc!
+- atleast do a quick test after implementing the basics?!
 
 
 

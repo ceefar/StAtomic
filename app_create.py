@@ -1,133 +1,243 @@
-# imports 
+# ---- imports ---- 
 # for web app and test components
 import streamlit as st
 import streamlit.components.v1 as stc # < unused at present
 # for db access
-import db_integration
+import db_integration as db
+# for datetime object
+import datetime
+# for regular expressions
+import re
 
 
-# temp globals for testing/setup
-actual_name = "Ceefar"
+# ---- temp globals ----
+# for testing/setup
+
+user_name = "Ceefar"
 user_tags = ["fitness - cardio","fitness - trim","fitness - bulk","conditions - adhd","conditions - anxiety","skills - mysql","skills - portfolio","skills - programming","software - streamlit","lifestyle - wellness"]
 
-# these will just be db names, so do check if none exist already then show default else show existing.
-# some kinda option for premade or like preset would be cool but not rn ffs lol
-tasks_lists = ["My List"]
 
-# layout - maybe temp since barely using tbf
+# ---- layout ----
+# either use more or remove pls, as barely using rn
+
 topper = st.container()
+form_intro = st.container()
 
 
-# page functions
+# ---- page functions ----
 
-def add_todo_task_to_db():
-    pass
+@st.cache
+def get_todo_lists_from_db(username:str) -> tuple:
+    """ write me pls """
+    # have done this the long way (passing both id and name as tuple) thinking could use the id and pass it back
+    # that is unnecessarily long lmao, should just have passed the name and found the id on return but ah well
+    # kinda semi made it work out by adding the id to the string in the create_todo_lists_list function
+    # but obvs deleting a list will throw out the ids plus have to pick apart the string on return to get the id (which is fine tbf)
+    username = username.lower()
+    all_user_todo_list_tuples = db.get_all_todo_list_names_and_ids(username)
+    return(all_user_todo_list_tuples)
 
+
+# cache it?
+def get_id_numb_from_formatted_list_name(formatted_list_name:str) -> int:
+    """ from the currently selected list, find its id for db queries """
+    # re.findall('\d+|$', assigned_todo_list)[0] # at somepoint find out wut da fuck is the difference?
+    assigned_todo_id = int(re.search('\d+|$',formatted_list_name).group())
+    return(assigned_todo_id)
+
+
+# cache it?
+def get_main_tasks_for_todo_list_from_db(username:str, formatted_list_name:str) -> tuple:
+    """ write me """
+    username = username.lower()
+    listID = get_id_numb_from_formatted_list_name(formatted_list_name)
+    main_tasks_for_todo_list = db.get_main_tasks_for_todo_list_by_id(username, listID)
+    return(main_tasks_for_todo_list)
+        
+
+def add_basic_task_to_db(username:str, todoListID:int, taskTitle:str, taskDetail:str, taskParentID:int):
+    """ write me pls """
+    db.add_todo_task_to_db_basic(username, todoListID, taskTitle, taskDetail, taskParentID)
+
+
+def create_todo_lists_list():
+    """ write me pls """
+    todo_lists = st.session_state["todo_lists"]
+    todo_list_names = []
+    for a_list in todo_lists.items():
+        todo_list_names.append(f"{a_list[0]}. {a_list[1].replace('_',' ')}")
+    # legit prints the list comprehension which is super annoying as its clean af
+    # [todo_list_names.append(f"{a_list[0]}. {a_list[1].replace('_',' ')}") for a_list in todo_lists.items()] 
+    return(todo_list_names)
+
+
+# ---- session state declarations ----
+
+if "todo_lists" not in st.session_state:
+    todo_dict = {}
+    db_todo_lists = get_todo_lists_from_db(user_name)
+    for todo in db_todo_lists:
+        todo_dict[todo[0]] = todo[1]
+    st.session_state["todo_lists"] = todo_dict
+
+
+# ---- main page ----
 
 def run():
 
+    # PAGE DEF THING SHOULD BE HERE BTW!
+
+    # ---- SECTION ----
+    
     # header topper
     with topper:
 
-        st.title(f"St.Atomic")
-        st.subheader(f"Add Tasks")
+        st.write("##### Create Task")
+
+    # ---- SECTION ----
+
+    # todo task create intro and setup
+    with form_intro:
+
+        st.write(f"### So {user_name}, what are we planning?")
+        
+        col1A, _ = st.columns([4,1])
+        col1A.write("Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia, molestiae quas vel sint commodi repudiandae consequuntur \
+                    voluptatum laborum ")
+        st.write("---")      
+
+    # ---- SECTION ----
+
+    with st.container():  
+
+        st.write("**Your New Task**")
+        todo_faux_title = st.text_input("Enter A Task Title", value="A simple example", key="td_fauxtitle")
+        todo_faux_detail = st.text_area("Enter Any Additional Details (Optional)", value="A more thorough example", key="td_fauxdetail")
         st.write("---")
 
+        # skip to end/quick add button?
 
-    with st.container():
 
-        st.subheader(f"So {actual_name} what are we planning?")
-        col1A, _ = st.columns([4,1])
-        col1A.write("Information lorem")
-        st.write("##")
+    # ---- SECTION ----
+
+    with st.container():  
+
+        st.write("**Setup Essentials**")
+        todo_list_names = create_todo_lists_list()
+        assigned_todo_list = st.selectbox("Which Todo List Should We Add This To?", todo_list_names)
+
+        st.write("**Something Task**")
+
+        checkboxcol1, checkboxcol2, checkboxcol3 = st.columns(3)
+        with checkboxcol1:
+            is_subtask = st.checkbox("Make It A Sub Task?")
+        with checkboxcol2:
+            is_datesensitive = st.checkbox("Give It An End Date?")
+        with checkboxcol3:
+            if is_datesensitive:
+                is_timesensitive = st.checkbox("Give It An End Time?")
+            else:
+                is_timesensitive = st.checkbox("Give It An End Time?", disabled=True)
+
+        if is_subtask:
+            st.write("---")
+            subtaskcol1, subtaskcol2 = st.columns([3,2])
+            with subtaskcol1:
+                todo_lists_main_tasks_listed = get_main_tasks_for_todo_list_from_db(user_name, assigned_todo_list)
+                taskparentID = st.selectbox("Choose A Main Task To Assign To",todo_lists_main_tasks_listed)
+                print("{}")
+            with subtaskcol2:
+                st.write("**What's A Sub Task?**")
+                st.write("Explain it to me senpai")
+
+        if is_datesensitive:
+            st.write("---")
+            timesenscol1, timesenscol2 = st.columns(2)
+            with timesenscol1:
+                task_end_date = st.date_input("End Date", datetime.date(2022, 7, 6))
+            with timesenscol2:
+                if is_timesensitive:
+                    task_end_time = st.time_input('End Time', datetime.time(16, 00))
         
+        st.write("---")
+        st.write("##")
 
+    with st.container():  
+        
+    # ---- SECTION ----
 
-
-        with st.form(key="todo_task_creator"):
-
-
-            st.write("**What Do You Want To Do?**")
-            todo_title = st.text_input("Enter Task Title", value="a basic example", key="td_title")
-
-            todo_detail = st.text_area("Enter Task Details", value="a more thorough example", key="td_detail")
-
-            st.write("---")
-
-
-            with st.expander("Task Urgency", expanded=True):
-                col1B,col3B = st.columns([2,3])
-                col1B.write("How Urgent Is This Task?")
-                col3B.write("What Is Urgency")
-
-                col1C,_,col3C = st.columns([1,1,3])
-                with col1C:
-                    todo_type = st.selectbox("Set The Urgency",
-                    ('critical', 'urgent', 'moderate', 'low', 'none'))
-                with col3C:
-                    if todo_type == "critical":
-                        st.write("critical - Describe me daddy")
-                    elif todo_type == "urgent":
-                        st.write("urgent - A description")
-                    elif todo_type == "moderate":
-                        st.write("moderate - Another description")
-
-
-            with st.expander("Task Type", expanded=True):
-                col1B,_,col3B = st.columns([2,1,4])
-                col1B.write("Choose A Task Type ")
-                col3B.write("What Are Task Types?")
-
-                col1C,_,col3C = st.columns([2,1,4])
-                with col1C:
-                    todo_type = st.radio("Choose 1",
-                    ('Main Task', 'Sub Task', 'Toggle Task'))
-                with col3C:
-                    if todo_type == "Main Task":
-                        st.write("Main Task - A task like nameatask that blah lorem is a parent tho")
-                    elif todo_type == "Sub Task":
-                        st.write("Sub Task - A description")
-                    elif todo_type == "Toggle Task":
-                        st.write("Toggle Task - A toggle task repeats and can be completed for a day but will reset the next, just do like that for now dw")
-
-
-            with st.expander("Task Alignment", expanded=True):
-                col1B,col3B = st.columns([2,3])
-                col1B.write("What Is The Task's Alignment?")
-                col3B.write("What Are Alignments?")
-
-                col1C,_,col3C = st.columns([1,1,3])
-                with col1C:
-                    todo_alignment = st.radio("Choose 1",
-                    ('Positive', 'Neutral', 'Negative'))
-                with col3C:
-                    if todo_alignment == "Positive":
-                        # FIXME: NEED TO REDO 
-                        st.write(":white_check_mark: Positive habits are ones that you **want** to develop, these are things that will improve your life in some way or another, however small or big. Think things like 'Read More', 'Meditate', 'Practice Coding', 'Work Out'.")
-
-
-            st.write("---")
-            st.write("**Optional Enhancements**")
-            st.write("Make getting stuff done easier by taking 30 seconds to quickly configure...") # not configure its not a techy app its a todo list ffs
-
+        st.write("**Advanced Setup**") 
+        # st.write("Use these optional enhancements to make getting stuff done easier by taking 30 seconds to quickly configure...") # not configure its not a techy app its a todo list ffs
+        with st.expander("Task Tags", expanded=True):
             st.write("What Areas Does This Relate To?")
-            habit_tags = st.multiselect("Add Tags",user_tags)
+            habit_tags = st.multiselect("Add Tags",user_tags, default=user_tags[7])
             st.write("You can update tags later blah... by adding tags St.Atomic can help you form connections between similar habits lorem")
+        
+        with st.expander("Task Difficulty"): #, expanded=True
+            col1A,col3A = st.columns([2,3])
+            col1A.write("How Difficulty")
+            col3A.write("What Is Difficulty")
 
-            st.write("---")
+            ##### DUH FORMS DONT UPDATE EVERY RUN THROUGH!
 
-            base_preset = st.selectbox("Choose A Preset Type", ("Work - Programmer", "Exercise - Bulk up", "Exercise - Lose Weight", "Conditions - Adhd", "Lifestyle - Inner Peace"))
-            
-            submit_habit_form = st.form_submit_button(label="Coming Soon")
+            col1D,_,col3D = st.columns([1,1,3])
+            with col1D:
+                todo_type = st.radio("Set The Difficulty",
+                ('complicated', 'complex', 'average', 'simple'))
+            with col3D:
+                st.write("critical - Describe me daddy")
 
-            task_type = st.selectbox("Your Tasks Lists", ('Habit', 'Preset Habit', 'Classic Todo'))
+        with st.expander("Task Impact"):
+            col1E,col3E = st.columns([2,3])
+            col1E.write("How Impact")
+            col3E.write("What Is Imapct")
 
-            if submit_habit_form:
-                add_todo_task_to_db()
+            col1E,_,col3E = st.columns([1,1,3])
+            with col1E:
+                todo_type = st.radio("Set The Impact",
+                ('massive', 'significant', 'limited', 'minor'))
+            with col3E:
+                st.write("critical - Describe me daddy")
+
+        with st.expander("Task Urgency"):
+            col1F,col3F = st.columns([2,3])
+            col1F.write("How Urgent Is This Task?")
+            col3F.write("What Is Urgency")
+
+            col1F,_,col3F = st.columns([1,1,3])
+            with col1F:
+                todo_urgency = st.radio("Set The Urgency",
+                ('critical', 'urgent', 'moderate', 'low', 'none'))
+            with col3F:
+                st.write("critical - Describe me daddy")
+
+        st.write("---")        
+        st.write("##")
 
 
+    # ---- MAIN FORM ----
+    st.write("**Confirm & Add**")
+    with st.form(key="todo_task_creator"):
+
+        # SERIOUSLY THINK ABOUT THIS (AND MAYBE ACTUALLY TRY BOTH WAYS - DOES THIS EVEN NEED TO BE A FORM THO?)
+
+        todo_title = st.text_input("Here Is Your Task Title", value=todo_faux_title, key="td_title")
+
+        todo_detail = st.text_area("Here Are The Task Details", value="a more thorough example", key="td_detail")
+        
+        submit_habit_form = st.form_submit_button(label="Add Task")
+
+        todolistid = get_id_numb_from_formatted_list_name(assigned_todo_list)
+
+        print(f"{todolistid = }")
+
+        if submit_habit_form:
+            add_basic_task_to_db(user_name, todolistid, todo_title, todo_detail)
 
 
+        # SO NEED ADD STANDARD, THEN ADD IF IS PARENT CHILD WITH PROPER RELATIONSHIP
+        # WOULD ALSO LIKE TO DISPLAY IF A THING DOES HAVE PARENT CHILD RELATIONSHIP WHEN U SELECT SUBTASK? 
+        #   - FOR THE SPECIFIC ONE RIGHT SO YOU CAN SEE IT
 
 
 

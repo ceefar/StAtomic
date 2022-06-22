@@ -97,22 +97,21 @@ def add_habit_to_db_v0():
 # todolistid is the name of the todo list (storing all in one now) to do list id is that todolist (make a table for this! as need to link them)
 def create_new_todo_list_db(username:str = "default"):
     """ main list, stores todo items and subtasks, for now anyway """
-    final_table_name = convert_todo_list_name_to_table_name(username)
-    create_table_query = (f"CREATE TABLE IF NOT EXISTS {username}_todo (taskid INT AUTO_INCREMENT, todoListID INT, taskTitle VARCHAR(255), taskDetail TEXT,\
+    final_table_name = convert_todo_list_name_to_table_name(username) # note -> just added todoListID not null, if it breaks shit then just remove for now
+    create_table_query = (f"CREATE TABLE IF NOT EXISTS {username}_todo (taskid INT AUTO_INCREMENT, todoListID INT NOT NULL, taskTitle VARCHAR(255), taskDetail TEXT,\
                             taskType ENUM('main_task', 'sub_task', 'toggle_task'), taskParentID INT, \
                             taskStatus ENUM('in_progress', 'completed', 'paused'),\
                             taskUrgency ENUM('critical', 'urgent', 'moderate', 'low', 'none'),\
                             taskImpact ENUM('massive', 'significant', 'limited', 'minor'),\
                             taskDifficulty ENUM('complicated','complex','average','simple'),\
-                            taskAlignment ENUM('add_positive', 'neutral', 'remove_negative'),\
                             isTimeSensitive BOOL, dueDate TIMESTAMP, dueDateTime TIMESTAMP, created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\
-                            updated TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, CONSTRAINT todoID PRIMARY KEY (taskid))")        
+                            updated TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, PRIMARY KEY (taskid), FOREIGN KEY (todoListID) REFERENCES {username}_todo_id_name(todoListID))")        
     add_to_db(create_table_query)                      
 
 
 def create_todo_id_name_relational_db(username):
     """ links todoListID (_todo) with todoListName (here) """
-    create_table_query = f"CREATE TABLE IF NOT EXISTS {username}_todo_id_name (todoListID INT, todoListName VARCHAR(255))"
+    create_table_query = f"CREATE TABLE IF NOT EXISTS {username}_todo_id_name (todoListID INT AUTO_INCREMENT, todoListName VARCHAR(255), PRIMARY KEY(todoListID))"
     add_to_db(create_table_query)  
 
 
@@ -126,13 +125,7 @@ def create_tags_list_db(username:str = "default"):
 def create_todo_tags_relational_db(username:str = "default"):
     """ relational table links tags to todo tasks, assumption here is that one db for one user (is just testing ffs chill is fine) so is fine to have as one overarching table, obvs instead could have 1 long table and id for each todoList which would be like each table but is fine for now """
     create_table_query = f"CREATE TABLE IF NOT EXISTS {username}_todotags (todotagid INT AUTO_INCREMENT, todolist VARCHAR(255), todoid INT NOT NULL, tagid INT, PRIMARY KEY(todotagid), FOREIGN KEY (todoid) REFERENCES {username}_todo(taskid), FOREIGN KEY (tagid) REFERENCES {username}_tags(tagid))" 
-    add_to_db(create_table_query) 
-
-
-def add_todo_task_to_db(todo_title, todo_entry):
-    """ add task... """
-    add_table_query = f"INSERT INTO"
-    add_to_db(add_table_query)                             
+    add_to_db(create_table_query)                        
 
 
 def get_base_todo_data():
@@ -147,20 +140,61 @@ def get_base_todo_data():
 # ---- string manipulation ----
 
 def convert_todo_list_name_to_table_name(todo_title:str):
-    """ jsut converts spaces to underlines, for sure will be edge cases, using split will be better but is fine for now """
+    """ just converts spaces to underlines, for sure will be edge cases, using split will be better but is fine for now """
     split_title = todo_title.replace(" ","_")
     return(split_title)
+
+
+# ---- crud main todo lists ----
+
+# for create (multi-use tbf, recategorise once have more functionality)
+
+def get_all_todo_list_names_and_ids(username:str) -> tuple:
+    """ write me pls """
+    get_todo_lists_query = f"SELECT * FROM {username}_todo_id_name"
+    get_todo_lists = get_from_db(get_todo_lists_query)
+    # print(f"{get_todo_lists = }")
+    return(get_todo_lists)
+
+
+def get_main_tasks_for_todo_list_by_id(username, listID):
+    """ currently not bringing taskID but leaving code here incase need shortly in future (if so parameter refactor), but rn only using taskTitle """
+    # get_main_tasks_query = f"SELECT taskid, taskTitle FROM {username}_todo WHERE todoListID = {listID} AND taskType = 'main_task'"
+    get_main_tasks_query = f"SELECT taskTitle FROM {username}_todo WHERE todoListID = {listID} AND taskType = 'main_task'"
+    main_tasks = get_from_db(get_main_tasks_query)
+    main_tasks_listed = []
+    [main_tasks_listed.append(task[0]) for task in main_tasks]
+    # print(f"{main_tasks_listed = }")
+    return(main_tasks_listed)
+
+
+def add_todo_task_to_db_basic(username:str, todoListID, taskTitle, taskDetail="", taskParentID="", taskUrgency="", taskImpact="", taskDiff="", isTimeSensitive="", dueDate="", dueDateTime=""):
+    """ add task super basic first version... """
+    # can do very easy if blank stuff, but just starting with parent id stuff for now
+    if taskDetail == "":
+        if taskParentID == "":
+            add_table_query = f"INSERT INTO {username}_todo VALUES ({todoListID}, '{taskTitle}')"
+        else:
+            add_table_query = f"INSERT INTO {username}_todo VALUES ({todoListID}, '{taskTitle}', {taskParentID})"
+    else:
+        if taskParentID == "":
+            add_table_query = f"INSERT INTO {username}_todo VALUES ({todoListID}, '{taskTitle}', '{taskDetail}')"
+        else:
+            add_table_query = f"INSERT INTO {username}_todo VALUES ({todoListID}, '{taskTitle}', '{taskDetail}', {taskParentID})"
+
+    add_to_db(add_table_query)
+
 
 
 # ---- main ----
 
 def main():
     username = "ceefar"
+    create_todo_id_name_relational_db(username)
     create_new_todo_list_db(username)
     create_tags_list_db(username)
     create_todo_tags_relational_db(username)
-    create_todo_id_name_relational_db(username)
-
+    
 
 
 # ---- driver ----
