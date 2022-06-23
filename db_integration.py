@@ -97,8 +97,8 @@ def add_habit_to_db_v0():
 # todolistid is the name of the todo list (storing all in one now) to do list id is that todolist (make a table for this! as need to link them)
 def create_new_todo_list_db(username:str = "default"):
     """ main list, stores todo items and subtasks, for now anyway """
-    final_table_name = convert_todo_list_name_to_table_name(username) # note -> just added todoListID not null, if it breaks shit then just remove for now
-    create_table_query = (f"CREATE TABLE IF NOT EXISTS {username}_todo (taskid INT AUTO_INCREMENT, todoListID INT NOT NULL, taskTitle VARCHAR(255), taskDetail TEXT,\
+    final_table_name = convert_todo_list_name_to_table_name(username) # note -> just added todoListID & taskTitle not null, if it breaks shit then just remove for now
+    create_table_query = (f"CREATE TABLE IF NOT EXISTS {username}_todo (taskid INT AUTO_INCREMENT, todoListID INT NOT NULL, taskTitle VARCHAR(255) NOT NULL, taskDetail TEXT,\
                             taskType ENUM('main_task', 'sub_task', 'toggle_task'), taskParentID INT, \
                             taskStatus ENUM('in_progress', 'completed', 'paused'),\
                             taskUrgency ENUM('critical', 'urgent', 'moderate', 'low', 'none'),\
@@ -168,6 +168,14 @@ def get_main_tasks_for_todo_list_by_id(username, listID):
     return(main_tasks_listed)
 
 
+def get_parent_id_from_title(username:str, taskParentTitle:str, listID:int) -> int:
+    """ write me plis """
+    get_parent_id_query = f"SELECT taskid FROM {username}_todo WHERE taskTitle = '{taskParentTitle}' AND todoListID = {listID} AND taskType = 'main_task'"
+    parent_id = get_from_db(get_parent_id_query)
+    parentID = parent_id[0][0]
+    return(parentID)
+
+
 def add_todo_task_to_db_basic(username:str, todoListID, taskTitle, taskDetail="", taskParentID="", taskUrgency="", taskImpact="", taskDiff="", isTimeSensitive="", dueDate="", dueDateTime=""):
     """ add task super basic first version... """
     # can do very easy if blank stuff, but just starting with parent id stuff for now
@@ -184,13 +192,9 @@ def add_todo_task_to_db_basic(username:str, todoListID, taskTitle, taskDetail=""
 
     add_to_db(add_table_query)
 
-
-def get_parent_id_from_title(username:str, taskParentTitle:str, listID:int) -> int:
-    """ write me plis """
-    get_parent_id_query = f"SELECT taskid FROM {username}_todo WHERE taskTitle = '{taskParentTitle}' AND todoListID = {listID} AND taskType = 'main_task'"
-    parent_id = get_from_db(get_parent_id_query)
-    parentID = parent_id[0][0]
-    return(parentID)
+    get_last_id_query = "SELECT LAST_INSERT_ID()"
+    get_last_id = get_from_db(get_last_id_query)
+    print(f"{get_last_id = }")
 
 
 # ---- main ----

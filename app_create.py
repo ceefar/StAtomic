@@ -1,5 +1,7 @@
 # ---- imports ---- 
 # for web app and test components
+from pymysql import OperationalError, ProgrammingError
+import pymysql
 import streamlit as st
 import streamlit.components.v1 as stc # < unused at present
 # for db access
@@ -121,8 +123,9 @@ def run():
     # ---- SECTION ----
 
     with st.container():  
-
-        st.write("**Setup Essentials**")
+        
+        st.header("Setup Essentials")
+        #st.write("**Setup Essentials**")
         todo_list_names = create_todo_lists_list()
         assigned_todo_list = st.selectbox("Which Todo List Should We Add This To?", todo_list_names)
 
@@ -144,7 +147,7 @@ def run():
             subtaskcol1, subtaskcol2 = st.columns([3,2])
             with subtaskcol1:
                 todo_lists_main_tasks_listed = get_main_tasks_for_todo_list_from_db(user_name, assigned_todo_list)
-                taskparentID = st.selectbox("Choose A Main Task To Assign To",todo_lists_main_tasks_listed)        
+                taskparentName = st.selectbox("Choose A Main Task To Assign To",todo_lists_main_tasks_listed)        
                 # print(f"{taskparentID = }")
             with subtaskcol2:
                 st.write("**What's A Sub Task?**")
@@ -217,13 +220,21 @@ def run():
 
     # ---- MAIN FORM ----
     st.write("**Confirm & Add**")
-    with st.form(key="todo_task_creator"):
+    with st.form(key="todo_task_creator", clear_on_submit=True):
 
         # SERIOUSLY THINK ABOUT THIS (AND MAYBE ACTUALLY TRY BOTH WAYS - DOES THIS EVEN NEED TO BE A FORM THO?)
 
         todo_title = st.text_input("Here Is Your Task Title", value=todo_faux_title, key="td_title")
 
         todo_detail = st.text_area("Here Are The Task Details", value=todo_faux_detail, key="td_detail")
+
+        # status indicators - need more of these
+        st.write("##")
+        st.write(f"##### Will Be Added To...")
+        st.write(f"Todo List - **{assigned_todo_list}**")
+        if is_subtask:
+            st.write(f"A Sub Task Of - **{taskparentName}**")
+        st.markdown("<sup>[Change It](#setup-essentials)</sup>", unsafe_allow_html=True)
         
         submit_habit_form = st.form_submit_button(label="Add Task")
 
@@ -232,24 +243,31 @@ def run():
         db_username = user_name.lower()
 
         if is_subtask:
-            parentID = db.get_parent_id_from_title(db_username, taskparentID, todolistid)
+            parentID = db.get_parent_id_from_title(db_username, taskparentName, todolistid)
         else:
             parentID = ""
 
         taskStatus = 1 # << ADD DISSSS!
 
         if submit_habit_form:
-            if parentID == "":
-                add_basic_task_to_db(db_username, todolistid, todo_title, todo_detail)
-            else:
-                add_basic_task_to_db(db_username, todolistid, todo_title, todo_detail, parentID)
+            try:
+                if parentID == "":
+                    add_basic_task_to_db(db_username, todolistid, todo_title, todo_detail)
+                    st.success(f"{todo_title} Added To List : {assigned_todo_list} Successfully ")
+                else:
+                    add_basic_task_to_db(db_username, todolistid, todo_title, todo_detail, parentID)
+                    st.success(f"{todo_title} Added To Task : {taskparentName} In List : {assigned_todo_list} Successfully ")
             
-            # FIRST CONFIRMATION AND CLEAR FOR - MAYBE A QUERY FOR CONFIRMATION BTW!
-            # ALSO BOTTOM PAGE BIT NEEDS INDICATOR FOR THE CURRENT TD LIST AND PARENT ETC
-            # CAN LEGIT BE TEXT NOT DDS, BUT THEN INCLUDE AN ACHOR OR SKIP TO TOP BUTTON!
-            #
-            # THEN GET THE TOGGLE ACTUALLY MAKING ADD AS A PARENT THEN GET THE DISPLAY FOR THAT
-            # MAYBE ACTUALLY JUST IN PRINT PAGE THO DUH AND FFS FORGET ANY FORMATTING RN!
+            # try except test
+            except pymysql.err as pymyerr:
+                # OperationalError ProgrammingError
+                if pymyerr.OperationalError:
+                    st.exception(f"OpErr : {pymyerr}")
+                elif pymyerr.ProgrammingError:
+                    st.exception(f"ProgErr : {pymyerr}")
+            
+
+
 
 
         # SO NEED ADD STANDARD, THEN ADD IF IS PARENT CHILD WITH PROPER RELATIONSHIP

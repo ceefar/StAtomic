@@ -4,10 +4,24 @@
 
 
 
-- still need to get working create and ig new working view tbf but...
-- first, removing alignment here for todo as makes little sense
-- moving task type up into check box and a selectbox of parent (probably unworking or rudimentary working)
-    - and removing toggle task for now tho do want back?!
+
+# better confirmation
+# better bottom indicators about selections
+# possible way to wipe everything proper
+# way to wipe things outside form on submit
+# improved skip to top stuff and rest added, possibly with cols?
+#
+# IF SUB TASK SHOULD BE SETTING IT DUH
+# SHOULD BE SETTING STATUS TOO DUH
+#
+# GET THE TOGGLE ACTUALLY MAKING ADD AS A PARENT THEN GET THE DISPLAY FOR THAT HERE (basic)
+# MAYBE ACTUALLY JUST IN PRINT PAGE THO DUH AND FFS FORGET ANY FORMATTING RN!
+#
+# THEN START DOING MORE OF THE THINGS TO BE ADDED TO THE DB
+# BIG N0TE THO AS AT THIS POINT SHOULD BE HANDLING VIA FUNCTS AS MUCH AS POSSIBLE
+#
+# PARENT CHILD DB USING GET LAST ID?
+# - this means could add order and then could reorder tbf?!
 
 
 
