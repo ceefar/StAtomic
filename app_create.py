@@ -17,7 +17,7 @@ import re
 
 user_name = "Ceefar"
 user_tags = ["fitness - cardio","fitness - trim","fitness - bulk","conditions - adhd","conditions - anxiety","skills - mysql","skills - portfolio","skills - programming","software - streamlit","lifestyle - wellness"]
-
+db_username = user_name.lower()
 
 # ---- layout ----
 # either use more or remove pls, as barely using rn
@@ -57,11 +57,13 @@ def get_main_tasks_for_todo_list_from_db(username:str, formatted_list_name:str) 
     return(main_tasks_for_todo_list)
         
 
+# cache?
 def add_basic_task_to_db(username:str, todoListID:int, taskTitle:str, taskDetail:str = "", taskParentID:int = ""):
     """ write me pls """
     db.add_todo_task_to_db_basic(username, todoListID, taskTitle, taskDetail, taskParentID)
 
 
+# cache?
 def create_todo_lists_list():
     """ write me pls """
     todo_lists = st.session_state["todo_lists"]
@@ -71,6 +73,14 @@ def create_todo_lists_list():
     # legit prints the list comprehension which is super annoying as its clean af
     # [todo_list_names.append(f"{a_list[0]}. {a_list[1].replace('_',' ')}") for a_list in todo_lists.items()] 
     return(todo_list_names)
+
+
+# cache?
+def get_subtasks_for_parent(username, taskparentName, todolistid):
+    """ write me pls """
+    parentID = db.get_parent_id_from_title(username, taskparentName, todolistid)
+    parent_subtasks = db.get_subtasks_for_parent_from_id(username, parentID, todolistid)
+    return(parent_subtasks)
 
 
 # ---- session state declarations ----
@@ -128,6 +138,7 @@ def run():
         #st.write("**Setup Essentials**")
         todo_list_names = create_todo_lists_list()
         assigned_todo_list = st.selectbox("Which Todo List Should We Add This To?", todo_list_names)
+        todolistid = get_id_numb_from_formatted_list_name(assigned_todo_list)
 
         st.write("**Something Task**")
 
@@ -234,15 +245,20 @@ def run():
         st.write(f"Todo List - **{assigned_todo_list}**")
         if is_subtask:
             st.write(f"A Sub Task Of - **{taskparentName}**")
-        st.markdown("<sup>[Change It](#setup-essentials)</sup>", unsafe_allow_html=True)
         
+        parent_subtasks = get_subtasks_for_parent(db_username, taskparentName, todolistid)
+        for i, tasks in enumerate(parent_subtasks):
+            #_ ,temptaskcol = st.columns([1,6])
+            st.markdown(f" *-* {i+1}. **{tasks}**")
+        st.markdown("<sup>[Update Task](#setup-essentials)</sup>", unsafe_allow_html=True)
+
+
+        # SUBMIT BUTTON
         submit_habit_form = st.form_submit_button(label="Add Task")
 
-        todolistid = get_id_numb_from_formatted_list_name(assigned_todo_list)
-
-        db_username = user_name.lower()
 
         if is_subtask:
+            #FIXME: OWN FUNCTION! 
             parentID = db.get_parent_id_from_title(db_username, taskparentName, todolistid)
         else:
             parentID = ""
@@ -253,10 +269,10 @@ def run():
             try:
                 if parentID == "":
                     add_basic_task_to_db(db_username, todolistid, todo_title, todo_detail)
-                    st.success(f"{todo_title} Added To List : {assigned_todo_list} Successfully ")
-                else:
+                    st.success(f"**{todo_title}**\nadded to -> **{assigned_todo_list}**\nsuccessfully ")
+                elif parentID and is_subtask:
                     add_basic_task_to_db(db_username, todolistid, todo_title, todo_detail, parentID)
-                    st.success(f"{todo_title} Added To Task : {taskparentName} In List : {assigned_todo_list} Successfully ")
+                    st.success(f"**{todo_title}**\nadded to -> **{assigned_todo_list}**\npaired to -> **{taskparentName}**\nsuccessfully ")                    
             
             # try except test
             except pymysql.err as pymyerr:

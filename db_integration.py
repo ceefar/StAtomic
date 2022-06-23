@@ -176,19 +176,29 @@ def get_parent_id_from_title(username:str, taskParentTitle:str, listID:int) -> i
     return(parentID)
 
 
+def get_subtasks_for_parent_from_id(username:str, parentID:str, listID:int):
+    """ write me plis """
+    get_subtasks_for_parent_query = f"SELECT taskTitle FROM {username}_todo WHERE taskParentID = {parentID} AND todoListID = {listID} AND taskType = 'sub_task'"
+    parent_subtasks = get_from_db(get_subtasks_for_parent_query)
+    subtasks_listed = []
+    [subtasks_listed.append(task[0]) for task in parent_subtasks]
+    #print(f"{subtasks_listed = }")
+    return(subtasks_listed)
+
+
 def add_todo_task_to_db_basic(username:str, todoListID, taskTitle, taskDetail="", taskParentID="", taskUrgency="", taskImpact="", taskDiff="", isTimeSensitive="", dueDate="", dueDateTime=""):
     """ add task super basic first version... """
     # can do very easy if blank stuff, but just starting with parent id stuff for now
     if taskDetail == "":
         if taskParentID == "":
-            add_table_query = f"INSERT INTO {username}_todo (todoListID, taskTitle) VALUES ({todoListID}, '{taskTitle}')"
+            add_table_query = f"INSERT INTO {username}_todo (todoListID, taskTitle, taskType, taskStatus) VALUES ({todoListID}, '{taskTitle}', 1, 1)"
         else:
-            add_table_query = f"INSERT INTO {username}_todo (todoListID, taskTitle, taskParentID) VALUES ({todoListID}, '{taskTitle}', {taskParentID})"
+            add_table_query = f"INSERT INTO {username}_todo (todoListID, taskTitle, taskType, taskParentID, taskStatus) VALUES ({todoListID}, '{taskTitle}', 2, {taskParentID}, 1)"
     else:
         if taskParentID == "":
-            add_table_query = f"INSERT INTO {username}_todo (todoListID, taskTitle, taskDetail) VALUES ({todoListID}, '{taskTitle}', '{taskDetail}')"
+            add_table_query = f"INSERT INTO {username}_todo (todoListID, taskTitle, taskDetail, taskType, taskStatus) VALUES ({todoListID}, '{taskTitle}', '{taskDetail}', 1, 1)"
         else:
-            add_table_query = f"INSERT INTO {username}_todo (todoListID, taskTitle, taskDetail, taskParentID) VALUES ({todoListID}, '{taskTitle}', '{taskDetail}', {taskParentID})"
+            add_table_query = f"INSERT INTO {username}_todo (todoListID, taskTitle, taskDetail, taskType, taskParentID, taskStatus) VALUES ({todoListID}, '{taskTitle}', '{taskDetail}', 2, {taskParentID}, 1)"
 
     add_to_db(add_table_query)
 

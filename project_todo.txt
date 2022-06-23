@@ -4,17 +4,7 @@
 
 
 
-
-# better confirmation
-# better bottom indicators about selections
-# possible way to wipe everything proper
-# way to wipe things outside form on submit
-# improved skip to top stuff and rest added, possibly with cols?
-#
-# IF SUB TASK SHOULD BE SETTING IT DUH
-# SHOULD BE SETTING STATUS TOO DUH
-#
-# GET THE TOGGLE ACTUALLY MAKING ADD AS A PARENT THEN GET THE DISPLAY FOR THAT HERE (basic)
+# DOING QUIT IMG TEXT TUTORIAL IN PYTHON FOR THESE PARENT SUBTASK THINGS LIKE THAT DC TODO ADD THEN CONT TO PRINT/VIEW/READ
 # MAYBE ACTUALLY JUST IN PRINT PAGE THO DUH AND FFS FORGET ANY FORMATTING RN!
 #
 # THEN START DOING MORE OF THE THINGS TO BE ADDED TO THE DB
@@ -23,7 +13,11 @@
 # PARENT CHILD DB USING GET LAST ID?
 # - this means could add order and then could reorder tbf?!
 
-
+# better confirmation
+# better bottom indicators about selections
+# possible way to wipe everything proper
+# way to wipe things outside form on submit
+# improved skip to top stuff and rest added, possibly with cols?
 
 CONSIDER CLASS BASED STRUCTURE
 - create task, update task... etc!
@@ -31,6 +25,7 @@ CONSIDER CLASS BASED STRUCTURE
 
 
 
-
-
-C:\Users\robfa\AppData\Local\StreamingVideoProvider\ScreenRec_app
+DONE
+# IF SUB TASK SHOULD BE SETTING IT DUH
+# SHOULD BE SETTING STATUS TOO DUH
+# GET THE TOGGLE ACTUALLY MAKING ADD AS A PARENT THEN GET THE DISPLAY FOR THAT HERE (basic)
