@@ -4,12 +4,15 @@ from pymysql import OperationalError, ProgrammingError
 import pymysql
 import streamlit as st
 import streamlit.components.v1 as stc # < unused at present
-# for db access
-import db_integration as db
 # for datetime object
 import datetime
 # for regular expressions
 import re
+# ---- my module imports ----
+# for db access
+import db_integration as db
+# for creating images
+import artist as arty
 
 
 # ---- temp globals ----
@@ -49,6 +52,19 @@ def get_id_numb_from_formatted_list_name(formatted_list_name:str) -> int:
 
 
 # cache it?
+def get_main_tasks_for_todo_list_from_db_with_subcount(username:str, formatted_list_name:str) -> tuple:
+    """ write me """
+    username = username.lower()
+    listID = get_id_numb_from_formatted_list_name(formatted_list_name)
+    main_tasks_for_todo_list = db.get_main_tasks_for_todo_list_by_id(username, listID)
+    for i, main_task in enumerate(main_tasks_for_todo_list):
+        subtaskcount = get_parent_subtask_count(username, main_task)
+        main_task += (f" [{subtaskcount}]")
+        main_tasks_for_todo_list[i] = main_task
+    return(main_tasks_for_todo_list)
+
+
+# cache it?
 def get_main_tasks_for_todo_list_from_db(username:str, formatted_list_name:str) -> tuple:
     """ write me """
     username = username.lower()
@@ -57,7 +73,13 @@ def get_main_tasks_for_todo_list_from_db(username:str, formatted_list_name:str) 
     return(main_tasks_for_todo_list)
         
 
-# cache?
+@st.cache
+def get_parent_subtask_count(username:str, task_title:str):
+    username = username.lower()
+    subtask_count = db.get_count_of_subtasks_for_parent(username, task_title)
+    return(subtask_count)
+
+
 def add_basic_task_to_db(username:str, todoListID:int, taskTitle:str, taskDetail:str = "", taskParentID:int = ""):
     """ write me pls """
     db.add_todo_task_to_db_basic(username, todoListID, taskTitle, taskDetail, taskParentID)
@@ -81,6 +103,15 @@ def get_subtasks_for_parent(username, taskparentName, todolistid):
     parentID = db.get_parent_id_from_title(username, taskparentName, todolistid)
     parent_subtasks = db.get_subtasks_for_parent_from_id(username, parentID, todolistid)
     return(parent_subtasks)
+
+
+@st.cache
+def create_task_subtask_img_basic(imgname:str, userSubTasksList:list, usertitle:str):
+    """ write me pls """
+    imgpath = arty.draw_dynamic_task_subtask_snapshot(imgname, userSubTasksList, usertitle)
+    return(imgpath)
+
+
 
 
 # ---- session state declarations ----
@@ -157,9 +188,14 @@ def run():
             st.write("---")
             subtaskcol1, subtaskcol2 = st.columns([3,2])
             with subtaskcol1:
-                todo_lists_main_tasks_listed = get_main_tasks_for_todo_list_from_db(user_name, assigned_todo_list)
-                taskparentName = st.selectbox("Choose A Main Task To Assign To",todo_lists_main_tasks_listed)        
-                # print(f"{taskparentID = }")
+                todo_lists_main_tasks_listed = get_main_tasks_for_todo_list_from_db_with_subcount(user_name, assigned_todo_list)
+                # print(f"{todo_lists_main_tasks_listed = }")
+                taskparentName = st.selectbox("Choose A Main Task To Assign To",todo_lists_main_tasks_listed)       
+                # could make dis a function but meh
+                braceindex = taskparentName.rfind("[")
+                if braceindex != -1:
+                    taskparentName = taskparentName[:braceindex-1]
+
             with subtaskcol2:
                 st.write("**What's A Sub Task?**")
                 st.write("Explain it to me senpai")
@@ -241,16 +277,25 @@ def run():
 
         # status indicators - need more of these
         st.write("##")
-        st.write(f"##### Will Be Added To...")
-        st.write(f"Todo List - **{assigned_todo_list}**")
-        if is_subtask:
-            st.write(f"A Sub Task Of - **{taskparentName}**")
         
-        parent_subtasks = get_subtasks_for_parent(db_username, taskparentName, todolistid)
-        for i, tasks in enumerate(parent_subtasks):
-            #_ ,temptaskcol = st.columns([1,6])
-            st.markdown(f" *-* {i+1}. **{tasks}**")
-        st.markdown("<sup>[Update Task](#setup-essentials)</sup>", unsafe_allow_html=True)
+        if is_subtask:
+            #FIXME
+            tempcol1, tempcol2 = st.columns(2)
+            parent_subtasks = get_subtasks_for_parent(db_username, taskparentName, todolistid)   
+            imgpath = create_task_subtask_img_basic(f"{db_username}_temp_subtasks", parent_subtasks, taskparentName)     
+            tempcol2.image(imgpath)
+            tempcol1.write(f"##### Will Be Added To...")
+            tempcol1.write(f"Todo List - **{assigned_todo_list}**")
+            tempcol1.write(f"A Sub Task Of - **{taskparentName}**")
+            # print(f"{taskparentName = }")
+            # print(f"{todolistid = }")
+            parent_subtasks = get_subtasks_for_parent(db_username, taskparentName, todolistid)
+            for i, tasks in enumerate(parent_subtasks):
+                #_ ,temptaskcol = st.columns([1,6])
+                tempcol1.markdown(f" *-* {i+1}. **{tasks}**")
+            tempcol1.markdown("<sup>[Update Task](#setup-essentials)</sup>", unsafe_allow_html=True)
+        else:
+            st.write("Put Some Info Here")
 
 
         # SUBMIT BUTTON
@@ -272,15 +317,19 @@ def run():
                     st.success(f"**{todo_title}**\nadded to -> **{assigned_todo_list}**\nsuccessfully ")
                 elif parentID and is_subtask:
                     add_basic_task_to_db(db_username, todolistid, todo_title, todo_detail, parentID)
-                    st.success(f"**{todo_title}**\nadded to -> **{assigned_todo_list}**\npaired to -> **{taskparentName}**\nsuccessfully ")                    
-            
+                    st.success(f"**{todo_title}**\nadded to -> **{assigned_todo_list}**\npaired to -> **{taskparentName}**\nsuccessfully ")
+                    parent_subtasks = get_subtasks_for_parent(db_username, taskparentName, todolistid)   
+                    imgpath = create_task_subtask_img_basic(f"{db_username}_temp_subtasks", parent_subtasks, taskparentName)                 
+                    print(f"{parent_subtasks = }")
+                    print(f"{taskparentName = }")
+                    st.write(imgpath)
+                    st.image(imgpath)
+
             # try except test
-            except pymysql.err as pymyerr:
+            except pymysql.err.OperationalError as pymyerr:
                 # OperationalError ProgrammingError
-                if pymyerr.OperationalError:
-                    st.exception(f"OpErr : {pymyerr}")
-                elif pymyerr.ProgrammingError:
-                    st.exception(f"ProgErr : {pymyerr}")
+                st.exception(f"OpErr : {pymyerr}")
+
             
 
 

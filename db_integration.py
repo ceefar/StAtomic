@@ -157,10 +157,10 @@ def get_all_todo_list_names_and_ids(username:str) -> tuple:
     return(get_todo_lists)
 
 
-def get_main_tasks_for_todo_list_by_id(username, listID):
+def get_main_tasks_for_todo_list_by_id(username, task_id):
     """ currently not bringing taskID but leaving code here incase need shortly in future (if so parameter refactor), but rn only using taskTitle """
     # get_main_tasks_query = f"SELECT taskid, taskTitle FROM {username}_todo WHERE todoListID = {listID} AND taskType = 'main_task'"
-    get_main_tasks_query = f"SELECT taskTitle FROM {username}_todo WHERE todoListID = {listID} AND taskType = 'main_task'"
+    get_main_tasks_query = f"SELECT taskTitle FROM {username}_todo WHERE todoListID = {task_id} AND taskType = 'main_task'"
     main_tasks = get_from_db(get_main_tasks_query)
     main_tasks_listed = []
     [main_tasks_listed.append(task[0]) for task in main_tasks]
@@ -168,10 +168,22 @@ def get_main_tasks_for_todo_list_by_id(username, listID):
     return(main_tasks_listed)
 
 
+def get_count_of_subtasks_for_parent(username, task_title):
+    """ simple count of each main tasks sub tasks """
+    get_task_id_query = f"SELECT taskid FROM {username}_todo WHERE taskTitle = '{task_title}'"
+    task_id = get_from_db(get_task_id_query)
+    listID = task_id[0][0]
+    get_count_of_sub_tasks_query = f"SELECT COUNT(taskParentID) FROM {username}_todo WHERE taskParentID = {listID} AND taskType = 'sub_task'"
+    get_subtask_count = get_from_db(get_count_of_sub_tasks_query)
+    #print(f"{get_subtask_count = }")
+    return(get_subtask_count[0][0])
+
+
 def get_parent_id_from_title(username:str, taskParentTitle:str, listID:int) -> int:
     """ write me plis """
     get_parent_id_query = f"SELECT taskid FROM {username}_todo WHERE taskTitle = '{taskParentTitle}' AND todoListID = {listID} AND taskType = 'main_task'"
     parent_id = get_from_db(get_parent_id_query)
+    #print(f"{parent_id = }")
     parentID = parent_id[0][0]
     return(parentID)
 
