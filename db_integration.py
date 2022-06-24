@@ -203,30 +203,34 @@ def get_subtasks_for_parent_from_id(username:str, parentID:str, listID:int):
 def add_todo_task_to_db_basic(username:str, todoListID, taskTitle, taskDetail="", taskParentID="", taskUrgency="", taskImpact="", taskDiff="", isTimeSensitive="", dueDate="", dueDateTime=""):
     """ add task super basic first version... """
     # can do very easy if blank stuff, but just starting with parent id stuff for now
+    
+    if dueDate:
+        isTimeSensitive = True
+
     if taskDetail == "":
         if taskParentID == "":
             if isTimeSensitive:
-                add_table_query = f"INSERT INTO {username}_todo (todoListID, taskTitle, taskType, taskStatus, isTimeSensitive, dueDate) VALUES ({todoListID}, '{taskTitle}', 1, 1, 1, {dueDate})"
+                add_table_query = f"INSERT INTO {username}_todo (todoListID, taskTitle, taskType, taskStatus, isTimeSensitive, dueDate) VALUES ({todoListID}, '{taskTitle}', 1, 1, 1, '{dueDate}')"
             else:
                 add_table_query = f"INSERT INTO {username}_todo (todoListID, taskTitle, taskType, taskStatus, isTimeSensitive) VALUES ({todoListID}, '{taskTitle}', 1, 1, 0)"
         else:
             # else has parent 
             if isTimeSensitive:
-                add_table_query = f"INSERT INTO {username}_todo (todoListID, taskTitle, taskType, taskParentID, taskStatus, isTimeSensitive, dueDate) VALUES ({todoListID}, '{taskTitle}', 2, {taskParentID}, 1, 1, {dueDate})"
+                add_table_query = f"INSERT INTO {username}_todo (todoListID, taskTitle, taskType, taskParentID, taskStatus, isTimeSensitive, dueDate) VALUES ({todoListID}, '{taskTitle}', 2, {taskParentID}, 1, 1, '{dueDate}')"
             else:
                 add_table_query = f"INSERT INTO {username}_todo (todoListID, taskTitle, taskType, taskParentID, taskStatus, isTimeSensitive) VALUES ({todoListID}, '{taskTitle}', 2, {taskParentID}, 1, 0)"
     else:
         # if has task detail
         if taskParentID == "":
             if isTimeSensitive:
-                add_table_query = f"INSERT INTO {username}_todo (todoListID, taskTitle, taskDetail, taskType, taskStatus, isTimeSensitive, dueDate) VALUES ({todoListID}, '{taskTitle}', '{taskDetail}', 1, 1, 1, {dueDate})"
+                add_table_query = f"INSERT INTO {username}_todo (todoListID, taskTitle, taskDetail, taskType, taskStatus, isTimeSensitive, dueDate) VALUES ({todoListID}, '{taskTitle}', '{taskDetail}', 1, 1, 1, '{dueDate}')"
             else:
                 # not time sensitive
                 add_table_query = f"INSERT INTO {username}_todo (todoListID, taskTitle, taskDetail, taskType, taskStatus, isTimeSensitive) VALUES ({todoListID}, '{taskTitle}', '{taskDetail}', 1, 1, 0)"
         else:
             # else has parent 
             if isTimeSensitive:
-                add_table_query = f"INSERT INTO {username}_todo (todoListID, taskTitle, taskDetail, taskType, taskParentID, taskStatus, isTimeSensitive, dueDate) VALUES ({todoListID}, '{taskTitle}', '{taskDetail}', 2, {taskParentID}, 1, 1, {dueDate})"
+                add_table_query = f"INSERT INTO {username}_todo (todoListID, taskTitle, taskDetail, taskType, taskParentID, taskStatus, isTimeSensitive, dueDate) VALUES ({todoListID}, '{taskTitle}', '{taskDetail}', 2, {taskParentID}, 1, 1, '{dueDate}')"
             else:
                 add_table_query = f"INSERT INTO {username}_todo (todoListID, taskTitle, taskDetail, taskType, taskParentID, taskStatus, isTimeSensitive) VALUES ({todoListID}, '{taskTitle}', '{taskDetail}', 2, {taskParentID}, 1, 0)"
 

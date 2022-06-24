@@ -73,7 +73,7 @@ def get_main_tasks_for_todo_list_from_db(username:str, formatted_list_name:str) 
     return(main_tasks_for_todo_list)
         
 
-@st.cache
+
 def get_parent_subtask_count(username:str, task_title:str):
     username = username.lower()
     subtask_count = db.get_count_of_subtasks_for_parent(username, task_title)
@@ -84,7 +84,7 @@ def add_basic_task_to_db(username:str, todoListID:int, taskTitle:str, taskDetail
     """ write me pls """
     if task_end_date != "":
         istimesensitive = True
-    db.add_todo_task_to_db_basic(username, todoListID, taskTitle, taskDetail, taskParentID)
+    db.add_todo_task_to_db_basic(username, todoListID, taskTitle, taskDetail, taskParentID, dueDate=task_end_date)
     #db.add_todo_task_to_db_basic(username, todoListID, taskTitle, taskDetail, taskParentID, istimesensitive, task_end_date)
 
 
@@ -326,13 +326,15 @@ def run():
                     add_basic_task_to_db(db_username, todolistid, todo_title, todo_detail, task_end_date)
                     st.success(f"**{todo_title}**\nadded to -> **{assigned_todo_list}**\nsuccessfully ")
                 elif parentID and is_subtask:
-                    add_basic_task_to_db(db_username, todolistid, todo_title, todo_detail, parentID)
+                    if task_end_date:
+                        add_basic_task_to_db(db_username, todolistid, todo_title, todo_detail, parentID, task_end_date)
+                    else:
+                        add_basic_task_to_db(db_username, todolistid, todo_title, todo_detail, parentID)
                     st.success(f"**{todo_title}**\nadded to -> **{assigned_todo_list}**\npaired to -> **{taskparentName}**\nsuccessfully ")
                     parent_subtasks = get_subtasks_for_parent(db_username, taskparentName, todolistid)   
-                    imgpath = create_task_subtask_img_basic(f"{db_username}_temp_subtasks", parent_subtasks, taskparentName, task_end_date)                 
+                    imgpath = create_task_subtask_img_basic(f"{db_username}_temp_subtasks", parent_subtasks, taskparentName)                 
                     print(f"{parent_subtasks = }")
                     print(f"{taskparentName = }")
-                    st.write(imgpath)
                     st.image(imgpath)
 
             # try except test
