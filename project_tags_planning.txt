@@ -1,0 +1,14 @@
+ok obvs just start simple FFS
+
+but thinking what would be good is like the parent of each tag 
+e.g. programming, (maybe not then conditions but maybe idk - lets just say like a specific so - maybe theres a further level to group stuff but whatever...)
+like the parent actually lets say core of the tag
+has its own modifiers to tasks too
+
+for example,
+
+an adhd task can have an extra notification thing that will just notify you alot (like setting loads of morning alarms)
+and similar idea for other things
+maybe not exactly like this but some kinda similar idea could be cool right
+like the core tag influences the todo/habit in some way not just by notifiying but maybe its like you review it weekly or something
+and each weekly review for a core is slightly different < BEST MVP CONCEPT!
