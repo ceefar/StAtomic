@@ -3,6 +3,8 @@
 import pymysql
 import os
 from dotenv import load_dotenv
+# for datetime
+import datetime
 
 
 # ---- DATABASE INIT ----
@@ -104,7 +106,7 @@ def create_new_todo_list_db(username:str = "default"):
                             taskUrgency ENUM('critical', 'urgent', 'moderate', 'low', 'none'),\
                             taskImpact ENUM('massive', 'significant', 'limited', 'minor'),\
                             taskDifficulty ENUM('complicated','complex','average','simple'),\
-                            isTimeSensitive BOOL, dueDate TIMESTAMP, dueDateTime TIMESTAMP, created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\
+                            isTimeSensitive BOOL, dueDate DATE, dueDateTime DATETIME, created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\
                             updated TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, PRIMARY KEY (taskid), FOREIGN KEY (todoListID) REFERENCES {username}_todo_id_name(todoListID))")        
     add_to_db(create_table_query)                      
 

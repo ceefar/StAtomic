@@ -105,7 +105,7 @@ def get_subtasks_for_parent(username, taskparentName, todolistid):
     return(parent_subtasks)
 
 
-@st.cache
+#@st.cache
 def create_task_subtask_img_basic(imgname:str, userSubTasksList:list, usertitle:str):
     """ write me pls """
     imgpath = arty.draw_dynamic_task_subtask_snapshot(imgname, userSubTasksList, usertitle)
@@ -222,7 +222,8 @@ def run():
             st.write("What Areas Does This Relate To?")
             habit_tags = st.multiselect("Add Tags",user_tags, default=user_tags[7])
             st.write("You can update tags later blah... by adding tags St.Atomic can help you form connections between similar habits lorem")
-        
+            # obvs need an add tags link (consider quick add here but obvs dont do immediately)
+
         with st.expander("Task Difficulty"): #, expanded=True
             col1A,col3A = st.columns([2,3])
             col1A.write("How Difficulty")
@@ -278,24 +279,32 @@ def run():
         # status indicators - need more of these
         st.write("##")
         
+        
+        tempcol1, tempcol2 = st.columns(2)
+
+        tempcol1.write(f"##### General Task Setup")
+        tempcol1.markdown("<sup>[Update Task](#setup-essentials)</sup>", unsafe_allow_html=True)
+        tempcol1.write(f"Todo List - **{assigned_todo_list}**")
+        if is_subtask == False:
+            tempcol1.write(f"Task Type - **Main Task**")
+
+        
+
         if is_subtask:
-            #FIXME
-            tempcol1, tempcol2 = st.columns(2)
+            tempcol2.write(f"##### Sub Task Breakdown")
+            tempcol1.write(f"Task Type - **Sub Task**")
+            tempcol1.write(f"A Sub Task Of - **{taskparentName}**")
             parent_subtasks = get_subtasks_for_parent(db_username, taskparentName, todolistid)   
             imgpath = create_task_subtask_img_basic(f"{db_username}_temp_subtasks", parent_subtasks, taskparentName)     
             tempcol2.image(imgpath)
-            tempcol1.write(f"##### Will Be Added To...")
-            tempcol1.write(f"Todo List - **{assigned_todo_list}**")
-            tempcol1.write(f"A Sub Task Of - **{taskparentName}**")
             # print(f"{taskparentName = }")
             # print(f"{todolistid = }")
             parent_subtasks = get_subtasks_for_parent(db_username, taskparentName, todolistid)
             for i, tasks in enumerate(parent_subtasks):
                 #_ ,temptaskcol = st.columns([1,6])
                 tempcol1.markdown(f" *-* {i+1}. **{tasks}**")
-            tempcol1.markdown("<sup>[Update Task](#setup-essentials)</sup>", unsafe_allow_html=True)
-        else:
-            st.write("Put Some Info Here")
+            
+        st.write("##")
 
 
         # SUBMIT BUTTON
