@@ -1,3 +1,5 @@
 venv/*
 DRAFT_CODE/*
 imgs/*
+.streamlit/*
+
