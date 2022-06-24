@@ -1,0 +1,39 @@
+- get view working with create on a db level
+    - maybe at this point try test the custom styling code 
+- then 0.2 update for new things in project notes
+
+
+
+
+DO END DATE ONLY
+DO TAGS BASIC 
+DO PRINT/VIEW
+
+
+
+
+# DOING QUIT IMG TEXT TUTORIAL IN PYTHON FOR THESE PARENT SUBTASK THINGS LIKE THAT DC TODO ADD THEN CONT TO PRINT/VIEW/READ
+# MAYBE ACTUALLY JUST IN PRINT PAGE THO DUH AND FFS FORGET ANY FORMATTING RN!
+#
+# THEN START DOING MORE OF THE THINGS TO BE ADDED TO THE DB
+# BIG N0TE THO AS AT THIS POINT SHOULD BE HANDLING VIA FUNCTS AS MUCH AS POSSIBLE
+#
+# PARENT CHILD DB USING GET LAST ID?
+# - this means could add order and then could reorder tbf?!
+
+# better confirmation
+# better bottom indicators about selections
+# possible way to wipe everything proper
+# way to wipe things outside form on submit
+# improved skip to top stuff and rest added, possibly with cols?
+
+CONSIDER CLASS BASED STRUCTURE
+- create task, update task... etc!
+- atleast do a quick test after implementing the basics?!
+
+
+
+DONE
+# IF SUB TASK SHOULD BE SETTING IT DUH
+# SHOULD BE SETTING STATUS TOO DUH
+# GET THE TOGGLE ACTUALLY MAKING ADD AS A PARENT THEN GET THE DISPLAY FOR THAT HERE (basic)

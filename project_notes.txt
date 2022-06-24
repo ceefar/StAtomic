@@ -1,12 +1,34 @@
 
-*******************************************
-****************** VENV! ******************
-*******************************************
-
-
 obvs should have some kind of onboarding that will make you write in (and clarify the importance of) identity over goal
 plus other stuff like contracts ig (obvs and notifications like email or whatever)
 and then even some preset task stuff here too (aka adhd, quit smoking, exercise more, programmer, etc)
 
 obvs a general introduction in there too with vids at timestamps and even little other things like images ig
 - book would be awesome here but couldnt really get it to work, might be a v1.0 problem tho?
+
+
+
+
+OK so just thinking now
+you add ur habit right
+
+but then shouldnt we have a TIMES PER TIMEFRAME / TIMEFRAME, daily (default) - but obvs others since somethings not necessarily
+- also note could be count like X times per week, which is super necessary for like fitness things (since rest duh)
+
+then like MINS PER TIMEFRAME default 15 mins, but can change based on importance to you... lol so...
+
+IMPORTANCE TO YOU, can set default time per timeframe but also gives something more quantifiable to judge/score against
+
+PERCIEVED DIFFICULTY (optional) idk but could work for things that are just harder right, 
+almost like an autoscaler or a reminder that 
+hey this is hard dont give up it will be slow progress until yit just goes boom, 
+also a nice one to ask back at set intervals like 2 weeks to plot on chart with other stuff 
+
+WHAT OTHER STUFF?
+- OMG DUHHHH!
+...
+So you also wanna log like the actual progress towards this stuff what you did each day etc, 
+that will be in the dropdown,
+obvs is its own table... needs planning, guess simple version will just be logging and some notes about what you did, and how it went, + time spend,
+ maybe even like stats progress etc, actually sick idea would be showing where you are on that curve chart (especially then based on what ur start point was too)
+maybe just do the todo bit first simple af 0 to minor extra additions then build on this 
