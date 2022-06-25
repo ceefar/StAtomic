@@ -19,7 +19,6 @@ import artist as arty
 # for testing/setup
 
 user_name = "Ceefar"
-user_tags = ["fitness - cardio","fitness - trim","fitness - bulk","conditions - adhd","conditions - anxiety","skills - mysql","skills - portfolio","skills - programming","software - streamlit","lifestyle - wellness"]
 db_username = user_name.lower()
 
 # ---- layout ----
@@ -84,8 +83,10 @@ def add_basic_task_to_db(username:str, todoListID:int, taskTitle:str, taskDetail
     """ write me pls """
     if task_end_date != "":
         istimesensitive = True
-    db.add_todo_task_to_db_basic(username, todoListID, taskTitle, taskDetail, taskParentID, dueDate=task_end_date)
+    placed_at_id = db.add_todo_task_to_db_basic(username, todoListID, taskTitle, taskDetail, taskParentID, dueDate=task_end_date)
     #db.add_todo_task_to_db_basic(username, todoListID, taskTitle, taskDetail, taskParentID, istimesensitive, task_end_date)
+    #print(f"{placed_at_id[0][0] = }")
+    return(placed_at_id[0][0])
 
 
 # cache?
@@ -115,6 +116,15 @@ def create_task_subtask_img_basic(imgname:str, userSubTasksList:list, usertitle:
     return(imgpath)
 
 
+#@st.cache
+def get_tags_list(username):
+    tags_list = db.get_tags_from_db(username)
+    return(tags_list)
+
+
+def get_todolist_id(username, lastid):
+    user_todolistid = db.get_todolistid_from_taskid(username, lastid)
+    return(user_todolistid)
 
 
 # ---- session state declarations ----
@@ -203,6 +213,8 @@ def run():
                 st.write("**What's A Sub Task?**")
                 st.write("Explain it to me senpai")
 
+        task_end_date = ""
+
         if is_datesensitive:
             st.write("---")
             timesenscol1, timesenscol2 = st.columns(2)
@@ -220,12 +232,16 @@ def run():
         
     # ---- SECTION ----
 
+
+        tags_list = get_tags_list(db_username)
+
+
         st.write("**Advanced Setup**") 
         # st.write("Use these optional enhancements to make getting stuff done easier by taking 30 seconds to quickly configure...") # not configure its not a techy app its a todo list ffs
         with st.expander("Task Tags", expanded=True):
             st.write("What Areas Does This Relate To?")
-            habit_tags = st.multiselect("Add Tags",user_tags, default=user_tags[7])
-            st.write("You can update tags later blah... by adding tags St.Atomic can help you form connections between similar habits lorem")
+            user_todo_tags = st.multiselect("Add Tags",tags_list, default=tags_list[0])
+            st.write("Link similar tasks with tags and St.Atomic try to optimise your todo lists, and give you awesome stats at the end of the week, based on connected areas. Note you can update tags later")
             # obvs need an add tags link (consider quick add here but obvs dont do immediately)
 
         with st.expander("Task Difficulty"): #, expanded=True
@@ -318,18 +334,31 @@ def run():
         else:
             parentID = ""
 
-        taskStatus = 1 # << ADD DISSSS!
+        
+        # OK SO HERE IS WHERE WE ARE ADDING TO A RELATIONAL TABLE
+        # SO WHAT IS NEEDED FIRST IS TO GET THE PREVIOUS ID
+        # note when testing this create a new table!
+        # OK SO GET THE PREVIOUS ID TING, AND THE TABLE ID (might have to use previous id for that which is fine)
+        # previous id = taskid
+        # then get the table id/name
+        # THEN FOR EACH TAG TO BE ADDED (remember we already have the todoListID and the todoTaskID, and first col is just an auto_inc index)
+        # FIND THE TAG ID FROM THE NAME IN _TAGS AND ADD IT, THATS LITERALLY IT
+        # FROM HERE I ADVISE DOING THE VIEW PAGE AND THEN ON TO API DC TUT TBH
+
 
         if submit_habit_form:
             try:
                 if parentID == "":
-                    add_basic_task_to_db(db_username, todolistid, todo_title, todo_detail, task_end_date)
+                    if task_end_date == "":
+                        lastid = add_basic_task_to_db(db_username, todolistid, todo_title, todo_detail)
+                    else:
+                        lastid = add_basic_task_to_db(db_username, todolistid, todo_title, todo_detail, task_end_date)
                     st.success(f"**{todo_title}**\nadded to -> **{assigned_todo_list}**\nsuccessfully ")
                 elif parentID and is_subtask:
                     if task_end_date:
-                        add_basic_task_to_db(db_username, todolistid, todo_title, todo_detail, parentID, task_end_date)
+                        lastid = add_basic_task_to_db(db_username, todolistid, todo_title, todo_detail, parentID, task_end_date)
                     else:
-                        add_basic_task_to_db(db_username, todolistid, todo_title, todo_detail, parentID)
+                        lastid = add_basic_task_to_db(db_username, todolistid, todo_title, todo_detail, parentID)
                     st.success(f"**{todo_title}**\nadded to -> **{assigned_todo_list}**\npaired to -> **{taskparentName}**\nsuccessfully ")
                     parent_subtasks = get_subtasks_for_parent(db_username, taskparentName, todolistid)   
                     imgpath = create_task_subtask_img_basic(f"{db_username}_temp_subtasks", parent_subtasks, taskparentName)                 
@@ -337,10 +366,32 @@ def run():
                     print(f"{taskparentName = }")
                     st.image(imgpath)
 
+
+                st.write(user_todo_tags)
+                print(f"{user_todo_tags = }")
+                user_todolistid = get_todolist_id(db_username, lastid)
+                print(f"{user_todolistid = }")
+                user_todolistname = db.get_todolistname_from_its_id(db_username, user_todolistid)
+                print(f"{user_todolistname = }")
+                print(f"{lastid = }")
+
+                # defo make this its own function ffs
+                for tag in user_todo_tags:
+                    tagndx = tag.rfind("[")
+                    tag_name = tag[:tagndx-1].strip()
+                    tag_group = tag[tagndx+1:-1]
+                    print(f"{tag_name = }")
+                    print(f"{tag_group = }")
+                    user_tagid = db.get_tagid_from_tag_plus_group(db_username, tag_name, tag_group)
+                    print(f"{user_tagid = }")
+
+
             # try except test
             except pymysql.err.OperationalError as pymyerr:
                 # OperationalError ProgrammingError
                 st.exception(f"OpErr : {pymyerr}")
+        
+
 
             
 

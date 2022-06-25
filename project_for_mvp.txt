@@ -1,0 +1,24 @@
+OK SO 
+
+note - obvs snowflake, once is at a decent level port to snowflake with full refactor?
+
+huge note - when redoing obvs since users will have to have user as a field too since reference tables
+- mean sure in theory could create 4 tables for each user but really isnt viable for any kind of scaling lol
+
+Keep everything you have tbf but will be no extra functionality for that stuff (like urgency for example)
+it will just be printed out nicely in the view page and with img and for discord
+
+get crud working
+then move to that api discord tut thing as want to have like study lion bot too
+
+so imagine then you can view on web app or on discord the same stuff (will require user authentication)
+
+get the images to look beaut tho, like study lion with even more info,
+so like you can print out ur todo for each task and its like yanno writing loads of todo lists for urself
+but then just being able to recall them at any time in a nice handy image 
+
+and then some basic stats about ur progress after this and then more work on subtask concept and maybe tags but subtask first
+
+
+***** CRITICAL SCHEMA UPDATES *****
+- obvs user in every table, like obvs obvious ones but also like todo id name would be crucial
