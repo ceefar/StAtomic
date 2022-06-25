@@ -306,19 +306,22 @@ def view_tasks_basic(username:str, anID:int, parent_child_or_all:str = "parent")
     """ write me plis """
     if parent_child_or_all == "parent":
         task_type = "main_task"
-        get_tasks_basic_af_query = f"SELECT taskTitle, taskDetail, taskType, taskParentID, taskStatus, dueDate, created, updated, taskid FROM {username}_todo WHERE todoListID = {anID} AND taskType = '{task_type}'"
+        get_tasks_basic_af_query = f"SELECT taskTitle, taskDetail, taskType, taskParentID, taskStatus, dueDate, DATE(created), updated, taskid FROM {username}_todo WHERE todoListID = {anID} AND taskType = '{task_type}'"
     elif parent_child_or_all == "child":
         task_type = "sub_task"
-        get_tasks_basic_af_query = f"SELECT taskTitle, taskDetail, taskType, taskParentID, taskStatus, dueDate, created, updated, taskid FROM {username}_todo WHERE taskParentID = {anID} AND taskType = '{task_type}'"
+        get_tasks_basic_af_query = f"SELECT taskTitle, taskDetail, taskType, taskParentID, taskStatus, dueDate, DATE(created), updated, taskid FROM {username}_todo WHERE taskParentID = {anID} AND taskType = '{task_type}'"
     else:
-        get_tasks_basic_af_query = f"SELECT taskTitle, taskDetail, taskType, taskParentID, taskStatus, dueDate, created, updated, taskid FROM {username}_todo WHERE todoListID = {anID}"
+        get_tasks_basic_af_query = f"SELECT taskTitle, taskDetail, taskType, taskParentID, taskStatus, dueDate, DATE(created), updated, taskid FROM {username}_todo WHERE todoListID = {anID}"
     
     tasks_basic_af = get_from_db(get_tasks_basic_af_query)
     subtasks_listed = []
     for task in tasks_basic_af:
         task_dict = {}
         task_dict["title"] = task[0]
-        task_dict["detail"] = task[1]
+        if task[1]:
+            task_dict["detail"] = task[1]
+        else:
+            task_dict["detail"] = ""
         task_dict["taskType"] = task[2]
         task_dict["taskParent"] = task[3]
         task_dict["taskStatus"] = task[4]
@@ -340,6 +343,29 @@ def get_id_for_parent(username, task_title):
     listID = task_id[0][0]
     return(listID)
  
+
+def update_task_status(username:str, taskid, currentStatus:bool):
+    """ current mostly for testing """
+    # could literally just query to check it and then would be 100% sure but just do like this for now for rapid testing
+    get_current_status_query = f"SELECT taskStatus FROM {username}_todo WHERE taskid = {taskid}"
+    get_current_status = get_from_db(get_current_status_query)
+    current_status = get_current_status[0][0]
+    print(f"{taskid} : {current_status = }")
+
+    if currentStatus == "in_progress":     
+        update_task_query = f"UPDATE {username}_todo SET taskStatus = 'completed' WHERE taskid = {taskid}" # 1
+    elif currentStatus == "completed":
+        update_task_query = f"UPDATE {username}_todo SET taskStatus = 'in_progress' WHERE taskid = {taskid}" # 0 
+    add_to_db(update_task_query)
+
+
+def get_current_status(username:str, taskid):
+    """ used to accurately preset toggle value """
+    get_current_status_query = f"SELECT taskStatus FROM {username}_todo WHERE taskid = {taskid}"
+    get_current_status = get_from_db(get_current_status_query)
+    current_status = get_current_status[0][0]
+    #print(f"CURRENT STATUS : {current_status = }")
+    return(current_status)
 
 
 

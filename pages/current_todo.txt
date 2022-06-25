@@ -1,4 +1,28 @@
 
+********************************** CRITICAL **********************************
+******************************************************************************
+
+LINE 243 
+HERE
+AND ALL ASSOCIATED STUFF
+
+def check_for_status_toggle(taskid, currentvalue, previousvalue):
+    """ write me - note also surely is a better way to do this? """
+    # FML COMMENT THIS LIKE FUCK AS OTHERWISE YOU 100% WILL FORGET HOW IT WORKS
+
+ADD C0MMENTS TO IT NOW (AS IN FIRST THING WHEN YOU WAKE UP) SO YOU DONT FORGET AS IT IS REASONABLY COMPLEX
+
+&&
+LINE 178
+100% THIS AS IS BEAUT FUNCTIONALITY BUT STILL LOOKS KINDA UGLY
+# YOU DONT NEED TO USE COL HERE JUST USE THE WIDTH % AND MARGIN/PADDING THEN CAN USE COLS FOR THE SLIDER
+# OR IDK JUST FIGURE IT OUT, POSSIBLY COULD REVERT TO CHECKBOX
+
+******************************************************************************
+******************************************************************************
+
+
+
 aite so
 
 just do main task actually since thats kinda how they get layered right
@@ -17,3 +41,7 @@ underneath each will have generate img
 save img
 
 note also need set to done n shit but just do this stuff first tbf
+
+
+
+also global preset theme - if possible slight tweeks by page would be desirable but if not is chill

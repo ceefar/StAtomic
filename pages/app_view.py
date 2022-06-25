@@ -51,9 +51,15 @@ def get_id_numb_from_formatted_list_name(formatted_list_name:str) -> int:
 
 
 def get_parent_id(username:str, task_title:str):
+    """ self referencing af """
     username = username.lower()
     parent_id = db.get_id_for_parent(username, task_title)
     return(parent_id)
+
+
+def toggle_task_status(db_username, taskID, agree):
+    """ write me """
+    db.update_task_status(db_username, taskID, agree)
 
 
 # ---- session state declarations ----
@@ -68,26 +74,29 @@ if "todo_lists" not in st.session_state:
 
 # ---- custom css test ----
 
+# FIXME: THIS *** IMPORTANT - IF NO DETAIL IS RESIZED SO NEED TO UPDATE THE HEIGHT! *** # 
+
 PARENT_HTML_TEMPLATE = """
-<div style="padding-left:15px;font-family: 'Roboto', sans-serif; font-weight:600; color:grey;">{}.</div>
-<div style="width:95%; height:100%; margin:5px 20px 1px 1px; padding:1px 5px 35px 15px; position:relative; border-radius:5px;
+<div style="padding-left:15px;font-family: 'Roboto', sans-serif; font-weight:600; color:grey;">{}</div>
+<div style="width:90%; height:100%; margin:5px 20px 1px 1px; padding:1px 5px 35px 15px; position:relative; border-radius:5px;
 border=5px solid; box-shadow:0 0 1px 1px #eee; background-color:#31333F; font-weight:300;
-border-left:10px solid #484848; color:white; font-family: 'Roboto', sans-serif;">
+border-left:10px solid #484848; color:white; font-family: 'Roboto', sans-serif; box-shadow: 10px 10px 5px 5px rgba(0,0,0,0.15);">
 <h2 style="color:#eba538; font-weight:300; margin-bottom:0px;">{}</h2>
 <div style="color:#efefef; font-weight:300; margin-bottom:25px; ">{}</div>
-<span style="width:95%; height:100%; position:absolute; text-align:right;">{}</span>
+<span style="width:95%; height:100%; position:absolute; text-align:right; font-size:0.9rem; color:#949494;">{}</span>
 <span style="width:95%; height:100%; position:absolute; text-align:left;">{}</span>
 </div>
 """
 
+# N0TE THE BOX SHADOW LOOKS MUCH BETTER ON DARK THEME - SO IMPLEMENT DARK STYLE THEME AS THE PRESET PLS
 CHILD_HTML_TEMPLATE = """
-<div style="padding-left:15px;font-family: 'Roboto', sans-serif; font-weight:600; color:grey;">{}.</div>
-<div style="width:95%; height:100%; margin:5px 20px 1px 1px; padding:1px 5px 35px 15px; position:relative; border-radius:5px;
+<div style="padding-left:15px; padding-top:10px; font-family: 'Roboto', sans-serif; font-weight:600; color:grey;">{}</div>
+<div style="width:90%; height:100%; margin:5px 20px 1px 1px; padding:1px 0px 35px 15px; position:relative; border-radius:5px;
 border=5px solid; box-shadow:0 0 1px 1px #eee; background-color:#31333F; font-weight:300;
-border-left:10px solid #484848; color:white; font-family: 'Roboto', sans-serif;">
-<h2 style="color:#eba538; font-weight:300; margin-bottom:0px;">{}</h2>
+border-left:10px solid #484848; color:white; font-family: 'Roboto', sans-serif; box-shadow: 8px 5px 5px 5px rgba(49,51,63,0.15);">
+<h2 style="color:#{}; font-weight:300; margin-bottom:0px;">{}</h2>
 <div style="color:#efefef; font-weight:300; ">{}</div>
-<span style="width:95%; height:100%; position:absolute; text-align:right;">{}</span>
+<span style="width:95%; height:100%; position:absolute; text-align:right; font-size:0.9rem; color:#949494;">{}</span>
 <span style="width:95%; height:100%; position:absolute; text-align:left;">{}</span>
 </div>
 """
@@ -124,44 +133,111 @@ def run():
         st.write(f"#### Todo Visualiser")
         #st.write("**Your New Task**")
         
+
         todo_list_names = create_todo_lists_list()
         assigned_todo_list = st.selectbox("Which Todo List Would You Like To See?", todo_list_names)
         todolistid = get_id_numb_from_formatted_list_name(assigned_todo_list)
         basic_tasks_dict_as_list = db.view_tasks_basic(db_username, todolistid) #FIXME : OWN FUNCTION 
+        
+
+        def check_for_status_toggle(taskid, currentvalue, previousvalue):
+            """ write me - note also surely is a better way to do this? """
+            # FML COMMENT THIS LIKE FUCK AS OTHERWISE YOU 100% WILL FORGET HOW IT WORKS
+            print(f"{taskid = }")
+            print(f"{currentvalue = }")
+            print(f"{previousvalue = }")
+            session_string = str(taskid)
+            print(f"{st.session_state[session_string] = }")
+            true_current = st.session_state[session_string]
+            #print(f"{st.session_state[subtaskd['taskID']] = }")
+
+            if true_current != previousvalue:
+                #send the id to be updated
+                print(f"UPDATE {taskid}")
+                toggle_task_status(db_username, taskid, previousvalue)
 
 
+        for j, taskd in enumerate(basic_tasks_dict_as_list):
             
-
-
-        for taskd in basic_tasks_dict_as_list:
-            
+            st.write("---")
+            st.write("##")
+            st.write(f"##### Main Task {j+1}")
             #st.markdown(f"{taskd}")
 
-            stc.html(PARENT_HTML_TEMPLATE.format( taskd["taskStatus"],  taskd["title"], taskd["detail"], taskd["taskParent"], taskd["taskType"]), height=150)
+            #eba538
+            #32CD32
+
+            stc.html(PARENT_HTML_TEMPLATE.format(taskd["taskStatus"], taskd["title"], taskd["detail"], taskd["createdDate"], taskd["taskType"]), height=200)
             
             parents_id = taskd["taskID"]
             #print(f"{parents_id = }")
 
             basic_subtasks_dict_as_list = db.view_tasks_basic(db_username, parents_id, "child")
-            _, subtaskcol = st.columns([1,6])
-            with subtaskcol:
-                for subtaskd in basic_subtasks_dict_as_list:
-                    stc.html(CHILD_HTML_TEMPLATE.format( subtaskd["taskStatus"],  subtaskd["title"], subtaskd["detail"], subtaskd["taskParent"], subtaskd["taskType"]), height=200)
+            _, subtaskcol2 = st.columns([1,6]) 
+
+            # YOU DONT NEED TO USE COL HERE JUST USE THE WIDTH % AND MARGIN/PADDING THEN CAN USE COLS FOR THE SLIDER
+            # OR IDK JUST FIGURE IT OUT, POSSIBLY COULD REVERT TO CHECKBOX
+
+            with subtaskcol2:
+                #only_once = True
+                for i, subtaskd in enumerate(basic_subtasks_dict_as_list):
+
+                    actual_current_status = db.get_current_status(db_username, subtaskd["taskID"])
+                    
+                    if subtaskd["taskID"] not in st.session_state:
+                        st.session_state[subtaskd["taskID"]] = actual_current_status
+
+                    if subtaskd["taskStatus"] == "completed":
+                        stc.html(CHILD_HTML_TEMPLATE.format(subtaskd["taskStatus"], "32CD32", subtaskd["title"], subtaskd["detail"], subtaskd["createdDate"], subtaskd["taskType"]), height=160)
+                    else:
+                        stc.html(CHILD_HTML_TEMPLATE.format(subtaskd["taskStatus"], "eba538", subtaskd["title"], subtaskd["detail"], subtaskd["createdDate"], subtaskd["taskType"]), height=160)
+                    #stc.html(CHILD_HTML_TEMPLATE.format(subtaskd["taskStatus"], subtaskd["title"], subtaskd["detail"], subtaskd["createdDate"], subtaskd["taskType"]), height=160)
+                    
+                    actual_current_status = db.get_current_status(db_username, subtaskd["taskID"])
+                    st.session_state[f'{subtaskd["taskID"]}PREV'] = actual_current_status
+                    status_select = st.select_slider(f'Set Status', value=actual_current_status, options=['in_progress','completed'], key=subtaskd["taskID"], on_change=check_for_status_toggle, args=[subtaskd["taskID"], st.session_state[subtaskd["taskID"]], st.session_state[f'{subtaskd["taskID"]}PREV']])
+                    
+                    #if status_select and only_once:
+                    
+                    #if status_select:
+                    #    toggle_task_status(db_username, subtaskd["taskID"], status_select)
+                    
+                        #only_once = False
+                    st.write("---")
+                
+                #st.markdown("#### the CURRENT on load")
+                #for subtaskd in basic_subtasks_dict_as_list:
+                #    st.write(subtaskd["taskID"])
+                #    st.write(st.session_state[subtaskd["taskID"]])
+                #    st.write("-")
+                
+                #st.write("---")
+                #st.markdown("#### the value ON LOAD")
+
+                #for subtaskd in basic_subtasks_dict_as_list:
+                #    st.write(subtaskd["taskID"])
+                #    st.write(st.session_state[f'{subtaskd["taskID"]}PREV'])
+                #    st.write("-")
+
             #st.write(basic_subtasks_dict_as_list)
 
-            st.write("---")
-
+            #st.write("---")
 
         st.write("---")
 
-        # css testing
+
+
+    # css testing
     st.markdown(unsafe_allow_html=True, body=f"""
             <style>
             .css-8msczc{{
-                margin-bottom: -50px
+                margin-bottom: -10px
             }}
             .css-1ws1sb4.e1tzin5v0{{
                 gap:0rem;
+            }}
+            .stCheckbox{{
+                padding: 10px 0px 10px 10px
             }}
             </style>
         """)
@@ -171,3 +247,5 @@ def run():
 
 if __name__ == "__main__":
     run()
+
+
