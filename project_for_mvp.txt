@@ -22,3 +22,6 @@ and then some basic stats about ur progress after this and then more work on sub
 
 ***** CRITICAL SCHEMA UPDATES *****
 - obvs user in every table, like obvs obvious ones but also like todo id name would be crucial
+
+***** CRITICAL GENERAL UPDATES *****
+- add a basic user login (no pwd is fine for now) like streamfit

@@ -9,7 +9,7 @@ DO END DATE ONLY
 DO TAGS BASIC 
 DO PRINT/VIEW
 
-
+N0TE - if the default text is in the details field then set it to blank before moving it (the var) around
 
 
 # DOING QUIT IMG TEXT TUTORIAL IN PYTHON FOR THESE PARENT SUBTASK THINGS LIKE THAT DC TODO ADD THEN CONT TO PRINT/VIEW/READ
