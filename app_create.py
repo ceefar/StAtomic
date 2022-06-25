@@ -374,6 +374,9 @@ def run():
                 user_todolistname = db.get_todolistname_from_its_id(db_username, user_todolistid)
                 print(f"{user_todolistname = }")
                 print(f"{lastid = }")
+                print("- - - -")
+                print(f"{type(user_todolistid) = }")
+                print(f"{type(lastid) = }")
 
                 # defo make this its own function ffs
                 for tag in user_todo_tags:
@@ -384,7 +387,11 @@ def run():
                     print(f"{tag_group = }")
                     user_tagid = db.get_tagid_from_tag_plus_group(db_username, tag_name, tag_group)
                     print(f"{user_tagid = }")
+                    print(f"{type(user_tagid) = }")
+                    db.add_todotags_for_new_task(db_username, user_todolistid, lastid, user_tagid)
 
+                
+                
 
             # try except test
             except pymysql.err.OperationalError as pymyerr:

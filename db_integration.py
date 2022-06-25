@@ -296,7 +296,9 @@ def get_tagid_from_tag_plus_group(username, tagname, taggroup):
 
 def add_todotags_for_new_task(username, listid, lasttaskid, tagid):
     """ write me """
-    add_todotags_query = f"INSERT INTO {username}_tags (todoListID, todoTaskID, tagID) VALUES ({listid}, {lasttaskid}, {tagid})'"
+    add_todotags_query = f"INSERT INTO {username}_todotags (todoListID, todoTaskID, tagID) VALUES ({listid}, {lasttaskid}, {tagid})"
+    add_to_db(add_todotags_query)
+
 
 
 
