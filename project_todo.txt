@@ -4,10 +4,9 @@
 
 
 
-
-DO END DATE ONLY
-DO TAGS BASIC 
+*************
 DO PRINT/VIEW
+*************
 
 N0TE - if the default text is in the details field then set it to blank before moving it (the var) around
 

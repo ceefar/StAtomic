@@ -1,0 +1,19 @@
+
+aite so
+
+just do main task actually since thats kinda how they get layered right
+obvs can just then make this a sep page and make more dw just do this for now
+and then if want changes just make a new page (and call this parent view or whatever)
+
+so what you wanna do is just get a list of main task ids only
+
+then do the main task
+then the sub tasks
+for that id only
+
+then loop the rest of the main task ids list
+
+underneath each will have generate img
+save img
+
+note also need set to done n shit but just do this stuff first tbf

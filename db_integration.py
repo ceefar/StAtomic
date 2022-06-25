@@ -174,10 +174,10 @@ def get_all_todo_list_names_and_ids(username:str) -> tuple:
     return(get_todo_lists)
 
 
-def get_main_tasks_for_todo_list_by_id(username, task_id):
+def get_main_tasks_for_todo_list_by_id(username, list_id):
     """ currently not bringing taskID but leaving code here incase need shortly in future (if so parameter refactor), but rn only using taskTitle """
     # get_main_tasks_query = f"SELECT taskid, taskTitle FROM {username}_todo WHERE todoListID = {listID} AND taskType = 'main_task'"
-    get_main_tasks_query = f"SELECT taskTitle FROM {username}_todo WHERE todoListID = {task_id} AND taskType = 'main_task'"
+    get_main_tasks_query = f"SELECT taskTitle FROM {username}_todo WHERE todoListID = {list_id} AND taskType = 'main_task'"
     main_tasks = get_from_db(get_main_tasks_query)
     main_tasks_listed = []
     [main_tasks_listed.append(task[0]) for task in main_tasks]
@@ -298,6 +298,49 @@ def add_todotags_for_new_task(username, listid, lasttaskid, tagid):
     """ write me """
     add_todotags_query = f"INSERT INTO {username}_todotags (todoListID, todoTaskID, tagID) VALUES ({listid}, {lasttaskid}, {tagid})"
     add_to_db(add_todotags_query)
+
+
+# ---- v0.31 [NEW] view page ----
+
+def view_tasks_basic(username:str, anID:int, parent_child_or_all:str = "parent"):
+    """ write me plis """
+    if parent_child_or_all == "parent":
+        task_type = "main_task"
+        get_tasks_basic_af_query = f"SELECT taskTitle, taskDetail, taskType, taskParentID, taskStatus, dueDate, created, updated, taskid FROM {username}_todo WHERE todoListID = {anID} AND taskType = '{task_type}'"
+    elif parent_child_or_all == "child":
+        task_type = "sub_task"
+        get_tasks_basic_af_query = f"SELECT taskTitle, taskDetail, taskType, taskParentID, taskStatus, dueDate, created, updated, taskid FROM {username}_todo WHERE taskParentID = {anID} AND taskType = '{task_type}'"
+    else:
+        get_tasks_basic_af_query = f"SELECT taskTitle, taskDetail, taskType, taskParentID, taskStatus, dueDate, created, updated, taskid FROM {username}_todo WHERE todoListID = {anID}"
+    
+    tasks_basic_af = get_from_db(get_tasks_basic_af_query)
+    subtasks_listed = []
+    for task in tasks_basic_af:
+        task_dict = {}
+        task_dict["title"] = task[0]
+        task_dict["detail"] = task[1]
+        task_dict["taskType"] = task[2]
+        task_dict["taskParent"] = task[3]
+        task_dict["taskStatus"] = task[4]
+        task_dict["dueDate"] = task[5]
+        task_dict["createdDate"] = task[6]
+        task_dict["updatedDate"] = task[7]
+        task_dict["taskID"] = task[8]  
+        subtasks_listed.append(task_dict)      
+
+    #[subtasks_listed.append(task) for task in tasks_basic_af]
+    #print(f"{subtasks_listed} = ")
+    return(subtasks_listed)
+
+
+def get_id_for_parent(username, task_title):
+    """ legit would be an easy refactor of the count sub tasks function for this but since doing refactor shortly anyway is pointless """
+    get_task_id_query = f"SELECT taskid FROM {username}_todo WHERE taskTitle = '{task_title}'"
+    task_id = get_from_db(get_task_id_query)
+    listID = task_id[0][0]
+    return(listID)
+ 
+
 
 
 

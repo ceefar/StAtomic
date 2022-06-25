@@ -72,7 +72,6 @@ def get_main_tasks_for_todo_list_from_db(username:str, formatted_list_name:str) 
     return(main_tasks_for_todo_list)
         
 
-
 def get_parent_subtask_count(username:str, task_title:str):
     username = username.lower()
     subtask_count = db.get_count_of_subtasks_for_parent(username, task_title)
@@ -178,8 +177,8 @@ def run():
 
     with st.container():  
         
-        st.header("Setup Essentials")
-        #st.write("**Setup Essentials**")
+        #st.header("Setup Essentials")
+        st.write("**Setup Essentials**")
         todo_list_names = create_todo_lists_list()
         assigned_todo_list = st.selectbox("Which Todo List Should We Add This To?", todo_list_names)
         todolistid = get_id_numb_from_formatted_list_name(assigned_todo_list)
@@ -362,32 +361,17 @@ def run():
                     st.success(f"**{todo_title}**\nadded to -> **{assigned_todo_list}**\npaired to -> **{taskparentName}**\nsuccessfully ")
                     parent_subtasks = get_subtasks_for_parent(db_username, taskparentName, todolistid)   
                     imgpath = create_task_subtask_img_basic(f"{db_username}_temp_subtasks", parent_subtasks, taskparentName)                 
-                    print(f"{parent_subtasks = }")
-                    print(f"{taskparentName = }")
                     st.image(imgpath)
 
-
-                st.write(user_todo_tags)
-                print(f"{user_todo_tags = }")
                 user_todolistid = get_todolist_id(db_username, lastid)
-                print(f"{user_todolistid = }")
                 user_todolistname = db.get_todolistname_from_its_id(db_username, user_todolistid)
-                print(f"{user_todolistname = }")
-                print(f"{lastid = }")
-                print("- - - -")
-                print(f"{type(user_todolistid) = }")
-                print(f"{type(lastid) = }")
 
                 # defo make this its own function ffs
                 for tag in user_todo_tags:
                     tagndx = tag.rfind("[")
                     tag_name = tag[:tagndx-1].strip()
                     tag_group = tag[tagndx+1:-1]
-                    print(f"{tag_name = }")
-                    print(f"{tag_group = }")
                     user_tagid = db.get_tagid_from_tag_plus_group(db_username, tag_name, tag_group)
-                    print(f"{user_tagid = }")
-                    print(f"{type(user_tagid) = }")
                     db.add_todotags_for_new_task(db_username, user_todolistid, lastid, user_tagid)
 
                 
