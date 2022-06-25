@@ -68,13 +68,25 @@ if "todo_lists" not in st.session_state:
 
 # ---- custom css test ----
 
-HABIT_HTML_TEMPLATE = """
+PARENT_HTML_TEMPLATE = """
 <div style="padding-left:15px;font-family: 'Roboto', sans-serif; font-weight:600; color:grey;">{}.</div>
 <div style="width:95%; height:100%; margin:5px 20px 1px 1px; padding:1px 5px 35px 15px; position:relative; border-radius:5px;
 border=5px solid; box-shadow:0 0 1px 1px #eee; background-color:#31333F; font-weight:300;
 border-left:10px solid #484848; color:white; font-family: 'Roboto', sans-serif;">
 <h2 style="color:#eba538; font-weight:300; margin-bottom:0px;">{}</h2>
 <div style="color:#efefef; font-weight:300; margin-bottom:25px; ">{}</div>
+<span style="width:95%; height:100%; position:absolute; text-align:right;">{}</span>
+<span style="width:95%; height:100%; position:absolute; text-align:left;">{}</span>
+</div>
+"""
+
+CHILD_HTML_TEMPLATE = """
+<div style="padding-left:15px;font-family: 'Roboto', sans-serif; font-weight:600; color:grey;">{}.</div>
+<div style="width:95%; height:100%; margin:5px 20px 1px 1px; padding:1px 5px 35px 15px; position:relative; border-radius:5px;
+border=5px solid; box-shadow:0 0 1px 1px #eee; background-color:#31333F; font-weight:300;
+border-left:10px solid #484848; color:white; font-family: 'Roboto', sans-serif;">
+<h2 style="color:#eba538; font-weight:300; margin-bottom:0px;">{}</h2>
+<div style="color:#efefef; font-weight:300; ">{}</div>
 <span style="width:95%; height:100%; position:absolute; text-align:right;">{}</span>
 <span style="width:95%; height:100%; position:absolute; text-align:left;">{}</span>
 </div>
@@ -125,19 +137,35 @@ def run():
             
             #st.markdown(f"{taskd}")
 
-            stc.html(HABIT_HTML_TEMPLATE.format( taskd["taskStatus"],  taskd["title"], taskd["detail"], taskd["taskParent"], taskd["taskType"]), height=200)
+            stc.html(PARENT_HTML_TEMPLATE.format( taskd["taskStatus"],  taskd["title"], taskd["detail"], taskd["taskParent"], taskd["taskType"]), height=150)
             
             parents_id = taskd["taskID"]
-            st.write(parents_id)
-            print(f"{parents_id = }")
+            #print(f"{parents_id = }")
+
             basic_subtasks_dict_as_list = db.view_tasks_basic(db_username, parents_id, "child")
-            st.write(basic_subtasks_dict_as_list)
+            _, subtaskcol = st.columns([1,6])
+            with subtaskcol:
+                for subtaskd in basic_subtasks_dict_as_list:
+                    stc.html(CHILD_HTML_TEMPLATE.format( subtaskd["taskStatus"],  subtaskd["title"], subtaskd["detail"], subtaskd["taskParent"], subtaskd["taskType"]), height=200)
+            #st.write(basic_subtasks_dict_as_list)
 
             st.write("---")
 
 
         st.write("---")
 
+        # css testing
+    st.markdown(unsafe_allow_html=True, body=f"""
+            <style>
+            .css-8msczc{{
+                margin-bottom: -50px
+            }}
+            .css-1ws1sb4.e1tzin5v0{{
+                gap:0rem;
+            }}
+            </style>
+        """)
+        #css-1jae3nz
 
 
 
