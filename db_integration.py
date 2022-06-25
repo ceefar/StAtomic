@@ -5,12 +5,22 @@ import os
 from dotenv import load_dotenv
 # for datetime
 import datetime
+# testing sumnt
+import streamlit as st
 
 
 # ---- DATABASE INIT ----
 
 # load environment variables from .env file
+# CACHE SEEMS TO IMPROVE RANDOM TERMINAL ERRORS (that didnt break anything anyway)
+# DONT NEED ST TO MAKE A TEMP CACHE YOU CAN DO THIS YOURSELF DUH!
+# ACTUALLY MAYBE THIS KINDA MAKES SENSE, UNSURE IF STREAMLIT ACTUALLY WANTS THIS INFO STORED OR NOT?
+@st.cache
+def load_env():
+    load_dotenv()
+
 load_dotenv()
+    
 host = os.environ.get("mysql_host")
 user = os.environ.get("mysql_user")
 password = os.environ.get("mysql_pass")
@@ -124,9 +134,14 @@ def create_tags_list_db(username:str = "default"):
     add_to_db(create_table_query) 
 
 
+# note should all be not null but leaving for now
 def create_todo_tags_relational_db(username:str = "default"):
     """ relational table links tags to todo tasks, assumption here is that one db for one user (is just testing ffs chill is fine) so is fine to have as one overarching table, obvs instead could have 1 long table and id for each todoList which would be like each table but is fine for now """
-    create_table_query = f"CREATE TABLE IF NOT EXISTS {username}_todotags (todotagid INT AUTO_INCREMENT, todolist VARCHAR(255), todoid INT NOT NULL, tagid INT, PRIMARY KEY(todotagid), FOREIGN KEY (todoid) REFERENCES {username}_todo(taskid), FOREIGN KEY (tagid) REFERENCES {username}_tags(tagid))" 
+    create_table_query = f"CREATE TABLE IF NOT EXISTS {username}_todotags (todoTagID INT AUTO_INCREMENT, todoListID VARCHAR(255),\
+                        todoTaskID INT NOT NULL, tagID INT, PRIMARY KEY(todotagid),\
+                        FOREIGN KEY (todoTaskID) REFERENCES {username}_todo(taskid) ON DELETE CASCADE ON UPDATE CASCADE,\
+                        FOREIGN KEY (todoListID) REFERENCES {username}_todo_id_name(todoListID) ON DELETE CASCADE ON UPDATE CASCADE,\
+                        FOREIGN KEY (todoTagID) REFERENCES {username}_tags(tagid) ON DELETE CASCADE ON UPDATE CASCADE)" 
     add_to_db(create_table_query)                        
 
 
@@ -238,7 +253,52 @@ def add_todo_task_to_db_basic(username:str, todoListID, taskTitle, taskDetail=""
 
     get_last_id_query = "SELECT LAST_INSERT_ID()"
     get_last_id = get_from_db(get_last_id_query)
-    print(f"{get_last_id = }")
+    #print(f"{get_last_id = }")
+    return(get_last_id)
+
+
+def get_tags_from_db(username):
+    """ write me """
+    get_tags_query = f"SELECT tag, tagtype FROM {username}_tags"
+    get_tags = get_from_db(get_tags_query)
+    tags_list = []
+    for tags in get_tags:
+        tagstr = f"{tags[0]} [{tags[1]}]"
+        #tagstr = f"{tags[0]} - {tags[1]}"
+        tags_list.append(tagstr)
+    #print(f"{tags_list = }")
+    return(tags_list)
+
+
+def get_todolistid_from_taskid(username, taskid):
+    """ write me """
+    get_todlistid_query = f"SELECT todoListID from {username}_todo WHERE taskid = {taskid}"
+    get_todolistid = get_from_db(get_todlistid_query)
+    #print(f"{get_todolistid[0][0] = }")
+    return(get_todolistid[0][0])
+
+
+def get_todolistname_from_its_id(username, todolistid):
+    """ write me """
+    get_todolistname_query = f"SELECT todoListName from {username}_todo_id_name WHERE todoListID = {todolistid}"
+    get_todolistname = get_from_db(get_todolistname_query)
+    #print(f"{get_todolistname[0][0] = }")
+    return(get_todolistname[0][0])
+
+
+def get_tagid_from_tag_plus_group(username, tagname, taggroup):
+    """ write me """
+    get_tagid_query = f"SELECT tagid from {username}_tags WHERE tag = '{tagname}' AND tagtype = '{taggroup}'"
+    get_tagid = get_from_db(get_tagid_query)
+    print(f"{get_tagid[0][0] = }")
+    return(get_tagid[0][0])
+
+
+def add_todotags_for_new_task(username, listid, lasttaskid, tagid):
+    """ write me """
+    add_todotags_query = f"INSERT INTO {username}_tags (todoListID, todoTaskID, tagID) VALUES ({listid}, {lasttaskid}, {tagid})'"
+
+
 
 
 # ---- main ----
