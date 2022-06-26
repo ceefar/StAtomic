@@ -1,5 +1,6 @@
 # ---- imports ---- 
 # for web app and test components
+from tkinter import PAGES
 import streamlit as st
 import streamlit.components.v1 as stc # < unused at present
 # for regular expressions
@@ -186,17 +187,36 @@ def run():
 
         print(f"{user_todo_tags = }")
 
-        # OBVS NEEDS TO BE A LIST OR TUPLE PROBS TBF FOR EASIER UNPACKING, AND OBVS NEED TO UNPACK IT LOL
+        # OBVS NEEDS TO BE A LIST OR TUPLE PROBS TBF FOR EASIER UNPACKING, AND OBVS NEED TO UNPACK IT LOL (immutable tho... reruns from start tho... hmmm... should be fine)
         filter_tags = ""
+        filter_tags_list = []
 
         for tag in user_todo_tags:
             tagndx = tag.rfind("[")
             tag_name = tag[:tagndx-1].strip()
             tag_group = tag[tagndx+1:-1]
             user_tagid = db.get_tagid_from_tag_plus_group(db_username, tag_name, tag_group)
-            print(f"{user_tagid = }")
             filter_tags = user_tagid
+            filter_tags_list.append(user_tagid)
         
+
+
+
+            
+        # so (and obvs dont do this here but its just easier to sort and test it here without breaking the entire db module)
+        # if just one item then this is fine 
+        # AND t2.tagID = 2
+        # else its + OR t2.tagID = {another_id_from_list}
+        # dynamically add that to a new string variables and then just add that final variable and thats it
+        # legit dont think theres any other way to do this without explicitly declaring every single thing like if PARAMETER = 2 THEN final_string.append('t2.tagID = 2') 
+
+        # SOME KINDA COUNT HERE FOR TAGS WOULD PROBABLY BE HELLA USEFUL TOO (as not that many tags but tbf should be more tags in future)
+        # LEGIT AFTER THIS THE IMG BIT WITH SAVE BUTTON 
+        # - N0TE SHOW THE DYNAMIC QUERY IN A DD OR SUMNT AS IS TO SHOW MY WORK ABILITY (maybe even show it broken up too ooo - maybe even as img lol)
+        # THEN GET THE TASKS IN DB TO LOOK MORE NORMALISED
+        # THEN ONE MINOR THING IN THE OTHER VIEW PAGE
+        # THEN DO THAT TUT!
+
 
 
     st.write("---")
@@ -206,7 +226,7 @@ def run():
 
     basic_tasks_dict_as_list = view_tasks_basic(db_username, todolistid)
 
-    tempresult = db.view_tasks_toggle(db_username, todolistid, sub_main_or_all, specific_or_all_tasks, handy_filter_selection, status_selection, filter_tags)
+    tempresult = db.view_tasks_toggle(db_username, todolistid, sub_main_or_all, specific_or_all_tasks, handy_filter_selection, status_selection, filter_tags_list)
     st.markdown("#### TEMP RESULT")
     st.write(tempresult)
 

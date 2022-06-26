@@ -372,7 +372,7 @@ def get_current_status(username:str, taskid):
 # ---- v0.32 [NEW] view page ----
 
 
-def view_tasks_toggle(username:str, listID:int, parent_child_or_all:str, specificTaskIDTitle:int = "", handyfilter:str = "", taskstatusfilter:str = "", tagidtemp:int = ""):
+def view_tasks_toggle(username:str, listID:int, parent_child_or_all:str, specificTaskIDTitle:int = "", handyfilter:str = "", taskstatusfilter:str = "", filter_tags_list:list = [""]): # mutable default! -> change this once is final (so isn't default? even possible tho?)
     """ first attempt at dynamically creating the query (as opposed to a big ass switch case), sure requires if statements here but isn't *only* if statements """
     # note handy filter can be turned off so *needs* the default value
 
@@ -451,17 +451,27 @@ def view_tasks_toggle(username:str, listID:int, parent_child_or_all:str, specifi
     # SELECT t1.taskTitle, t1.taskDetail, t1.taskType, t1.taskParentID, t1.taskStatus, t1.dueDate, DATE(t1.created), DATE(t1.updated), t1.taskid, t2.todoTaskID, t2.tagID FROM ceefar_todo t1, ceefar_todotags t2 WHERE todoTaskID = taskid
 
     # some kinda for loop here but just doing simple real quick to test
-    if tagidtemp != "":
+    if filter_tags_list[0] != "":
         inner_join_part = f"INNER JOIN {username}_todotags t2 ON t2.todoTaskID = t1.taskid"
-        where_inner_join_part = f"AND t2.tagID = {tagidtemp}"
+        where_inner_join_part = f"AND t2.tagID = {filter_tags_list[0]}"
     else:
         inner_join_part = ""
         where_inner_join_part = ""
 
 
-    final_query = prefix_part + " " + from_part + " " + inner_join_part + " " + where_todo_id_part + " " + where_inner_join_part + " " + where_task_type_part + " " + where_parentid_part + " " + where_status_part + " " + order_by_part + " " + limit_part
+    final_tagid_string = ""
+    # pops of the query we've already added in "where_inner_join_part"
+    filter_tags_list.pop(0) 
 
-    print(f"{final_query = }")
+    for tagid in filter_tags_list:
+        final_tagid_string += (f"OR t2.tagID = {tagid} ")
+
+    #print(f"{final_tagid_string = }")
+
+    final_query = prefix_part + " " + from_part + " " + inner_join_part + " " + where_todo_id_part + " " + where_inner_join_part + " " + final_tagid_string + " " + where_task_type_part + " " + where_parentid_part + " " + where_status_part + " " + order_by_part + " " + limit_part
+
+    print(f"\n{final_query = }")
+
 
     tasks_basic_af = get_from_db(final_query)
     subtasks_listed = []

@@ -18,6 +18,13 @@ actually then quickly go back to subtask view as would be nice to have an option
 - tbh would be a better default too, obvs still having an all option tho
 
 note
+- big note for future/final refactor, hadnt even considered this but how tags interact on a child parent level, 
+- children should inherit all their parents tags (think view screens, if they didnt would be messed up)
+- but children should have the ability to have their own unique ones too!
+- for sure has view considerations but tbh firstly should be edge cases, and secondly its a small personal project for portfolio
+- if u wanna actually make this (which I kinda do) you need to do it in flutter anyway imo
+
+note
 - adding actual proper task info will make it look a LOT cleaner, do some quickly for one of the lists!
 
 note
