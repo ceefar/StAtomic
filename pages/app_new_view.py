@@ -169,7 +169,7 @@ def run():
             sub_main_or_all = st.radio("View Toggle", options=["Main Task + Subtasks", "Main Tasks Only", "Subtasks Only"]) # might remove child only tasks btw
         
         with optioncol2:
-            st.markdown("##### Handy Filter")
+            st.markdown("##### Order By Filter") # previously called handy filter
             handy_filter_selection = st.radio("Filter Results", options=["All Tasks","Recent Tasks", "Oldest Tasks", "Stalled Tasks"], disabled=enable_handy)
             if handy_filter_selection == "Stalled Tasks":
                 st.sidebar.warning("Stalled Tasks = longest time between task being created & updated") 
@@ -181,10 +181,12 @@ def run():
         tags_list = get_tags_list(db_username)
 
         st.markdown("##### Tags Filter")
-        user_todo_tags = st.multiselect("Select Tags",tags_list, default=tags_list[0])
+        #user_todo_tags = st.multiselect("Select Tags",tags_list, default=tags_list[0])
+        user_todo_tags = st.multiselect("Select Tags",tags_list)
 
         print(f"{user_todo_tags = }")
 
+        # OBVS NEEDS TO BE A LIST OR TUPLE PROBS TBF FOR EASIER UNPACKING, AND OBVS NEED TO UNPACK IT LOL
         filter_tags = ""
 
         for tag in user_todo_tags:
@@ -204,7 +206,7 @@ def run():
 
     basic_tasks_dict_as_list = view_tasks_basic(db_username, todolistid)
 
-    tempresult = db.view_tasks_toggle(db_username, todolistid, sub_main_or_all, specific_or_all_tasks, handy_filter_selection, status_selection)
+    tempresult = db.view_tasks_toggle(db_username, todolistid, sub_main_or_all, specific_or_all_tasks, handy_filter_selection, status_selection, filter_tags)
     st.markdown("#### TEMP RESULT")
     st.write(tempresult)
 
