@@ -369,6 +369,7 @@ def get_current_status(username:str, taskid):
     return(current_status)
 
 
+
 # ---- v0.32 [NEW] view page ----
 
 
@@ -377,7 +378,8 @@ def view_tasks_toggle(username:str, listID:int, parent_child_or_all:str, specifi
     # note handy filter can be turned off so *needs* the default value
 
     # doesn't change in any cases, and if ever wanna add stuff is easy af, do all future queries like this yanno
-    prefix_part = "SELECT t1.taskTitle, t1.taskDetail, t1.taskType, t1.taskParentID, t1.taskStatus, t1.dueDate, DATE(t1.created), DATE(t1.updated), t1.taskid, DATEDIFF(DATE(t1.updated), DATE(t1.created))"
+    prefix_part = "SELECT t1.taskTitle, t1.taskDetail, t1.taskType, t1.taskParentID, t1.taskStatus, t1.dueDate, DATE(t1.created), DATE(t1.updated), t1.taskid, DATEDIFF(DATE(t1.updated), DATE(t1.created)), t2.todoTaskID, t2.tagID, t3.tagid, t3.tag, t3.tagtype"
+    prefix_part_no_tags = "SELECT t1.taskTitle, t1.taskDetail, t1.taskType, t1.taskParentID, t1.taskStatus, t1.dueDate, DATE(t1.created), DATE(t1.updated), t1.taskid, DATEDIFF(DATE(t1.updated), DATE(t1.created))"
 
     # think only this part should have the actual WHERE tho, as it will for sure be in every single query
     from_part = f"FROM {username}_todo t1"
@@ -451,24 +453,41 @@ def view_tasks_toggle(username:str, listID:int, parent_child_or_all:str, specifi
     # SELECT t1.taskTitle, t1.taskDetail, t1.taskType, t1.taskParentID, t1.taskStatus, t1.dueDate, DATE(t1.created), DATE(t1.updated), t1.taskid, t2.todoTaskID, t2.tagID FROM ceefar_todo t1, ceefar_todotags t2 WHERE todoTaskID = taskid
 
     # some kinda for loop here but just doing simple real quick to test
-    if filter_tags_list[0] != "":
-        inner_join_part = f"INNER JOIN {username}_todotags t2 ON t2.todoTaskID = t1.taskid"
-        where_inner_join_part = f"AND t2.tagID = {filter_tags_list[0]}"
-    else:
+    try:
+        if filter_tags_list[0] != "":
+            inner_join_part = f"INNER JOIN {username}_todotags t2 ON t2.todoTaskID = t1.taskid"
+            second_inner_join_part = f"INNER JOIN {username}_tags t3 ON t3.tagid = t2.tagID"
+            where_inner_join_part = f"AND t2.tagID = {filter_tags_list[0]}"
+            # pops of the query we've already added in "where_inner_join_part"
+            has_tags = True
+            filter_tags_list.pop(0) 
+        else:
+            #inner_join_part = f", {username}_todotags t2"
+            #second_inner_join_part = f", {username}_tags t3"
+            inner_join_part = ""
+            second_inner_join_part = ""
+            where_inner_join_part = ""
+            has_tags = False
+    except IndexError:
+        #inner_join_part = f", {username}_todotags t2"
+        #second_inner_join_part = f", {username}_tags t3"
         inner_join_part = ""
-        where_inner_join_part = ""
+        second_inner_join_part = ""
+        where_inner_join_part = ""    
+        has_tags = False
 
 
     final_tagid_string = ""
-    # pops of the query we've already added in "where_inner_join_part"
-    filter_tags_list.pop(0) 
-
+    
     for tagid in filter_tags_list:
         final_tagid_string += (f"OR t2.tagID = {tagid} ")
 
     #print(f"{final_tagid_string = }")
 
-    final_query = prefix_part + " " + from_part + " " + inner_join_part + " " + where_todo_id_part + " " + where_inner_join_part + " " + final_tagid_string + " " + where_task_type_part + " " + where_parentid_part + " " + where_status_part + " " + order_by_part + " " + limit_part
+    if has_tags:
+        final_query = prefix_part + " " + from_part + " " + inner_join_part + " " + second_inner_join_part + " " + where_todo_id_part + " " + where_inner_join_part + " " + final_tagid_string + " " + where_task_type_part + " " + where_parentid_part + " " + where_status_part + " " + order_by_part + " " + limit_part
+    else:
+        final_query = prefix_part_no_tags + " " + from_part + " " + inner_join_part + " " + second_inner_join_part + " " + where_todo_id_part + " " + where_inner_join_part + " " + final_tagid_string + " " + where_task_type_part + " " + where_parentid_part + " " + where_status_part + " " + order_by_part + " " + limit_part
 
     print(f"\n{final_query = }")
 
@@ -489,7 +508,15 @@ def view_tasks_toggle(username:str, listID:int, parent_child_or_all:str, specifi
         task_dict["updatedDate"] = task[7]
         task_dict["taskID"] = task[8]  
         task_dict["dateDiff"] = task[9]
-        subtasks_listed.append(task_dict)      
+        if has_tags:
+            task_dict["todoTaskID"] = task[10]
+            task_dict["tagID"] = task[11]
+            task_dict["tagid"] = task[12]
+            task_dict["tag"] = task[13]
+            task_dict["tagtype"] = task[14]
+        subtasks_listed.append(task_dict)     
+
+        # SOME WAY TO MERGE IN CASE OF THE SAME TODOTASKID - wont be that hard since we have that var tbf! (just adding shit on to the dict, appending to task[13] & task[14]) 
 
     #print(f"{subtasks_listed} = ")
     return(subtasks_listed)

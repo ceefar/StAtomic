@@ -226,9 +226,21 @@ def run():
 
     basic_tasks_dict_as_list = view_tasks_basic(db_username, todolistid)
 
-    tempresult = db.view_tasks_toggle(db_username, todolistid, sub_main_or_all, specific_or_all_tasks, handy_filter_selection, status_selection, filter_tags_list)
+    taskdict_list = db.view_tasks_toggle(db_username, todolistid, sub_main_or_all, specific_or_all_tasks, handy_filter_selection, status_selection, filter_tags_list)
     st.markdown("#### TEMP RESULT")
-    st.write(tempresult)
+    #st.write(taskdict_list)
+
+    # SO BEFORE DOING THIS FINAL PRINT NEED TO DO THE MERGE OF DICTS WITH MULTIPLE TAGS, 
+    # BASICALLY JUST MATCHING ON todoTaskID and appending to tag & tagtype
+    # OR EVEN A JUST A NEW VAR AND STICK IT INTO THE DICT (or even a new dict idk but should be easy enough)
+
+    for taskdict in taskdict_list:
+        if len(taskdict) > 10:
+            st.write("Print With Tag Info Inherent")
+            st.write(taskdict)
+        else:
+            st.write("No Tag Info Inherent - but can get with a separate query")
+            st.write(taskdict)
 
     st.write("---")
 
