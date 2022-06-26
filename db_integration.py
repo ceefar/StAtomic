@@ -300,7 +300,7 @@ def add_todotags_for_new_task(username, listid, lasttaskid, tagid):
     add_to_db(add_todotags_query)
 
 
-# ---- v0.31 [NEW] view page ----
+# ---- v0.31 subtask view page ----
 
 def view_tasks_basic(username:str, anID:int, parent_child_or_all:str = "parent"):
     """ write me plis """
@@ -369,7 +369,69 @@ def get_current_status(username:str, taskid):
     return(current_status)
 
 
+# ---- v0.32 [NEW] view page ----
 
+
+def view_tasks_toggle(username:str, listID:int, parent_child_or_all:str, specificTaskIDTitle:int = ""): # might not need parent id btw
+    """ write me plis """
+    # feel like dynamically creating the query will be better than creating a fookin mossive switch btw
+    # so will need like an overarching order of the parts of a query and then put them together and make it, ok sounds good tbf
+
+    prefix_part = "SELECT taskTitle, taskDetail, taskType, taskParentID, taskStatus, dueDate, DATE(created), DATE(updated), taskid, DATEDIFF(DATE(updated), DATE(created))"
+
+    # think only this part should have the actual WHERE tho, as it will for sure be in every single query
+    where_todo_id_part = f"FROM {username}_todo WHERE todoListID = {listID}"
+
+    # VIEW TYPE TOGGLE
+    if parent_child_or_all == "Main Tasks Only":
+        where_task_type_part = f"AND taskType = 'main_task'"
+    elif parent_child_or_all == "Subtasks Only":
+        where_task_type_part = f"AND taskType = 'sub_task'"
+    elif parent_child_or_all == "Main Task + Subtasks":
+        where_task_type_part = ""
+
+
+    # ALL TASKS OR SPECIFIC TASK DROPDOWN
+    if specificTaskIDTitle == "All Tasks":
+        where_parentid_part = ""
+    elif specificTaskIDTitle != "":
+        parentID = get_from_db(f"SELECT taskid FROM {username}_todo WHERE taskTitle = '{specificTaskIDTitle}'")
+        print(f"{parentID = }")
+        print(f"{parentID[0][0] = }")
+        if parent_child_or_all == "Subtasks Only":
+            where_parentid_part = f"AND taskParentID = {parentID[0][0]}"
+        else:
+            where_parentid_part = f"AND taskParentID = {parentID[0][0]} OR taskid = {parentID[0][0]}"
+    else:
+        where_parentid_part = ""
+
+
+    final_query = prefix_part + " " + where_todo_id_part + " " + where_task_type_part + " " + where_parentid_part
+
+
+    print(f"{final_query = }")
+
+    tasks_basic_af = get_from_db(final_query)
+    subtasks_listed = []
+    for task in tasks_basic_af:
+        task_dict = {}
+        task_dict["title"] = task[0]
+        if task[1]:
+            task_dict["detail"] = task[1]
+        else:
+            task_dict["detail"] = "-"
+        task_dict["taskType"] = task[2]
+        task_dict["taskParent"] = task[3]
+        task_dict["taskStatus"] = task[4]
+        task_dict["dueDate"] = task[5]
+        task_dict["createdDate"] = task[6]
+        task_dict["updatedDate"] = task[7]
+        task_dict["taskID"] = task[8]  
+        task_dict["dateDiff"] = task[9]
+        subtasks_listed.append(task_dict)      
+
+    #print(f"{subtasks_listed} = ")
+    return(subtasks_listed)
 
 
 

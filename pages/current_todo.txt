@@ -14,6 +14,9 @@ defo want like very top options for you to decide how you view tasks
 
 and then show the img in a col to the right, with option to download/save the img
 
+actually then quickly go back to subtask view as would be nice to have an option for just show 1 instead of all! 
+- tbh would be a better default too, obvs still having an all option tho
+
 note
 - adding actual proper task info will make it look a LOT cleaner, do some quickly for one of the lists!
 

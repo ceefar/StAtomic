@@ -67,6 +67,13 @@ def view_tasks_basic(db_username, todolistid):
     list_of_task_dicts = db.view_tasks_basic(db_username, todolistid)
     return(list_of_task_dicts)
 
+# from create but refactoring 
+def get_main_tasks_for_todo_list_from_db(username:str, formatted_list_name:str) -> list:
+    """ write me """
+    username = username.lower()
+    listID = get_id_numb_from_formatted_list_name(formatted_list_name)
+    main_tasks_for_todo_list = db.get_main_tasks_for_todo_list_by_id(username, listID)
+    return(main_tasks_for_todo_list)
 
 
 
@@ -136,8 +143,8 @@ def run():
         optioncol1, optioncol2, optioncol3 = st.columns(3)
 
         with optioncol1:
-            st.markdown("##### Select View Type")
-            st.radio("View Toggle", options=["Main Task + Subtasks", "Main Tasks Only", "Subtasks Only"]) # might remove child only tasks btw
+            st.markdown("##### View Type")
+            sub_main_or_all = st.radio("View Toggle", options=["Main Task + Subtasks", "Main Tasks Only", "Subtasks Only"]) # might remove child only tasks btw
         
         with optioncol2:
             st.markdown("##### Handy Filter")
@@ -147,12 +154,23 @@ def run():
             st.markdown("##### Tags Filter")
             st.multiselect("Select Tags", options=["Tag1","Tag2"])
 
+        st.write("##")
+        todo_lists_main_tasks_listed = get_main_tasks_for_todo_list_from_db(user_name, assigned_todo_list)
+        todo_lists_main_tasks_listed.insert(0, "All Tasks")
+        specific_or_all_tasks = st.selectbox("All Tasks Or A Specific Parent?", todo_lists_main_tasks_listed)
+
     st.write("---")
 
 
     # ---- SECTION ----
 
     basic_tasks_dict_as_list = view_tasks_basic(db_username, todolistid)
+
+    tempresult = db.view_tasks_toggle(db_username, todolistid, sub_main_or_all, specific_or_all_tasks)
+    st.markdown("#### TEMP RESULT")
+    st.write(tempresult)
+
+    st.write("---")
 
 
 

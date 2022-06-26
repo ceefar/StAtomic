@@ -223,7 +223,7 @@ def run():
                         radioindexint = 1
                     else:
                         radioindexint = 0
-                    st.radio("Subtask Status", index=radioindexint, options=['in_progress','completed'], key=subtaskd["taskID"], on_change=check_for_status_toggle, args=[subtaskd["taskID"], st.session_state[f'{subtaskd["taskID"]}PREV']])
+                    st.radio("Subtask Status", index=radioindexint, options=['in_progress','completed'], key=subtaskd["taskID"], on_change=check_for_status_toggle, args=[subtaskd["taskID"], st.session_state[f'{subtaskd["taskID"]}PREV']], horizontal=True)
                 st.write("---")
 
 
