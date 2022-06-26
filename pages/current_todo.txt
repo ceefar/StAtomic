@@ -20,6 +20,8 @@ actually then quickly go back to subtask view as would be nice to have an option
 note
 - adding actual proper task info will make it look a LOT cleaner, do some quickly for one of the lists!
 
+note
+- for sure want a super simple view version too ffs, maybe thats just 2 dropdowns and an img or text or sumnt idk
 
 then 
 (pls shave, much annoy)

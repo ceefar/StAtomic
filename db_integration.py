@@ -290,7 +290,7 @@ def get_tagid_from_tag_plus_group(username, tagname, taggroup):
     """ write me """
     get_tagid_query = f"SELECT tagid from {username}_tags WHERE tag = '{tagname}' AND tagtype = '{taggroup}'"
     get_tagid = get_from_db(get_tagid_query)
-    print(f"{get_tagid[0][0] = }")
+    #print(f"{get_tagid[0][0] = }")
     return(get_tagid[0][0])
 
 
@@ -372,15 +372,16 @@ def get_current_status(username:str, taskid):
 # ---- v0.32 [NEW] view page ----
 
 
-def view_tasks_toggle(username:str, listID:int, parent_child_or_all:str, specificTaskIDTitle:int = ""): # might not need parent id btw
-    """ write me plis """
-    # feel like dynamically creating the query will be better than creating a fookin mossive switch btw
-    # so will need like an overarching order of the parts of a query and then put them together and make it, ok sounds good tbf
+def view_tasks_toggle(username:str, listID:int, parent_child_or_all:str, specificTaskIDTitle:int = "", handyfilter:str = "", taskstatusfilter:str = ""):
+    """ first attempt at dynamically creating the query (as opposed to a big ass switch case), sure requires if statements here but isn't *only* if statements """
+    # note handy filter can be turned off so *needs* the default value
 
+    # doesn't change in any cases, and if ever wanna add stuff is easy af, do all future queries like this yanno
     prefix_part = "SELECT taskTitle, taskDetail, taskType, taskParentID, taskStatus, dueDate, DATE(created), DATE(updated), taskid, DATEDIFF(DATE(updated), DATE(created))"
 
     # think only this part should have the actual WHERE tho, as it will for sure be in every single query
     where_todo_id_part = f"FROM {username}_todo WHERE todoListID = {listID}"
+
 
     # VIEW TYPE TOGGLE
     if parent_child_or_all == "Main Tasks Only":
@@ -396,7 +397,6 @@ def view_tasks_toggle(username:str, listID:int, parent_child_or_all:str, specifi
         where_parentid_part = ""
     elif specificTaskIDTitle != "":
         parentID = get_from_db(f"SELECT taskid FROM {username}_todo WHERE taskTitle = '{specificTaskIDTitle}'")
-        print(f"{parentID = }")
         print(f"{parentID[0][0] = }")
         if parent_child_or_all == "Subtasks Only":
             where_parentid_part = f"AND taskParentID = {parentID[0][0]}"
@@ -406,8 +406,53 @@ def view_tasks_toggle(username:str, listID:int, parent_child_or_all:str, specifi
         where_parentid_part = ""
 
 
-    final_query = prefix_part + " " + where_todo_id_part + " " + where_task_type_part + " " + where_parentid_part
+    # HANDY FILTER - note could pass limit amount as parameter in future and let the user set it but is fine as is for now
+    limit_amount = 5
+    if handyfilter != "": # swear if handyfilter: would have been fine you mong
+        if handyfilter == "Recent Tasks":
+            order_by_part = "ORDER BY created DESC"
+            limit_part = f"LIMIT {limit_amount}"
+        elif handyfilter == "Oldest Tasks":
+            order_by_part = "ORDER BY created ASC"
+            limit_part = f"LIMIT {limit_amount}"
+        elif handyfilter == "Stalled Tasks":
+            order_by_part = "AND updated IS NOT NULL ORDER BY DATEDIFF(DATE(updated), DATE(created)) DESC"
+            limit_part = f"LIMIT {limit_amount}"
+        else:
+            order_by_part = ""
+            limit_part = ""
+    else:
+        order_by_part = "" 
+        limit_part = ""
 
+    # note for stalled, puts null at the bottom which i dont want so removing null for now as **TEMPORARY** fix
+    # COULD BE A FIX TO SET UPDATED OF NULL FIELDS TO THEIR CREATE DATE BUT IDK IF THATS POSSIBLE
+
+    # couldnt really decide on what to do for stalled, heres some queries that got left out incase you wanna change it
+    # AND updated IS NOT NULL ORDER BY DATEDIFF(DATE(updated), CURDATE()) ASC
+
+
+    # STATUS FILTER
+    if taskstatusfilter != "":
+        if taskstatusfilter == "In Progress Tasks":
+            where_status_part = "AND taskStatus = 1"
+        elif taskstatusfilter == "Completed Tasks":
+            where_status_part = "AND taskStatus = 2"
+        else:
+            where_status_part = ""
+    else:
+        where_status_part = ""    
+
+
+    # TAGS FILTER
+    # for reference, the below queries both do the same thing, one with join, one without
+    # SELECT t1.taskTitle, t1.taskDetail, t1.taskType, t1.taskParentID, t1.taskStatus, t1.dueDate, DATE(t1.created), DATE(t1.updated), t1.taskid, t2.todoTaskID, t2.tagID FROM ceefar_todo t1 INNER JOIN ceefar_todotags t2 ON t2.todoTaskID = t1.taskid
+    # SELECT t1.taskTitle, t1.taskDetail, t1.taskType, t1.taskParentID, t1.taskStatus, t1.dueDate, DATE(t1.created), DATE(t1.updated), t1.taskid, t2.todoTaskID, t2.tagID FROM ceefar_todo t1, ceefar_todotags t2 WHERE todoTaskID = taskid
+
+    # some kinda for loop here but just doing simple real quick to test
+    
+
+    final_query = prefix_part + " " + where_todo_id_part + " " + where_task_type_part + " " + where_parentid_part + " " + where_status_part + " " + order_by_part + " " + limit_part
 
     print(f"{final_query = }")
 

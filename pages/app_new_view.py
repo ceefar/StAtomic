@@ -27,7 +27,6 @@ def get_todo_lists_from_db(username:str) -> tuple:
     all_user_todo_list_tuples = db.get_all_todo_list_names_and_ids(username)
     return(all_user_todo_list_tuples)
 
-
 def create_todo_lists_list():
     """ write me pls """
     todo_lists = st.session_state["todo_lists"]
@@ -36,11 +35,15 @@ def create_todo_lists_list():
         todo_list_names.append(f"{a_list[0]}. {a_list[1].replace('_',' ')}")
     return(todo_list_names)
 
-
 def get_id_numb_from_formatted_list_name(formatted_list_name:str) -> int:
     """ from the currently selected list, find its id for db queries """
     assigned_todo_id = int(re.search('\d+|$',formatted_list_name).group())
     return(assigned_todo_id)
+
+def get_tags_list(username):
+    tags_list = db.get_tags_from_db(username)
+    return(tags_list)
+
 
 
 # ---- copied page functions [subtask view] ----
@@ -51,7 +54,6 @@ def get_parent_id(username:str, task_title:str):
     username = username.lower()
     parent_id = db.get_id_for_parent(username, task_title)
     return(parent_id)
-
 
 def toggle_task_status(db_username, taskID, agree):
     """ write me """
@@ -67,13 +69,24 @@ def view_tasks_basic(db_username, todolistid):
     list_of_task_dicts = db.view_tasks_basic(db_username, todolistid)
     return(list_of_task_dicts)
 
-# from create but refactoring 
+
+# from create but refactoring (didnt change tbf?)
 def get_main_tasks_for_todo_list_from_db(username:str, formatted_list_name:str) -> list:
     """ write me """
     username = username.lower()
     listID = get_id_numb_from_formatted_list_name(formatted_list_name)
     main_tasks_for_todo_list = db.get_main_tasks_for_todo_list_by_id(username, listID)
     return(main_tasks_for_todo_list)
+
+
+def disable_handy_filter(specific_or_all_tasks):
+    """ disables the handy filter unless all tasks selected (not a specific parent/main task) """
+    if specific_or_all_tasks != "All Tasks":
+        show_handy_filter = True
+        st.sidebar.error("Select ALL TASKS to use the Handy Filter")
+    else:
+        show_handy_filter = False
+    return(show_handy_filter)
 
 
 
@@ -140,6 +153,15 @@ def run():
 
     with st.container():
 
+        st.markdown("#### Your Tasks, Your Way")
+
+        todo_lists_main_tasks_listed = get_main_tasks_for_todo_list_from_db(user_name, assigned_todo_list)
+        todo_lists_main_tasks_listed.insert(0, "All Tasks")
+        specific_or_all_tasks = st.selectbox("All Tasks Or A Specific Main Task?", todo_lists_main_tasks_listed)
+        enable_handy = disable_handy_filter(specific_or_all_tasks)
+
+        st.write("##")
+
         optioncol1, optioncol2, optioncol3 = st.columns(3)
 
         with optioncol1:
@@ -148,16 +170,32 @@ def run():
         
         with optioncol2:
             st.markdown("##### Handy Filter")
-            st.radio("Filter Results", options=["All Tasks","Recent Tasks", "Stalled Tasks"])
+            handy_filter_selection = st.radio("Filter Results", options=["All Tasks","Recent Tasks", "Oldest Tasks", "Stalled Tasks"], disabled=enable_handy)
+            if handy_filter_selection == "Stalled Tasks":
+                st.sidebar.warning("Stalled Tasks = longest time between task being created & updated") 
 
         with optioncol3:
-            st.markdown("##### Tags Filter")
-            st.multiselect("Select Tags", options=["Tag1","Tag2"])
+            st.markdown("##### Status Filter")
+            status_selection = st.radio("Sort By Status", options=["All Status Tasks", "In Progress Tasks", "Completed Tasks"])
 
-        st.write("##")
-        todo_lists_main_tasks_listed = get_main_tasks_for_todo_list_from_db(user_name, assigned_todo_list)
-        todo_lists_main_tasks_listed.insert(0, "All Tasks")
-        specific_or_all_tasks = st.selectbox("All Tasks Or A Specific Parent?", todo_lists_main_tasks_listed)
+        tags_list = get_tags_list(db_username)
+
+        st.markdown("##### Tags Filter")
+        user_todo_tags = st.multiselect("Select Tags",tags_list, default=tags_list[0])
+
+        print(f"{user_todo_tags = }")
+
+        filter_tags = ""
+
+        for tag in user_todo_tags:
+            tagndx = tag.rfind("[")
+            tag_name = tag[:tagndx-1].strip()
+            tag_group = tag[tagndx+1:-1]
+            user_tagid = db.get_tagid_from_tag_plus_group(db_username, tag_name, tag_group)
+            print(f"{user_tagid = }")
+            filter_tags = user_tagid
+        
+
 
     st.write("---")
 
@@ -166,7 +204,7 @@ def run():
 
     basic_tasks_dict_as_list = view_tasks_basic(db_username, todolistid)
 
-    tempresult = db.view_tasks_toggle(db_username, todolistid, sub_main_or_all, specific_or_all_tasks)
+    tempresult = db.view_tasks_toggle(db_username, todolistid, sub_main_or_all, specific_or_all_tasks, handy_filter_selection, status_selection)
     st.markdown("#### TEMP RESULT")
     st.write(tempresult)
 
