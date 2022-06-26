@@ -1,34 +1,39 @@
 
 
+aite so now,
+new page (rename the other one)
+duhhh
+so
+defo want like very top options for you to decide how you view tasks
+- obvs that is *always* with todo list being the first thing, never allowing crossover (as should think about them as route to complete a final task right)
+- then its
+- parent + child dd, parent only, most recent only?, tasks that havent been touched in a long time, (obvs would also be urgency etc which can implement shortly)
+- tags duhhhhhh
+- either through toggle or just generally like one dd short and one dd long, whatever
+- obvs all as just a much more basic view of the task and sub tasks
+
+and then show the img in a col to the right, with option to download/save the img
+
+note
+- adding actual proper task info will make it look a LOT cleaner, do some quickly for one of the lists!
+
+
+then 
+(pls shave, much annoy)
+- maaaybe test delete
+- maaaaybe test some kinda insights (you finish lots of tasks on the weekend, the avg time to complete, metric showing how many live tasks left, urgent tasks etc!!)
+- then defo discord api tut ting
+- then group project? well either way defo have some person things to get done
 
 
 
 
-
-
-
-
-aite so
-
-just do main task actually since thats kinda how they get layered right
-obvs can just then make this a sep page and make more dw just do this for now
-and then if want changes just make a new page (and call this parent view or whatever)
-
-so what you wanna do is just get a list of main task ids only
-
-then do the main task
-then the sub tasks
-for that id only
-
-then loop the rest of the main task ids list
-
-underneath each will have generate img
-save img
-
-note also need set to done n shit but just do this stuff first tbf
+note for setting the parent to do must consider if has children, if does have children should you be able to set it to done?
+- i would say no but this is poor ux, how about a prompt like 'if you set this to done you set all the kids too' (obvs not that wording but ya get me) 
+- also big duhhh but also logic for (and could just be the standard way - atleast for now anyways) if all kids completed then parent is completed too? (is has children)
+    - hmmmm dont want it to delete or anything tho since you may want to add more, does need considerations, again maybe a prompt on all kids completed...
 
 also global preset theme - if possible slight tweeks by page would be desirable but if not is chill
-
 
 
 note 

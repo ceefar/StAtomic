@@ -306,12 +306,12 @@ def view_tasks_basic(username:str, anID:int, parent_child_or_all:str = "parent")
     """ write me plis """
     if parent_child_or_all == "parent":
         task_type = "main_task"
-        get_tasks_basic_af_query = f"SELECT taskTitle, taskDetail, taskType, taskParentID, taskStatus, dueDate, DATE(created), updated, taskid FROM {username}_todo WHERE todoListID = {anID} AND taskType = '{task_type}'"
+        get_tasks_basic_af_query = f"SELECT taskTitle, taskDetail, taskType, taskParentID, taskStatus, dueDate, DATE(created), DATE(updated), taskid, DATEDIFF(DATE(updated), DATE(created)) FROM {username}_todo WHERE todoListID = {anID} AND taskType = '{task_type}'"
     elif parent_child_or_all == "child":
         task_type = "sub_task"
-        get_tasks_basic_af_query = f"SELECT taskTitle, taskDetail, taskType, taskParentID, taskStatus, dueDate, DATE(created), updated, taskid FROM {username}_todo WHERE taskParentID = {anID} AND taskType = '{task_type}'"
+        get_tasks_basic_af_query = f"SELECT taskTitle, taskDetail, taskType, taskParentID, taskStatus, dueDate, DATE(created), DATE(updated), taskid, DATEDIFF(DATE(updated), DATE(created)) FROM {username}_todo WHERE taskParentID = {anID} AND taskType = '{task_type}'"
     else:
-        get_tasks_basic_af_query = f"SELECT taskTitle, taskDetail, taskType, taskParentID, taskStatus, dueDate, DATE(created), updated, taskid FROM {username}_todo WHERE todoListID = {anID}"
+        get_tasks_basic_af_query = f"SELECT taskTitle, taskDetail, taskType, taskParentID, taskStatus, dueDate, DATE(created), DATE(updated), taskid, DATEDIFF(DATE(updated), DATE(created)) FROM {username}_todo WHERE todoListID = {anID}"
     
     tasks_basic_af = get_from_db(get_tasks_basic_af_query)
     subtasks_listed = []
@@ -321,7 +321,7 @@ def view_tasks_basic(username:str, anID:int, parent_child_or_all:str = "parent")
         if task[1]:
             task_dict["detail"] = task[1]
         else:
-            task_dict["detail"] = ""
+            task_dict["detail"] = "-"
         task_dict["taskType"] = task[2]
         task_dict["taskParent"] = task[3]
         task_dict["taskStatus"] = task[4]
@@ -329,6 +329,7 @@ def view_tasks_basic(username:str, anID:int, parent_child_or_all:str = "parent")
         task_dict["createdDate"] = task[6]
         task_dict["updatedDate"] = task[7]
         task_dict["taskID"] = task[8]  
+        task_dict["dateDiff"] = task[9]
         subtasks_listed.append(task_dict)      
 
     #[subtasks_listed.append(task) for task in tasks_basic_af]

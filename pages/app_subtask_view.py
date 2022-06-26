@@ -1,7 +1,5 @@
 # ---- imports ---- 
 # for web app and test components
-from pymysql import OperationalError, ProgrammingError
-import pymysql
 import streamlit as st
 import streamlit.components.v1 as stc # < unused at present
 # for datetime object
@@ -91,7 +89,7 @@ border-left:10px solid #484848; color:white; font-family: 'Roboto', sans-serif; 
 # N0TE THE BOX SHADOW LOOKS MUCH BETTER ON DARK THEME - SO IMPLEMENT DARK STYLE THEME AS THE PRESET PLS
 CHILD_HTML_TEMPLATE = """
 <div style="padding-left:15px; padding-top:10px; font-family: 'Roboto', sans-serif; font-weight:600; color:grey;">{}</div>
-<div style="width:60%; height:100%; margin:5px 20px 1px 1px; padding:1px 0px 35px 10px; position:relative; border-radius:5px;
+<div style="width:75%; height:100%; margin:5px 20px 1px 1px; padding:1px 0px 35px 10px; position:relative; border-radius:5px;
 border=5px solid; box-shadow:0 0 1px 1px #eee; background-color:#31333F; font-weight:300;
 border-left:10px solid #484848; color:white; font-family: 'Roboto', sans-serif; box-shadow: 8px 5px 5px 5px rgba(49,51,63,0.15);">
 <h2 style="color:#{}; font-weight:300; margin-bottom:0px;">{}</h2>
@@ -100,6 +98,28 @@ border-left:10px solid #484848; color:white; font-family: 'Roboto', sans-serif; 
 <span style="width:95%; height:100%; position:absolute; text-align:left;">{}</span>
 </div>
 """
+
+# if doing like this wouldnt need to pass color btw but just leaving for now as god knows what will change lol
+CHILD_HTML_TEMPLATE_COMPLETED = """
+<div style="padding-left:15px; padding-top:10px; font-family: 'Roboto', sans-serif; font-weight:600; color:grey;">{}</div>
+<div style="width:75%; height:100%; margin:5px 20px 1px 1px; padding:1px 0px 35px 10px; position:relative; border-radius:5px;
+border=5px solid; box-shadow:0 0 1px 1px #eee; background-color:#31333F; font-weight:300;
+border-left:10px solid #484848; color:white; font-family: 'Roboto', sans-serif; box-shadow: 8px 5px 5px 5px rgba(49,51,63,0.15);">
+<h2 style="color:#{}; font-weight:300; margin-bottom:0px;">{} {}</h2>
+<div style="color:#efefef; font-weight:300; ">{}</div>
+<span style="width:95%; height:100%; position:absolute; text-align:right; font-size:0.9rem; color:#949494;">{} to {}</span>
+<span style="width:95%; height:100%; position:absolute; text-align:left;">It took {} days</span>
+</div>
+"""
+
+# was originally really just for testing tbf but leaving as might use more
+MATERIAL_ICON_POSITIVE = "<link rel='stylesheet' href='https://fonts.googleapis.com/icon?family=Material+Icons'><i class='material-icons' style='padding-left:10px; color:#AAFF00'>add_circle</i>"
+MATERIAL_ICON_NEUTRAL = "<link rel='stylesheet' href='https://fonts.googleapis.com/icon?family=Material+Icons'><i class='material-icons' style='padding-left:10px; color:yellow'>do_not_disturb_on</i>"
+MATERIAL_ICON_NEGATIVE = "<link rel='stylesheet' href='https://fonts.googleapis.com/icon?family=Material+Icons'><i class='material-icons' style='padding-left:10px; color:red'>disabled_by_default</i>"
+MATERIAL_ICON_TASK_ALT = "<link rel='stylesheet' href='https://fonts.googleapis.com/icon?family=Material+Icons'><i class='material-icons' style='padding-left:10px; color:#AAFF00'>task_alt</i>"
+MATERIAL_ICON_ADD_TASK = "<link rel='stylesheet' href='https://fonts.googleapis.com/icon?family=Material+Icons'><i class='material-icons' style='padding-left:10px; color:#AAFF00'>add_task</i>"
+
+
 
 # ---- main page ----
 
@@ -163,7 +183,7 @@ def run():
             
             st.write("---")
             st.write("##")
-            st.write(f"##### Main Task {j+1}")
+            st.write(f"#### Task {j+1}")
 
             stc.html(PARENT_HTML_TEMPLATE.format(taskd["taskStatus"], taskd["title"], taskd["detail"], taskd["createdDate"], taskd["taskType"]), height=200)
             
@@ -185,7 +205,8 @@ def run():
                     st.session_state[subtaskd["taskID"]] = actual_current_status
 
                 if subtaskd["taskStatus"] == "completed":
-                    stc.html(CHILD_HTML_TEMPLATE.format(subtaskd["taskStatus"], "32CD32", subtaskd["title"], subtaskd["detail"], subtaskd["createdDate"], subtaskd["taskType"]), height=160)
+                    # strf time is beaut and better than it was before but oof... dat aint local to me bro
+                    stc.html(CHILD_HTML_TEMPLATE_COMPLETED.format(subtaskd["taskStatus"], "32CD32", subtaskd["title"], MATERIAL_ICON_TASK_ALT, subtaskd["detail"], subtaskd["createdDate"].strftime("%x"), subtaskd["updatedDate"].strftime("%x"), subtaskd["dateDiff"]), height=160)
                 else:
                     stc.html(CHILD_HTML_TEMPLATE.format(subtaskd["taskStatus"], "eba538", subtaskd["title"], subtaskd["detail"], subtaskd["createdDate"], subtaskd["taskType"]), height=160)
                 #stc.html(CHILD_HTML_TEMPLATE.format(subtaskd["taskStatus"], subtaskd["title"], subtaskd["detail"], subtaskd["createdDate"], subtaskd["taskType"]), height=160)
@@ -202,7 +223,7 @@ def run():
                         radioindexint = 1
                     else:
                         radioindexint = 0
-                    st.radio("Set Status", index=radioindexint, options=['in_progress','completed'], key=subtaskd["taskID"], on_change=check_for_status_toggle, args=[subtaskd["taskID"], st.session_state[f'{subtaskd["taskID"]}PREV']])
+                    st.radio("Subtask Status", index=radioindexint, options=['in_progress','completed'], key=subtaskd["taskID"], on_change=check_for_status_toggle, args=[subtaskd["taskID"], st.session_state[f'{subtaskd["taskID"]}PREV']])
                 st.write("---")
 
 
@@ -215,15 +236,16 @@ def run():
     # css testing
     st.markdown(unsafe_allow_html=True, body=f"""
             <style>
-            .css-8msczc{{
-                margin-bottom: -10px
+            .css-1hynsf2{{
+                margin-bottom: -5px;
             }}
-            .css-1ws1sb4.e1tzin5v0{{
-                gap:0rem;
+            .css-1n76uvr.e1tzin5v0{{
+                gap:0.5rem;
             }}
-            .stCheckbox{{
-                padding: 10px 0px 10px 10px
+            .stRadio{{
+                padding: 0px 0px 10px 10px
             }}
+            @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap');
             </style>
         """)
         #css-1jae3nz
