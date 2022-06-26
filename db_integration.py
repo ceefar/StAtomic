@@ -472,7 +472,6 @@ def view_tasks_toggle(username:str, listID:int, parent_child_or_all:str, specifi
 
     print(f"\n{final_query = }")
 
-
     tasks_basic_af = get_from_db(final_query)
     subtasks_listed = []
     for task in tasks_basic_af:
