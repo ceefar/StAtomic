@@ -24,6 +24,10 @@ and then show the img in a col to the right, with option to download/save the im
 actually then quickly go back to subtask view as would be nice to have an option for just show 1 instead of all! 
 - tbh would be a better default too, obvs still having an all option tho
 
+big note
+- they (employers) will likely try to break it from create so try and cover urself a bit
+- ESPECIALLY SQL INJECTION
+
 note
 - print out the query, possibly as img, idea
 - st.echo achieves this btw - implement some kinda dropdown or sumnt on top tho 

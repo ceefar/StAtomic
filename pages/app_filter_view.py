@@ -475,8 +475,21 @@ def run():
 
                 tempimgname = f"filter_view/{taskdict['taskID']}_parent_test"
                 if taskdict['taskType'] == "main_task" and taskdict["taskID"] in task_child_list_ids:
+                    # if is main task and has children...
+
                     parent_subtasks = get_subtasks_for_parent(db_username, taskdict['title'], todolistid)   
-                    imgpath = arty.draw_dynamic_task_subtask_snapshot(tempimgname, parent_subtasks, taskdict['title'])
+
+                    print(f"{parent_subtasks = }")
+                    parent_status_subtasks = []
+                    for subtask in parent_subtasks:
+                        print(f"{subtask = }")
+                        subtask_status = db.get_task_status_from_task_title(db_username, subtask)
+                        print(f"{subtask_status = }")
+                        subtask = (subtask, subtask_status)
+                        parent_status_subtasks.append(subtask)
+                    print(f"{parent_status_subtasks = }")
+
+                    imgpath = arty.draw_dynamic_task_subtask_snapshot_updated(tempimgname, parent_status_subtasks, taskdict['title'])
                     st.image(imgpath)
                 elif taskdict['taskType'] == "main_task": 
                     imgpath = arty.draw_dynamic_task_subtask_snapshot(tempimgname, [""], taskdict['title'])

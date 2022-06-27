@@ -187,7 +187,7 @@ def draw_dynamic_task_subtask_snapshot(imgname:str, userSubTasksList:list, usert
         multiplier += 0.6 
         message2 = subTask
         _, textHeight2 = imgDraw.textsize(message2, font=font)
-        xText2 = 60
+        xText2 = 80
         #yText2 = (((height-textHeight2) / 10) + textHeight) + ((textHeight2*2) * multiplier) + 10
         
 
@@ -202,7 +202,7 @@ def draw_dynamic_task_subtask_snapshot(imgname:str, userSubTasksList:list, usert
         last_item_y_pos = yText2
 
         # draw the text
-        imgDraw.text((xText2, yText2), message2, font=font, fill="#ffb703")
+        imgDraw.text((xText2, yText2), message2, font=font, fill="#ce9300")
 
         # save the result
         img.save(imgpath)
@@ -327,6 +327,99 @@ def draw_task_snapshot_test_af(todoTaskID:int, userTagsList:list, title:str, det
 
 def draw_task_snapshot_parentchild_test_af(todoTaskID:int, userTagsList:list, title:str, details:str = "") -> str:
     pass
+
+
+# SUPER SMALL UPDATE, FFS DO ACTUALLY REFACTOR THO NOT JUST 1 JILLION FUCNTIONS WITH ONLY MINOR EDITS TO OTHERS IN FINAL
+def draw_dynamic_task_subtask_snapshot_updated(imgname:str, userSubTasksList:list[tuple], usertitle:str) -> str:
+    """ setting up for right aligned and maybe a bit smaller but will come back to improve tbf just need a basic ting rn"""
+
+    # path for image storage
+    imgpath = f'imgs/{imgname}.png'
+
+    # base dimensions
+    width = 500
+    height = 500
+
+    # font
+    fontTitle = ImageFont.truetype("PottaOne-Regular.ttf", size=22)
+    font = ImageFont.truetype("PottaOne-Regular.ttf", size=16)
+
+    # setting up a rectangle test
+    w, h = 30 , 30
+    # x0 y0, x1 y1
+    shape = [(470, 470), (w - 10, h - 10)]
+
+    # new img object
+    img = Image.new('RGB', (width, height), color='#8ecae6')
+
+    # --- rectangle ----
+
+    # draw a rectangle test
+    #imgDraw.rectangle(shape, fill ="#023047", outline ="#ffb703")
+    imgDraw = ImageDraw.Draw(img)
+    imgDraw.rectangle(shape, fill ="#023047", outline ="#ffb703")
+    img.save(imgpath)
+
+    # ---- title ----
+
+    # setup base object
+    imgDraw = ImageDraw.Draw(img)
+
+    # configure the title text and location
+    message1 = usertitle
+    textWidth, textHeight = imgDraw.textsize(message1, font=fontTitle)
+    xText1 = 60
+    yText1 = (height - textHeight) / 8   # < TOP POSITION
+
+    # draw the text
+    #imgDraw.text((xText, yText), message, font=font, fill=(255, 255, 0)) fb8500
+    imgDraw.text((xText1, yText1), message1, font=fontTitle, fill="#ffb703")
+
+    # save the result
+    img.save(imgpath)
+
+    # ---- subtasks ----
+
+    # how many subtasks there are (as may want to limit?)
+    amountOfSubTasks = len(userSubTasksList)
+
+    multiplier = 0
+    last_item_y_pos = 0
+    for subTask in userSubTasksList:
+
+        # setup base object
+        imgDraw = ImageDraw.Draw(img)
+
+        # configure subtask text and location
+        multiplier += 0.6 
+        message2 = subTask[0]
+        _, textHeight2 = imgDraw.textsize(message2, font=font)
+        xText2 = 80
+        #yText2 = (((height-textHeight2) / 10) + textHeight) + ((textHeight2*2) * multiplier) + 10
+        
+
+        if last_item_y_pos == 0:
+            last_item_y_pos = yText1 + textHeight2 - 10
+            pass
+
+
+        # yText3 = yText1 + textHeight3 + 20
+        # yText2 = (textHeight + 50) + (((textHeight2*2) * multiplier) + 10)
+        yText2 = last_item_y_pos + textHeight2 + 10
+        last_item_y_pos = yText2
+
+        # draw the text
+        if subTask[1] == "in_progress":
+            imgDraw.text((xText2, yText2), message2, font=font, fill="#ce9300")
+        else:
+            # green for completed
+            imgDraw.text((xText2, yText2), message2, font=font, fill="#4ee44e")
+
+        # save the result
+        img.save(imgpath)
+    
+    # return the path to the created image
+    return(imgpath)
 
 
 

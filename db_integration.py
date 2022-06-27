@@ -528,6 +528,16 @@ def get_days_between_a_days_and_today(a_day):
     return(days_between[0][0])
 
 
+def get_task_status_from_task_title(username:str , task_title:str) -> str:
+    """ self referencing af - used as part of img creation, should properly plan for this stuff in refactor (is a lot to do just one person tho but meh) """
+    # wouldnt be surprised if have this already yanno
+    # try except (index error?)
+    task_status = get_from_db(f"SELECT taskStatus FROM {username}_todo WHERE taskTitle = '{task_title}'")
+    task_status = task_status[0][0]
+    if task_status:
+        #print(f"{task_status = }")
+        return(task_status)
+
 # ---- main ----
 
 def main():
