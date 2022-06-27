@@ -134,13 +134,13 @@ def draw_dynamic_task_subtask_snapshot(imgname:str, userSubTasksList:list, usert
     height = 500
 
     # font
-    fontTitle = ImageFont.truetype("PottaOne-Regular.ttf", size=24)
-    font = ImageFont.truetype("PottaOne-Regular.ttf", size=18)
+    fontTitle = ImageFont.truetype("PottaOne-Regular.ttf", size=22)
+    font = ImageFont.truetype("PottaOne-Regular.ttf", size=16)
 
     # setting up a rectangle test
-    w, h = 50 , 50
+    w, h = 30 , 30
     # x0 y0, x1 y1
-    shape = [(450, 450), (w - 10, h - 10)]
+    shape = [(470, 470), (w - 10, h - 10)]
 
     # new img object
     img = Image.new('RGB', (width, height), color='#8ecae6')
@@ -177,6 +177,7 @@ def draw_dynamic_task_subtask_snapshot(imgname:str, userSubTasksList:list, usert
     amountOfSubTasks = len(userSubTasksList)
 
     multiplier = 0
+    last_item_y_pos = 0
     for subTask in userSubTasksList:
 
         # setup base object
@@ -188,7 +189,17 @@ def draw_dynamic_task_subtask_snapshot(imgname:str, userSubTasksList:list, usert
         _, textHeight2 = imgDraw.textsize(message2, font=font)
         xText2 = 60
         #yText2 = (((height-textHeight2) / 10) + textHeight) + ((textHeight2*2) * multiplier) + 10
-        yText2 = (textHeight + 50) + (((textHeight2*2) * multiplier) + 10)
+        
+
+        if last_item_y_pos == 0:
+            last_item_y_pos = yText1 + textHeight2 - 10
+            pass
+
+
+        # yText3 = yText1 + textHeight3 + 20
+        # yText2 = (textHeight + 50) + (((textHeight2*2) * multiplier) + 10)
+        yText2 = last_item_y_pos + textHeight2 + 10
+        last_item_y_pos = yText2
 
         # draw the text
         imgDraw.text((xText2, yText2), message2, font=font, fill="#ffb703")
@@ -311,6 +322,11 @@ def draw_task_snapshot_test_af(todoTaskID:int, userTagsList:list, title:str, det
     
     # return the path to the created image
     return(imgpath)
+
+
+
+def draw_task_snapshot_parentchild_test_af(todoTaskID:int, userTagsList:list, title:str, details:str = "") -> str:
+    pass
 
 
 

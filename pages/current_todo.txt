@@ -10,8 +10,8 @@ do img thing to draft with simple download/save button (mostly to see working)
     - then ig more detailed view of main only tasks (since not everything has child duh)
 then
 child parent logic proper print (should be easy its just ordering the list of dictionaries and indenting child tasks)
-then
-group project stuff
+- logic sorted, need to implement html/css for indenting subtasks, and also print/save todo img but note just do for main tasks only bosh!
+
 
 
 ******************************************************************
@@ -29,6 +29,12 @@ note
 - st.echo achieves this btw - implement some kinda dropdown or sumnt on top tho 
 
 note
+- almost think should have like subtitle which is what basically current 'details' is now
+- then an actual details which you can make as long as you want
+- which would be used for imgs (print only info for that task) and for the more detailed stored info bit
+    - and therefore is more relevant, IF long_ass_text THEN save it to storage
+
+note
 - doesnt seem like todolistid (i.e. 1 or 2) is working as expected for tags, confirm wassup
 
 note
@@ -41,7 +47,7 @@ note
 - for sure has view considerations but tbh firstly should be edge cases, and secondly its a small personal project for portfolio
 - if u wanna actually make this (which I kinda do) you need to do it in flutter anyway imo
 
-note
+note [SO MUCH THIS]
 - actually really want some kind of way to save notes based on a task or todo (plus img maybe even? or ability for it to write you one!)
 - so that you can save things like meal list for example or go back and check an old (good) shopping list
 - even the abililty to upload ur own images would be great (and would teach me how to store imgs as binary data!)

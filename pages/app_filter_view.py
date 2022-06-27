@@ -45,10 +45,14 @@ def get_tags_list(username):
     tags_list = db.get_tags_from_db(username)
     return(tags_list)
 
+def get_subtasks_for_parent(username, taskparentName, todolistid):
+    """ write me pls """
+    parentID = db.get_parent_id_from_title(username, taskparentName, todolistid)
+    parent_subtasks = db.get_subtasks_for_parent_from_id(username, parentID, todolistid)
+    return(parent_subtasks)
 
 
 # ---- copied page functions [subtask view] ----
-
 
 def get_parent_id(username:str, task_title:str):
     """ self referencing af """
@@ -63,7 +67,6 @@ def toggle_task_status(db_username, taskID, agree):
 
 
 # ---- new / refactored page functions ----
-
 
 def view_tasks_basic(db_username, todolistid):
     """ write me """
@@ -289,6 +292,10 @@ def run():
         #user_todo_tags = st.multiselect("Select Tags",tags_list, default=tags_list[0])
         user_todo_tags = st.multiselect("Select Tags",tags_list)
 
+        if user_todo_tags:
+            # NAH FFS THIS SHOULDNT BE A THING, TBF LEAVING FOR NOW MOSTLY AS A REMINDER TO FIX IT IN REFACTOR
+            st.sidebar.warning("To Group Subtasks With Their Main Task Remove Tag Filters") 
+
         print(f"{user_todo_tags = }")
 
         # OBVS NEEDS TO BE A LIST OR TUPLE PROBS TBF FOR EASIER UNPACKING, AND OBVS NEED TO UNPACK IT LOL (immutable tho... reruns from start tho... hmmm... should be fine)
@@ -390,8 +397,8 @@ def run():
         # note will likely still want tag info (maybe not rn tho) but will require a separate query to get it for this section
         
         print("")
-        print("---- CURRENT ORDER ----\n")
-        dont_print = [print(f"{tasky}\n") for tasky in taskdict_list]
+        #print("---- CURRENT ORDER ----\n")
+        #dont_print = [print(f"{tasky}\n") for tasky in taskdict_list]
         #print(f"{taskdict_list = }")
 
         # basically just make a new dictlist but ordered fuck it
@@ -424,7 +431,7 @@ def run():
                     # no children
                     taskdict_list_parent_ordered.append(uo_task["taskID"]) # USE THE IDS NOT THE INDEX FFS (CAN REMOVE ENUMERATE?)
                 
-        print(f"{taskdict_list_parent_ordered = }") # YUP SEEMS LIKE ITS THE ORDER, NOW HOW TO PRINT THO (might have to enumerate the dicts, key being their ids?)
+        # print(f"{taskdict_list_parent_ordered = }") # YUP SEEMS LIKE ITS THE ORDER, NOW HOW TO PRINT THO (might have to enumerate the dicts, key being their ids?)
         print("")
 
         taskdict_dict = {} # taskdict_dict = dict()
@@ -441,6 +448,9 @@ def run():
         for taskdict in taskdict_list_parent_ordered_complete: 
 
             taskinfocol2, taskimgcol2 = st.columns(2)
+
+            # OBVS PARENT CHILD IS EASY JUST REQUIRES PREVIOUS HTML/CSS CODE
+            # ALSO FOR PRINT/SAVE, ONLY PRINT FOR MAIN TASKS, OBVS INCLUDE CHILD INFO IF RELEVANT THO
 
             with taskinfocol2:
                 # st.markdown(f"##### {tagstaskdict['todoTaskID']}. {tagstaskdict['title']}")
@@ -459,6 +469,20 @@ def run():
                 if taskdict['updatedDate']:
                     days_since_updated = db.get_days_between_a_days_and_today(taskdict['updatedDate'])
                     st.markdown(f"Last Updated : {taskdict['updatedDate']} - {days_since_updated} Days Ago")   
+
+
+            with taskimgcol2:
+
+                tempimgname = f"filter_view/{taskdict['taskID']}_parent_test"
+                if taskdict['taskType'] == "main_task" and taskdict["taskID"] in task_child_list_ids:
+                    parent_subtasks = get_subtasks_for_parent(db_username, taskdict['title'], todolistid)   
+                    imgpath = arty.draw_dynamic_task_subtask_snapshot(tempimgname, parent_subtasks, taskdict['title'])
+                    st.image(imgpath)
+                elif taskdict['taskType'] == "main_task": 
+                    imgpath = arty.draw_dynamic_task_subtask_snapshot(tempimgname, [""], taskdict['title'])
+                    st.image(imgpath)
+
+                pass
 
             st.write("---")
 
