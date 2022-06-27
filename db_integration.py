@@ -321,7 +321,7 @@ def view_tasks_basic(username:str, anID:int, parent_child_or_all:str = "parent")
         if task[1]:
             task_dict["detail"] = task[1]
         else:
-            task_dict["detail"] = "-"
+            task_dict["detail"] = " "
         task_dict["taskType"] = task[2]
         task_dict["taskParent"] = task[3]
         task_dict["taskStatus"] = task[4]
@@ -499,7 +499,7 @@ def view_tasks_toggle(username:str, listID:int, parent_child_or_all:str, specifi
         if task[1]:
             task_dict["detail"] = task[1]
         else:
-            task_dict["detail"] = "-"
+            task_dict["detail"] = " "
         task_dict["taskType"] = task[2]
         task_dict["taskParent"] = task[3]
         task_dict["taskStatus"] = task[4]

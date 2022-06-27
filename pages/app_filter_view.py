@@ -145,21 +145,26 @@ def merge_dicts_for_repeat_tags(taskdict_list:list[dict]) -> list[dict]:
     # then do group project stuff tbf?
 
     print("")
-    print(f"{taskdict_list}")
+    print(f"{taskdict_list =}")
     print("")
 
     idindex_in_taskdict_list_listed = []
     for task_dict in taskdict_list:
         # listed the task ids in order so that their index in this list will be the same as their index in the other
         idindex_in_taskdict_list_listed.append(task_dict["taskID"])
-        for a_task_id in repeatids:
-            if task_dict["taskID"] == a_task_id:
-                task_dict["tagsList"] = repeating_tags_dict[a_task_id] 
-                print(f"{task_dict['tagsList']}")
-            else:
-                # this else case is for non repeating entries (say just 1 valid tag and thats it) to still get the tagsList key in their dictionary
-                task_dict["tagsList"] = [f"{taskdict['tag']} [{taskdict['tagtype']}]"]
+        print(f"{taskdict_list =}")
+        if repeatids:
+            for a_task_id in repeatids:
+                if task_dict["taskID"] == a_task_id:
+                    task_dict["tagsList"] = repeating_tags_dict[a_task_id] 
+                    print(f"{task_dict['tagsList'] = }")
+        if "tagsList" not in task_dict:            
+        #else:
+            # this else case is for non repeating entries (say just 1 valid tag and thats it) to still get the tagsList key in their dictionary
+            task_dict["tagsList"] = [f"{task_dict['tag']} [{task_dict['tagtype']}]"]
     
+        print(f"{task_dict['tagsList'] = }")
+
     first_entries = []
     for repeated in repeatids:
         first_entries.append(idindex_in_taskdict_list_listed.index(repeated))
@@ -326,7 +331,7 @@ def run():
     basic_tasks_dict_as_list = view_tasks_basic(db_username, todolistid)
 
     taskdict_list = db.view_tasks_toggle(db_username, todolistid, sub_main_or_all, specific_or_all_tasks, handy_filter_selection, status_selection, filter_tags_list)
-    st.markdown("#### RESULT [temp]")
+    st.markdown("#### Your Tasks")
     st.write("##")
 
 
@@ -384,46 +389,79 @@ def run():
         # means dont have to do len(taskdict) > 10 as before
         # note will likely still want tag info (maybe not rn tho) but will require a separate query to get it for this section
         
-        # print(f"{taskdict_list = }")
+        print("")
+        print("---- CURRENT ORDER ----\n")
+        dont_print = [print(f"{tasky}\n") for tasky in taskdict_list]
+        #print(f"{taskdict_list = }")
 
-        for taskdict in taskdict_list:    
+        # basically just make a new dictlist but ordered fuck it
+        # go thru each, if parent add it, then see if children, 
+        # if no children gg go next
+        # if children, add all children, then gg go next 
 
-            st.markdown(f"##### {taskdict['taskID']}. {taskdict['title']}")      
-            st.markdown(f"{taskdict['detail']}")
+        # the tasks with parent id, saving the parent id, the task id, and the index
+        task_child_list = []
+        task_child_list_ids = []
+        for dem_tasks in taskdict_list:
+            if dem_tasks["taskParent"]:
+                task_child_list.append((dem_tasks["taskParent"], dem_tasks["taskID"]))
+                task_child_list_ids.append(dem_tasks["taskParent"])
+
+        print(f"{task_child_list = }")
+        print(f"{task_child_list_ids = }")
+
+        taskdict_list_parent_ordered = []
+        for uo_task in taskdict_list:
+            if uo_task["taskType"] == "main_task":
+                if uo_task["taskID"] in task_child_list_ids:
+                    taskdict_list_parent_ordered.append(uo_task["taskID"]) # USE THE IDS NOT THE INDEX FFS (CAN REMOVE ENUMERATE?)
+                    # find children
+                    for child in task_child_list:
+                        if child[0] == uo_task["taskID"]:
+                            taskdict_list_parent_ordered.append(child[1])
+
+                else:
+                    # no children
+                    taskdict_list_parent_ordered.append(uo_task["taskID"]) # USE THE IDS NOT THE INDEX FFS (CAN REMOVE ENUMERATE?)
+                
+        print(f"{taskdict_list_parent_ordered = }") # YUP SEEMS LIKE ITS THE ORDER, NOW HOW TO PRINT THO (might have to enumerate the dicts, key being their ids?)
+        print("")
+
+        taskdict_dict = {} # taskdict_dict = dict()
+        for task_dict in taskdict_list:
+            taskdict_dict[task_dict["taskID"]] = task_dict
+
+        # FFS PLS JESUS REFACTOR THIS
+        taskdict_list_parent_ordered_complete = []
+        for final_task in taskdict_list_parent_ordered:
+            taskdict_list_parent_ordered_complete.append(taskdict_dict[final_task])        
+
+        #[print(finalitem) for finalitem in taskdict_list_parent_ordered_complete]
+
+        for taskdict in taskdict_list_parent_ordered_complete: 
+
+            taskinfocol2, taskimgcol2 = st.columns(2)
+
+            with taskinfocol2:
+                # st.markdown(f"##### {tagstaskdict['todoTaskID']}. {tagstaskdict['title']}")
+                st.markdown(f"##### {taskdict['title']}")
+                st.markdown(f"{taskdict['detail']}")
+
+                st.markdown(f"{taskdict['taskID']}")
+                st.markdown(f"{taskdict['taskType']}")
+                if taskdict['taskType'] == "sub_task":
+                    st.markdown(f"Subtask of -> {taskdict['taskParent']}")         
+
+                st.markdown(f"{taskdict['taskStatus']}")    
+
+                days_since_created = db.get_days_between_a_days_and_today(taskdict['createdDate'])
+                st.markdown(f"Created : {taskdict['createdDate']} - {days_since_created} Days Ago")
+                if taskdict['updatedDate']:
+                    days_since_updated = db.get_days_between_a_days_and_today(taskdict['updatedDate'])
+                    st.markdown(f"Last Updated : {taskdict['updatedDate']} - {days_since_updated} Days Ago")   
 
             st.write("---")
 
-
-    # BIG N0TE THAT IMG HERE WILL NEED A REPEATING KEY SINCE DONT WANT A JILLION IMGS
-
-    
-
-
-
-
-
-
-    # can delete this btw?
-    with st.container():
-        
-        for j, taskd in enumerate(basic_tasks_dict_as_list):
-            
-            
-            st.write("##")
-            #st.write(f"#### Task {j+1}")
-
-            parents_id = taskd["taskID"]
-
-            basic_subtasks_dict_as_list = db.view_tasks_basic(db_username, parents_id, "all")
- 
-            for i, subtaskd in enumerate(basic_subtasks_dict_as_list):
-                #st.write(subtaskd)
-                pass
-
-                
-                    
-
-        st.write("---")
 
 
 

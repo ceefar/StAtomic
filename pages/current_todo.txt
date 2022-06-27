@@ -32,6 +32,9 @@ note
 - doesnt seem like todolistid (i.e. 1 or 2) is working as expected for tags, confirm wassup
 
 note
+- doesnt add all tags in filter view, just selected tags in tag filter, hardly a major mvp issue but still...
+
+note
 - big note for future/final refactor, hadnt even considered this but how tags interact on a child parent level, 
 - children should inherit all their parents tags (think view screens, if they didnt would be messed up)
 - but children should have the ability to have their own unique ones too!
