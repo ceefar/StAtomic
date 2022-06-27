@@ -205,19 +205,22 @@ def draw_dynamic_task_subtask_snapshot(imgname:str, userSubTasksList:list, usert
 ################# NEW TEST AF - NEED TO DO PROPERLY BUT RUSHING RN FOR PoC ########################
 
 
-def draw_task_snapshot_test_af(imgname:str, userSubTasksList:list, usertitle:str) -> str:
-    """ setting up for right aligned and maybe a bit smaller but will come back to improve tbf just need a basic ting rn"""
+def draw_task_snapshot_test_af(todoTaskID:int, userTagsList:list, title:str, details:str = "") -> str:
+    """ new, basic test for filter view page """
+
+    # todoTaskID, title, detail, tagsList, taskStatus, createdDate, days_since_created, IF VALID : updatedDate, days_since_updated
 
     # path for image storage
-    imgpath = f'imgs/{imgname}.png'
+    imgpath = f'imgs/filter_view/{todoTaskID}_test.png'
 
     # base dimensions
     width = 500
     height = 500
 
     # font
-    fontTitle = ImageFont.truetype("PottaOne-Regular.ttf", size=24)
-    font = ImageFont.truetype("PottaOne-Regular.ttf", size=18)
+    fontTitle = ImageFont.truetype("PottaOne-Regular.ttf", size=20)
+    fontSubTitle = ImageFont.truetype("PottaOne-Regular.ttf", size=16)
+    font = ImageFont.truetype("PottaOne-Regular.ttf", size=14)
 
     # setting up a rectangle test
     w, h = 50 , 50
@@ -227,7 +230,7 @@ def draw_task_snapshot_test_af(imgname:str, userSubTasksList:list, usertitle:str
     # new img object
     img = Image.new('RGB', (width, height), color='#8ecae6')
 
-    # --- rectangle ----
+    # --- rectangle/bg ----
 
     # draw a rectangle test
     #imgDraw.rectangle(shape, fill ="#023047", outline ="#ffb703")
@@ -241,7 +244,7 @@ def draw_task_snapshot_test_af(imgname:str, userSubTasksList:list, usertitle:str
     imgDraw = ImageDraw.Draw(img)
 
     # configure the title text and location
-    message1 = usertitle
+    message1 = title
     textWidth, textHeight = imgDraw.textsize(message1, font=fontTitle)
     xText1 = 60
     yText1 = (height - textHeight) / 8   # < TOP POSITION
@@ -253,13 +256,40 @@ def draw_task_snapshot_test_af(imgname:str, userSubTasksList:list, usertitle:str
     # save the result
     img.save(imgpath)
 
-    # ---- subtasks ----
+
+
+
+
+    ######## NEW ########
+
+    # ---- details ----
+    if details:
+
+        # setup base object
+        imgDraw = ImageDraw.Draw(img)
+
+        # configure the title text and location
+        message3 = details
+        textWidth3, textHeight3 = imgDraw.textsize(message3, font=fontSubTitle)
+        #### NEED HERE - if textwidth larger than rectangle width then split the line!
+        xText3 = 60
+        yText3 = yText1 + textHeight3 + 20   # under title?
+
+        # draw the text
+        #imgDraw.text((xText, yText), message, font=font, fill=(255, 255, 0)) fb8500
+        imgDraw.text((xText3, yText3), message3, font=fontTitle, fill="#ffb703")
+
+        # save the result
+        img.save(imgpath)
+
+
+    # ---- tags ----
 
     # how many subtasks there are (as may want to limit?)
-    amountOfSubTasks = len(userSubTasksList)
+    amountOfSubTasks = len(userTagsList)
 
     multiplier = 0
-    for subTask in userSubTasksList:
+    for subTask in userTagsList:
 
         # setup base object
         imgDraw = ImageDraw.Draw(img)
@@ -270,7 +300,7 @@ def draw_task_snapshot_test_af(imgname:str, userSubTasksList:list, usertitle:str
         _, textHeight2 = imgDraw.textsize(message2, font=font)
         xText2 = 60
         #yText2 = (((height-textHeight2) / 10) + textHeight) + ((textHeight2*2) * multiplier) + 10
-        yText2 = (textHeight + 50) + (((textHeight2*2) * multiplier) + 10)
+        yText2 = (textHeight + 50) + (((textHeight2*2) * multiplier) + 50)
 
         # draw the text
         imgDraw.text((xText2, yText2), message2, font=font, fill="#ffb703")
@@ -285,7 +315,8 @@ def draw_task_snapshot_test_af(imgname:str, userSubTasksList:list, usertitle:str
 
 
 if __name__ == "__main__":
-    draw_task_snapshot_test_af("ceefar")
+    pass
+    #draw_task_snapshot_test_af("ceefar")
     #draw_base_rectangle_text_img()
     #draw_improved_rectangle_text_img()
     #draw_dynamic_task_subtask_snapshot("ceefar", ["The First Child Shizzle", "Im The Second In Dis Biatch", "The Third Mofo", "A Fourth You Say!?", "Number 5 Wudup?"] , "Im The Bestest Task")

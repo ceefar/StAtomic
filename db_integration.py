@@ -522,6 +522,11 @@ def view_tasks_toggle(username:str, listID:int, parent_child_or_all:str, specifi
     return(subtasks_listed)
 
 
+def get_days_between_a_days_and_today(a_day):
+    """ get days between any date and today using mysql """
+    days_between = get_from_db(f"SELECT DATEDIFF(CURDATE(), '{str(a_day)}')")
+    return(days_between[0][0])
+
 
 # ---- main ----
 
