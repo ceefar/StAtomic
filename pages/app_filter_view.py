@@ -339,33 +339,41 @@ def run():
         # print(f"{tags_taskdict_list = }")
         # print("")
 
+        # BIG N0TE THAT THESE KINDA IMGS WILL BE FOR MAINTASK OR SUBTASK ONLY, NOT PARENT CHILD
+        # NEED TO SORT THE VIEW FOR THAT ASAP AS IS RELATED TO THE IMGS!
+        # - consider the use of dropdowns for each sub task, note whatever you do just keep it simple ffs! (so probably not dds then lmao)
+
         for tagstaskdict in tags_taskdict_list:
 
-            # st.markdown(f"##### {tagstaskdict['todoTaskID']}. {tagstaskdict['title']}")
-            st.markdown(f"##### {tagstaskdict['title']}")
-            st.markdown(f"{tagstaskdict['detail']}")
+            taskinfocol, taskimgcol = st.columns(2)
 
-            st.markdown(f"{tagstaskdict['tagsList']}")         
+            with taskinfocol:
+                # st.markdown(f"##### {tagstaskdict['todoTaskID']}. {tagstaskdict['title']}")
+                st.markdown(f"##### {tagstaskdict['title']}")
+                st.markdown(f"{tagstaskdict['detail']}")
 
-            st.markdown(f"{tagstaskdict['taskStatus']}")    
+                st.markdown(f"{tagstaskdict['tagsList']}")         
 
-            days_since_created = db.get_days_between_a_days_and_today(tagstaskdict['createdDate'])
-            st.markdown(f"Created : {tagstaskdict['createdDate']} - {days_since_created} Days Ago")
-            if tagstaskdict['updatedDate']:
-                days_since_updated = db.get_days_between_a_days_and_today(tagstaskdict['updatedDate'])
-                st.markdown(f"Last Updated : {tagstaskdict['updatedDate']} - {days_since_updated} Days Ago")
+                st.markdown(f"{tagstaskdict['taskStatus']}")    
 
-            imgpath = arty.draw_task_snapshot_test_af(tagstaskdict['todoTaskID'], tagstaskdict['tagsList'], tagstaskdict['title'], tagstaskdict['detail'])
-            st.image(imgpath)
+                days_since_created = db.get_days_between_a_days_and_today(tagstaskdict['createdDate'])
+                st.markdown(f"Created : {tagstaskdict['createdDate']} - {days_since_created} Days Ago")
+                if tagstaskdict['updatedDate']:
+                    days_since_updated = db.get_days_between_a_days_and_today(tagstaskdict['updatedDate'])
+                    st.markdown(f"Last Updated : {tagstaskdict['updatedDate']} - {days_since_updated} Days Ago")
 
-            with open(imgpath, "rb") as file:
-                btn = st.download_button(
-                        label="Download image",
-                        data=file,
-                        file_name=f"task_{tagstaskdict['todoTaskID']}.png",
-                        mime="image/png",
-                        key=tagstaskdict['todoTaskID']
-                    )
+            with taskimgcol:
+                imgpath = arty.draw_task_snapshot_test_af(tagstaskdict['todoTaskID'], tagstaskdict['tagsList'], tagstaskdict['title'], tagstaskdict['detail'])
+                st.image(imgpath)
+
+                with open(imgpath, "rb") as file:
+                    btn = st.download_button(
+                            label="Download image",
+                            data=file,
+                            file_name=f"task_{tagstaskdict['todoTaskID']}.png",
+                            mime="image/png",
+                            key=tagstaskdict['todoTaskID']
+                        )
 
             st.write("---")
 
