@@ -235,31 +235,88 @@ def run():
     # BASICALLY JUST MATCHING ON todoTaskID and appending to tag & tagtype
     # OR EVEN A JUST A NEW VAR AND STICK IT INTO THE DICT (or even a new dict idk but should be easy enough)
 
+
+    # use this to get list of repeating taskIDs that happens due to tag selection (own funct when done pls?)
+    # taskdict_idindex_list = []
+    # dontprint = [taskdict_idindex_list.append((taskdictid['taskID'], i)) for i, taskdictid in enumerate(taskdict_list)] # dontprint = [taskdict_id_list.append(taskdictid['taskID']) for taskdictid in taskdict_list]
+
+
+    
+
+    print("")
+    # creates dict of repeating taskIDs + count that happens due to tag selection (own funct when done pls?)
+    taskdict_idindex_countdict = {}
+    for taskdict_forid in taskdict_list:
+        if taskdict_forid['taskID'] not in taskdict_idindex_countdict:
+            taskdict_idindex_countdict[taskdict_forid['taskID']] = 1
+        elif taskdict_forid['taskID'] in taskdict_idindex_countdict:
+            taskdict_idindex_countdict[taskdict_forid['taskID']] += 1
+
+    # creates a list of just the counts    
+    print(f"{taskdict_idindex_countdict = }")
+    reapeatchecker = taskdict_idindex_countdict.values()
+    print(f"{reapeatchecker = }")
+
+    # check if those counts are > 1 (so repeats), if is greater than 1 add its index to new list
+    repeatindexes = []
+    dontprint = [repeatindexes.append(i) if repeater > 1 else 0 for i, repeater in enumerate(reapeatchecker)]
+    print(f"{repeatindexes = }")
+
+    # finally get whats needed, a list of task ids which repeat in the search query because they have multiple tags
+    repeatids = []
+    ids_fromkeys = taskdict_idindex_countdict.keys()
+    ids_fromkeys_list = list(ids_fromkeys)
+    print(f"{ids_fromkeys_list = }")
+    for rpt_ndx in repeatindexes:
+        repeatids.append(ids_fromkeys_list[rpt_ndx])
+    print(f"{repeatids = }")
+
+    # creates a dicctionary with key = taskid (with repeats), and value = list of tags (formatted tho, can obvs change easily)
+    print("")
+    repeating_tags_dict = {}
+    for an_id in repeatids:
+        for taskdict in taskdict_list:
+            if taskdict['taskID'] == an_id:
+                if taskdict['taskID'] not in repeating_tags_dict:
+                    repeating_tags_dict[taskdict['taskID']] = [f"{taskdict['tag']} [{taskdict['tagtype']}]"]
+                else:
+                    repeating_tags_dict[taskdict['taskID']].append(f"{taskdict['tag']} [{taskdict['tagtype']}]")
+    print(f"{repeating_tags_dict = }")
+
+    # from here you just add them to the first, pop the others off, then do formating and img
+    # then do group project stuff tbf?
+
+
+
+    # so ig what you wanna do is grab the most recent, add the info it, then pop the others bosh (could even create a new entry to the dicts tbf?!)
+
+
+    # BIG N0TE THAT IMG HERE WILL NEED A REPEATING KEY SINCE DONT WANT A JILLION IMGS
+
     for taskdict in taskdict_list:
         if len(taskdict) > 10:
-            print("Print With Tag Info Inherent")
 
+            #st.markdown(f"{taskdict['taskID']}")        
+
+            #Print With Tag Info Inherent
             st.markdown(f"##### {taskdict['todoTaskID']}. {taskdict['title']}")
+            st.markdown(f"{taskdict['tag']} [{taskdict['tagtype']}] - {taskdict['tagid']}")         
             st.markdown(f"{taskdict['detail']}")         
-            # meme.jpg
-            # I love my day_diff
-            # UI time
-            # I love my day_diff
-            # Where is my day diff
-            # https://preview.redd.it/cy8b46b1roz61.png?auto=webp&s=6b9684426d3e26cdd369071b128dc93809aa2f08
-            # 
-            # fyi... add the bloody day diff to that string i guess it doesnt have it :(  
+
             st.write("---")
         else:
             # particularly important here as have not grabbed it in query but will still probs want some tags info
-            print("No Tag Info Inherent - but can get with a separate query")
+            #No Tag Info Inherent - but can get with a separate query
+
             st.write(taskdict)
 
     st.write("---")
 
 
 
-    # can delete this btw
+
+
+    # can delete this btw?
     with st.container():
         
         for j, taskd in enumerate(basic_tasks_dict_as_list):

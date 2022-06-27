@@ -1,16 +1,17 @@
 
 
-aite so now,
-new page (rename the other one)
-duhhh
-so
-defo want like very top options for you to decide how you view tasks
-- obvs that is *always* with todo list being the first thing, never allowing crossover (as should think about them as route to complete a final task right)
-- then its
-- parent + child dd, parent only, most recent only?, tasks that havent been touched in a long time, (obvs would also be urgency etc which can implement shortly)
-- tags duhhhhhh
-- either through toggle or just generally like one dd short and one dd long, whatever
-- obvs all as just a much more basic view of the task and sub tasks
+
+actually tho I could do img first (and might do a base version quickly)
+i actually really need 2 things
+- merge logic for tags of same task and
+- child parent logic again
+since i dont wanna be printing single imgs for every single task right
+what actually want is...
+- child+parent imgs again
+- ig an img of just titles of all tasks sure (still showing child parent relationships tho)
+- then ig more detailed view of main only tasks (since not everything has child duh)
+
+
 
 and then show the img in a col to the right, with option to download/save the img
 
@@ -23,6 +24,11 @@ note
 - but children should have the ability to have their own unique ones too!
 - for sure has view considerations but tbh firstly should be edge cases, and secondly its a small personal project for portfolio
 - if u wanna actually make this (which I kinda do) you need to do it in flutter anyway imo
+
+note
+- actually really want some kind of way to save notes based on a task or todo (plus img maybe even? or ability for it to write you one!)
+- so that you can save things like meal list for example or go back and check an old (good) shopping list
+- even the abililty to upload ur own images would be great (and would teach me how to store imgs as binary data!)
 
 note
 - adding actual proper task info will make it look a LOT cleaner, do some quickly for one of the lists!

@@ -32,3 +32,15 @@ that will be in the dropdown,
 obvs is its own table... needs planning, guess simple version will just be logging and some notes about what you did, and how it went, + time spend,
  maybe even like stats progress etc, actually sick idea would be showing where you are on that curve chart (especially then based on what ur start point was too)
 maybe just do the todo bit first simple af 0 to minor extra additions then build on this 
+
+
+
+# meme.jpg
+# I love my date_diff
+# UI time
+# I love my date_diff
+# Where is my day diff
+# https://preview.redd.it/cy8b46b1roz61.png?auto=webp&s=6b9684426d3e26cdd369071b128dc93809aa2f08
+# 
+# fyi... add the bloody day diff to that string i guess it doesnt have it :(  
+# ok i added it back but i like this meme

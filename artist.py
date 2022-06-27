@@ -285,8 +285,9 @@ def draw_task_snapshot_test_af(imgname:str, userSubTasksList:list, usertitle:str
 
 
 if __name__ == "__main__":
-    draw_base_rectangle_text_img()
-    draw_improved_rectangle_text_img()
-    draw_dynamic_task_subtask_snapshot("ceefar", ["The First Child Shizzle", "Im The Second In Dis Biatch", "The Third Mofo", "A Fourth You Say!?", "Number 5 Wudup?"] , "Im The Bestest Task")
+    draw_task_snapshot_test_af("ceefar")
+    #draw_base_rectangle_text_img()
+    #draw_improved_rectangle_text_img()
+    #draw_dynamic_task_subtask_snapshot("ceefar", ["The First Child Shizzle", "Im The Second In Dis Biatch", "The Third Mofo", "A Fourth You Say!?", "Number 5 Wudup?"] , "Im The Bestest Task")
 
     
