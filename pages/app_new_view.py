@@ -227,7 +227,8 @@ def run():
     basic_tasks_dict_as_list = view_tasks_basic(db_username, todolistid)
 
     taskdict_list = db.view_tasks_toggle(db_username, todolistid, sub_main_or_all, specific_or_all_tasks, handy_filter_selection, status_selection, filter_tags_list)
-    st.markdown("#### TEMP RESULT")
+    st.markdown("#### RESULT [temp]")
+    st.write("##")
     #st.write(taskdict_list)
 
     # SO BEFORE DOING THIS FINAL PRINT NEED TO DO THE MERGE OF DICTS WITH MULTIPLE TAGS, 
@@ -236,30 +237,44 @@ def run():
 
     for taskdict in taskdict_list:
         if len(taskdict) > 10:
-            st.write("Print With Tag Info Inherent")
-            st.write(taskdict)
+            print("Print With Tag Info Inherent")
+
+            st.markdown(f"##### {taskdict['todoTaskID']}. {taskdict['title']}")
+            st.markdown(f"{taskdict['detail']}")         
+            # meme.jpg
+            # I love my day_diff
+            # UI time
+            # I love my day_diff
+            # Where is my day diff
+            # https://preview.redd.it/cy8b46b1roz61.png?auto=webp&s=6b9684426d3e26cdd369071b128dc93809aa2f08
+            # 
+            # fyi... add the bloody day diff to that string i guess it doesnt have it :(  
+            st.write("---")
         else:
-            st.write("No Tag Info Inherent - but can get with a separate query")
+            # particularly important here as have not grabbed it in query but will still probs want some tags info
+            print("No Tag Info Inherent - but can get with a separate query")
             st.write(taskdict)
 
     st.write("---")
 
 
 
+    # can delete this btw
     with st.container():
         
         for j, taskd in enumerate(basic_tasks_dict_as_list):
             
             
             st.write("##")
-            st.write(f"#### Task {j+1}")
+            #st.write(f"#### Task {j+1}")
 
             parents_id = taskd["taskID"]
 
             basic_subtasks_dict_as_list = db.view_tasks_basic(db_username, parents_id, "all")
  
             for i, subtaskd in enumerate(basic_subtasks_dict_as_list):
-                st.write(subtaskd)
+                #st.write(subtaskd)
+                pass
 
                 
                     
