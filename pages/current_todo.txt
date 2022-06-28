@@ -1,25 +1,24 @@
 
-sort basic format for print out stuff 
-then
-do img thing to draft with simple download/save button (mostly to see working)
-    note! - decide what specifically you want to do but just draft sumnt simple quickly as will come back to later
-    and note that since i dont wanna be printing single imgs for every single task right
-    what actually want is...
-    - child+parent imgs again
-    - ig an img of just titles of all tasks sure (still showing child parent relationships tho)
-    - then ig more detailed view of main only tasks (since not everything has child duh)
-then
-child parent logic proper print (should be easy its just ordering the list of dictionaries and indenting child tasks)
-- logic sorted, need to implement html/css for indenting subtasks, and also print/save todo img but note just do for main tasks only bosh!
 
-
+quickly doing some draft test ideas for
+- bearable style
+- saving things, needs a tag or toggle (which would need to be in the db too) to validate it to show in the new page 
+- insights (possibly, if so suuuuper basic)
+THEN
+pleeeeease just do the discord api tutorial to learn the basics of how interacts BEFORE starting refactor for snowflake!
+THEN...
 
 ******************************************************************
-PLEEEEEEASE REWRITE THESE NOTES! (lmao) - and conglomorate others?
+PLEEEEEEASE REWRITE THESE NOTES! (lmao) - and conglomorate others! (4 pages into one please!)
 ******************************************************************
+THEN THINK IT MIGHT BE TIME TO...
+- move to v0.4 snowflake (or any db integration) + heavily simplified version for maybe just imgs at first
+- obvs users (and password?), and dashboard, proper crud, and basic insights (lmao real simple huh ceef)
+- want to implement stuff like that bearable app too (needs planning) 
 
 
-and then show the img in a col to the right, with option to download/save the img
+
+
 
 actually then quickly go back to subtask view as would be nice to have an option for just show 1 instead of all! 
 - tbh would be a better default too, obvs still having an all option tho
@@ -37,6 +36,10 @@ note
 - then an actual details which you can make as long as you want
 - which would be used for imgs (print only info for that task) and for the more detailed stored info bit
     - and therefore is more relevant, IF long_ass_text THEN save it to storage
+
+note
+- do want reorder option, for ui use multi select and have it print out?
+- or maybe even mutable charts like add_rows https://docs.streamlit.io/library/api-reference/mutate
 
 note
 - doesnt seem like todolistid (i.e. 1 or 2) is working as expected for tags, confirm wassup

@@ -12,10 +12,8 @@ import streamlit as st
 # ---- DATABASE INIT ----
 
 # load environment variables from .env file
-# CACHE SEEMS TO IMPROVE RANDOM TERMINAL ERRORS (that didnt break anything anyway)
-# DONT NEED ST TO MAKE A TEMP CACHE YOU CAN DO THIS YOURSELF DUH!
-# ACTUALLY MAYBE THIS KINDA MAKES SENSE, UNSURE IF STREAMLIT ACTUALLY WANTS THIS INFO STORED OR NOT?
-@st.cache
+# singleton doesnt rerun, unlike st.cache decorator -> theres not return value so does this even matter?
+@st.experimental_singleton
 def load_env():
     load_dotenv()
 
