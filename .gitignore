@@ -1,5 +1,14 @@
 venv/*
 DRAFT_CODE/*
-imgs/*
+imgs/font_files/*
+imgs/filter_view/*
+imgs/versions/*
 .streamlit/*
-
+imgs/artist_example.py
+imgs/ceefar_temp_subtasks.png
+imgs/ceefar_Testing Da Img Bruh Again_1. My First List_subtasks.png
+imgs/ceefar_Testing Da Img Bruh_1. My First List_subtasks.png
+imgs/ceefar.png
+imgs/OFL.txt
+imgs/result.png
+imgs/task-subtask.png

@@ -1,4 +1,4 @@
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
 
 def draw_base_rectangle_text_img():
@@ -341,11 +341,12 @@ def draw_dynamic_task_subtask_snapshot_updated(imgname:str, userSubTasksList:lis
     height = 500
 
     # font
-    fontTitle = ImageFont.truetype("PottaOne-Regular.ttf", size=22)
+    fontTitle = ImageFont.truetype("PottaOne-Regular.ttf", size=22) # Righteous-Regular.ttf # PottaOne-Regular.ttf # SpecialElite-Regular.ttf
     font = ImageFont.truetype("PottaOne-Regular.ttf", size=16)
+    fontWatermark = ImageFont.truetype("Righteous-Regular.ttf", size=18)
 
-    # setting up a rectangle test
-    w, h = 30 , 30
+    # setting up bg rectangle & border
+    w, h = 30 , 30 # basically border size so guna test using for title
     # x0 y0, x1 y1
     shape = [(470, 470), (w - 10, h - 10)]
 
@@ -354,7 +355,7 @@ def draw_dynamic_task_subtask_snapshot_updated(imgname:str, userSubTasksList:lis
 
     # --- rectangle ----
 
-    # draw a rectangle test
+    # draw bg rectangle & border
     #imgDraw.rectangle(shape, fill ="#023047", outline ="#ffb703")
     imgDraw = ImageDraw.Draw(img)
     imgDraw.rectangle(shape, fill ="#023047", outline ="#ffb703")
@@ -369,9 +370,9 @@ def draw_dynamic_task_subtask_snapshot_updated(imgname:str, userSubTasksList:lis
     message1 = usertitle
     textWidth, textHeight = imgDraw.textsize(message1, font=fontTitle)
     xText1 = 60
-    yText1 = (height - textHeight) / 8   # < TOP POSITION
+    yText1 = h + 10  # h is the border size so this is just outside of the border # (height - textHeight) / 8
 
-    # draw the text
+    # draw the title
     #imgDraw.text((xText, yText), message, font=font, fill=(255, 255, 0)) fb8500
     imgDraw.text((xText1, yText1), message1, font=fontTitle, fill="#ffb703")
 
@@ -379,6 +380,9 @@ def draw_dynamic_task_subtask_snapshot_updated(imgname:str, userSubTasksList:lis
     img.save(imgpath)
 
     # ---- subtasks ----
+
+    # FOR MULTI LINE TEXT AND TEXT TRANSPARENCY! (want transp for watermark but cba to do rn)
+    # https://pillow.readthedocs.io/en/stable/reference/ImageDraw.html
 
     # how many subtasks there are (as may want to limit?)
     amountOfSubTasks = len(userSubTasksList)
@@ -399,7 +403,7 @@ def draw_dynamic_task_subtask_snapshot_updated(imgname:str, userSubTasksList:lis
         
 
         if last_item_y_pos == 0:
-            last_item_y_pos = yText1 + textHeight2 - 10
+            last_item_y_pos = yText1 + textHeight2
             pass
 
 
@@ -410,14 +414,98 @@ def draw_dynamic_task_subtask_snapshot_updated(imgname:str, userSubTasksList:lis
 
         # draw the text
         if subTask[1] == "in_progress":
-            imgDraw.text((xText2, yText2), message2, font=font, fill="#ce9300")
+            imgDraw.text((xText2, yText2), message2, font=font, fill="#ffb703") # ce9300 darker shade of og title color
         else:
             # green for completed
-            imgDraw.text((xText2, yText2), message2, font=font, fill="#4ee44e")
+            imgDraw.text((xText2, yText2), message2, font=font, fill="#32CD32") #32CD32 #4ee44e
 
         # save the result
         img.save(imgpath)
+
+
+        # ---- pasting tick into sub tasks ----
+
+        # note we are still in for loop so if condition is necessary to avoid printing green tick on every subtask line
+        if subTask[1] == "completed":
+             # path, r, g, b
+            subi = ['imgs/icons/check_box_fill1.png ',50,205,50]
+        elif subTask[1] == "in_progress":
+            # path, r, g, b  #206,147,0 (og text colour) #255,87,51 (dark orange) #164,117,0 (darker orangey brown)
+            # imgs/icons/arrow_right_alt_fill1.png
+            # imgs/icons/remove_fill1.png
+            # imgs/icons/subdirectory_arrow_right_fill1.png
+            # imgs/icons/check_indeterminate_small_fill1.png
+            # imgs/icons/keyboard_double_arrow_right_fill1.png
+            # imgs/icons/expand_less_fill1.png
+            # imgs/icons/arrow_drop_up_fill1.png
+            #
+            # imgs/icons/check_box_outline_blank_fill1.png
+            # imgs/icons/check_box_fill1.png 
+            subi = ['imgs/icons/check_box_outline_blank_fill1.png',255,87,51] 
+               
+        #load icon img (svg not supported btw)
+        subimg = Image.open(subi[0]) 
+        # resize it to the same size as the height (its a square) 
+        subimg = subimg.resize((textHeight2, textHeight2))
+        # convert to rgba for masking (so it is transparent where there is no fill)
+        subimg = subimg.convert("RGBA")
+        # paste on top of current img (everything we have so far) with color, co-ordinates, then the img mask 
+        # - literally created coloured box then masks img over the top, pretty neat
+        img.paste((subi[1],subi[2],subi[3]), (45, int(yText2)+3), subimg) 
+        # save the result
+        img.save(imgpath)
+
+        # note we are still in for loop so if condition is necessary to avoid printing green tick on every subtask line
+        #if subTask[1] == "completed":
+        #    #load icon img (svg not supported btw)
+        #    tickimg = Image.open('imgs/icons/task_alt_fill1.png') 
+        #    # resize it to the same size as the height (its a square) 
+        #    tickimg = tickimg.resize((textHeight2, textHeight2))
+        #    # convert to rgba for masking (so it is transparent where there is no fill)
+        #    tickimg = tickimg.convert("RGBA")
+        #    # paste on top of current img (everything we have so far) with color, co-ordinates, then the img mask 
+        #    # - literally created coloured box then masks img over the top, pretty neat
+        #    img.paste((50,205,50), (45, int(yText2)+3), tickimg) 
+        #    # save the result
+        #    img.save(imgpath)
     
+
+
+    # ---- watermark text ----
+
+    # setup base object
+    imgDraw = ImageDraw.Draw(img)
+
+    # configure the title text and location
+    watermark = "St.Atomic"
+    watermarkWidth, watermarkHeight = imgDraw.textsize(watermark, font=fontWatermark)
+    xwaterText = (width - watermarkWidth) - 40
+    ywaterText = (height - watermarkHeight) - 40  
+
+    # draw the title
+    #imgDraw.text((xText, yText), message, font=font, fill=(255, 255, 0)) fb8500
+    imgDraw.text((xwaterText, ywaterText), watermark, font=fontWatermark, fill=(255,87,51))
+
+    # save the result
+    img.save(imgpath)
+
+
+    # ---- watermark icon img ----
+
+    #load icon img (svg not supported btw)
+    waterimg = Image.open('imgs/icons/inventory_fill1.png') 
+    # resize it to the same size as the height (its a square) 
+    waterimg = waterimg.resize((int(watermarkHeight*2), int(watermarkHeight*2)))
+    # convert to rgba for masking (so it is transparent where there is no fill)
+    waterimg = waterimg.convert("RGBA")
+    # paste on top of current img (everything we have so far) with color, co-ordinates, then the img mask 
+    # - literally created coloured box then masks img over the top, pretty neat
+    img.paste((255,87,51), ((xwaterText - (watermarkHeight*2) - 5), ywaterText-12), waterimg) 
+    # save the result
+    img.save(imgpath)
+
+
+
     # return the path to the created image
     return(imgpath)
 

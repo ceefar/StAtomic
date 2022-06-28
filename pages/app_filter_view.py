@@ -380,7 +380,7 @@ def run():
 
                 with open(imgpath, "rb") as file:
                     btn = st.download_button(
-                            label="Download image",
+                            label="Download Task",
                             data=file,
                             file_name=f"task_{tagstaskdict['todoTaskID']}.png",
                             mime="image/png",
@@ -491,11 +491,30 @@ def run():
 
                     imgpath = arty.draw_dynamic_task_subtask_snapshot_updated(tempimgname, parent_status_subtasks, taskdict['title'])
                     st.image(imgpath)
+
+                    # img save/download button
+                    with open(imgpath, "rb") as file:
+                        btn = st.download_button(
+                                label="Download Todo List",
+                                data=file,
+                                file_name=f"task_{taskdict['taskID']}.png",
+                                mime="image/png",
+                                key=taskdict['taskID']
+                            )
+
                 elif taskdict['taskType'] == "main_task": 
                     imgpath = arty.draw_dynamic_task_subtask_snapshot(tempimgname, [""], taskdict['title'])
                     st.image(imgpath)
 
-                pass
+                    # img save/download button
+                    with open(imgpath, "rb") as file:
+                        btn = st.download_button(
+                                label="Download Todo List",
+                                data=file,
+                                file_name=f"task_{taskdict['taskID']}.png",
+                                mime="image/png",
+                                key=taskdict['taskID']
+                            )
 
             st.write("---")
 
