@@ -503,7 +503,8 @@ def run():
                             )
 
                 elif taskdict['taskType'] == "main_task": 
-                    imgpath = arty.draw_dynamic_task_subtask_snapshot(tempimgname, [""], taskdict['title'])
+                    imgpath = arty.draw_dynamic_task_subtask_snapshot_updated(tempimgname, [(taskdict['detail'],"in_progress")], taskdict['title'])
+                    #imgpath = arty.draw_dynamic_task_subtask_snapshot(tempimgname, [""], taskdict['title'])
                     st.image(imgpath)
 
                     # img save/download button
