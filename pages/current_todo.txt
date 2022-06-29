@@ -1,8 +1,13 @@
 
+if details have a little (the task details) above it possibly with diff color bg?
+
 
 FUCKING DC MORON!!
 
-- notes save section (if details is long does automatically, else you can find a task and add)
+- notes save section (if details is long does automatically, else you can find a task and add 
+    - ig also could have a specific tag that does this called savenote or whatever 
+    - but also a specific tag that autosaves it like shopping list as mentioned below duh lol)
+        - you can choose tags that will also do this for you (in future)
 - 100 what the first usecase should be IS a shopping list so create it with that in mind and add the tag 
     - it persists stuff and can give you a handy img, you can even create a separate thing here for it to save
     - ig in future you would allow these to be linked via tag or sumnt for easy access say like shopping list

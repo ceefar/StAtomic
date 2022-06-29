@@ -232,6 +232,7 @@ border-left:10px solid #484848; color:white; font-family: 'Roboto', sans-serif; 
 </div>
 """
 
+
 # guess you could make one thing and entire div and just send that based on every 2 tags?!
 TAGGED_HTML_TEMPLATE = """
 <div style="padding-left:15px;font-family: 'Roboto', sans-serif; font-weight:600; color:grey;">{}</div>
@@ -246,6 +247,7 @@ border-left:10px solid #484848; color:white; font-family: 'Roboto', sans-serif; 
 <span style="width:95%; height:100%; position:absolute; text-align:left; color:#949494;">{}</span>
 </div>
 """
+
 
 # guess you could make one thing and entire div and just send that based on every 2 tags?!
 TAGGED_HTML_TEMPLATE_OG = """
@@ -263,6 +265,26 @@ border-left:10px solid #484848; color:white; font-family: 'Roboto', sans-serif; 
 <span style="width:95%; height:100%; position:absolute; text-align:left; color:#949494;">{}</span>
 </div>
 """
+
+
+# test tagged version for details idea 
+TAGGED_DEETS_HTML_TEMPLATE = """
+<div style="padding-left:15px;font-family: 'Roboto', sans-serif; font-weight:600; color:grey;">{}</div>
+<div style="width:90%; height:100%; margin:5px 20px 1px 1px; padding:1px 5px 35px 15px; position:relative; border-radius:5px;
+border=5px solid; box-shadow:0 0 1px 1px #eee; background-color:#31333F; font-weight:300;
+border-left:10px solid #484848; color:white; font-family: 'Roboto', sans-serif; box-shadow: 5px 5px 5px 5px rgba(0,0,0,0.15);">
+<h2 style="color:#eba538; font-weight:500; margin-bottom:10px; font-size:1.3rem;">{}</h2>
+<div style="color:#efefef; font-weight:300; margin-bottom:5px; margin-left:-15px"><span style="background-color:#484848; color:#ffffff; border-radius:2px; padding:2px 5px;">details</span></div>
+<div style="color:#efefef; font-weight:300; margin-bottom:25px;">{}</div>
+<div style="border-top: 1px dashed #7e7e7e; padding-bottom:10px"></div>
+<div style="color:#efefef; font-weight:300; margin-bottom:15px;">Created {} Days Ago <span style="color:#949494;">[{}]</span></div>
+{}
+<span style="width:95%; height:100%; position:absolute; text-align:right; font-size:0.9rem; color:#949494; margin-left:-10px;">{}</span>
+<span style="width:95%; height:100%; position:absolute; text-align:left; color:#949494;">{}</span>
+</div>
+"""
+
+
 
 
 
@@ -491,7 +513,6 @@ def run():
 
         for taskdict in taskdict_list_parent_ordered_complete: 
 
-
             # WOULD LIKE 2 THINGS HERE THEN MOVE ON
             # - grab all tags for each things and display them in the html box
             # - way to grab all parent child info together so can print back without gap/margin issue?
@@ -533,7 +554,7 @@ def run():
                     for i in range(len(taskdict['tagNames'])//2):
                         forhtml = htmlstring.format(taskdict['tagNames'][i], taskdict['tagNames'][i+1])
                         finalhtml += forhtml
-                    stc.html(TAGGED_HTML_TEMPLATE.format(taskdict["taskStatus"], taskdict["title"], taskdict["detail"], days_since_created, taskdict['createdDate'], finalhtml, taskdict["updatedDate"], taskdict["taskType"]), height=350)
+                    stc.html(TAGGED_DEETS_HTML_TEMPLATE.format(taskdict["taskStatus"], taskdict["title"], taskdict["detail"], days_since_created, taskdict['createdDate'], finalhtml, taskdict["updatedDate"], taskdict["taskType"]), height=350)
                 else:              
                     stc.html(PARENT_HTML_TEMPLATE.format(taskdict["taskStatus"], taskdict["title"], taskdict["detail"], days_since_created, taskdict['createdDate'], taskdict["updatedDate"], taskdict["taskType"]), height=250)
 
