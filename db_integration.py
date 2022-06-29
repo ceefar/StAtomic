@@ -536,6 +536,57 @@ def get_task_status_from_task_title(username:str , task_title:str) -> str:
         #print(f"{task_status = }")
         return(task_status)
 
+
+# use task id to get tag id 
+# then use tag id to get tagsnames 
+def get_tagnames_from_taskid(username, taskid) -> list|tuple|None:
+    """ write me """
+    try:
+        get_tagid = get_from_db(f"SELECT tagID FROM {username}_todotags WHERE todoTaskID = {taskid}")
+
+        # print(f"{get_tagid = }")
+        
+        tagid_list = []
+        if len(get_tagid) > 1:
+            for tagsid in get_tagid:
+                tagid_list.append(tagsid[0]) 
+        else:
+            # is just 1
+            tagid = get_tagid[0][0]
+            get_tagnames = get_from_db(f"SELECT tag, tagtype FROM {username}_tags WHERE tagid = {tagid}")
+            tag_names = get_tagnames[0] # WANT AS TUPLE BTW SO NEED TO SORT THIS HERE!
+            return(tag_names)
+    
+    except IndexError:
+        # print("No Tag")
+        return(None)
+
+    # print(f"{tagid_list = }")
+
+    tags_name_list = []
+    if tagid_list:
+        for tagid in tagid_list:
+            get_tagnames = get_from_db(f"SELECT tag, tagtype FROM {username}_tags WHERE tagid = {tagid}")
+            tag_names = get_tagnames[0]
+            tags_name_list.append(tag_names)
+
+    # print(f"{tags_name_list = }")
+    return(tags_name_list)
+
+
+
+# LOL THIS ISNT WHAT I WANTED BUT JUST LEAVING AS PROBABLY WILL USE EVENTUALLY
+def get_tagid_from_formatted_tag(username, formatted_tag:str):
+    """ write me """
+    tagndx = formatted_tag.rfind("[")
+    tag_name = formatted_tag[:tagndx-1].strip()
+    tag_group = formatted_tag[tagndx+1:-1]
+    get_tagid_query = f"SELECT tagid from {username}_tags WHERE tag = '{tag_name}' AND tagtype = '{tag_group}'"
+    get_tagid = get_from_db(get_tagid_query)
+    user_tagid = get_tagid[0][0]
+    return(user_tagid[0][0])
+
+
 # ---- main ----
 
 def main():

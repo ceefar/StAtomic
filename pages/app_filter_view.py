@@ -209,7 +209,7 @@ if "todo_lists" not in st.session_state:
 
 
 
-# ---- custom css elements ----
+# ---- custom css/html elements ----
 
 # was originally really just for testing tbf but leaving as might use more
 MATERIAL_ICON_POSITIVE = "<link rel='stylesheet' href='https://fonts.googleapis.com/icon?family=Material+Icons'><i class='material-icons' style='padding-left:10px; color:#AAFF00'>add_circle</i>"
@@ -217,6 +217,52 @@ MATERIAL_ICON_NEUTRAL = "<link rel='stylesheet' href='https://fonts.googleapis.c
 MATERIAL_ICON_NEGATIVE = "<link rel='stylesheet' href='https://fonts.googleapis.com/icon?family=Material+Icons'><i class='material-icons' style='padding-left:10px; color:red'>disabled_by_default</i>"
 MATERIAL_ICON_TASK_ALT = "<link rel='stylesheet' href='https://fonts.googleapis.com/icon?family=Material+Icons'><i class='material-icons' style='padding-left:10px; color:#AAFF00'>task_alt</i>"
 MATERIAL_ICON_ADD_TASK = "<link rel='stylesheet' href='https://fonts.googleapis.com/icon?family=Material+Icons'><i class='material-icons' style='padding-left:10px; color:#AAFF00'>add_task</i>"
+
+
+PARENT_HTML_TEMPLATE = """
+<div style="padding-left:15px;font-family: 'Roboto', sans-serif; font-weight:600; color:grey;">{}</div>
+<div style="width:90%; height:100%; margin:5px 20px 1px 1px; padding:1px 5px 35px 15px; position:relative; border-radius:5px;
+border=5px solid; box-shadow:0 0 1px 1px #eee; background-color:#31333F; font-weight:300;
+border-left:10px solid #484848; color:white; font-family: 'Roboto', sans-serif; box-shadow: 5px 5px 5px 5px rgba(0,0,0,0.15);">
+<h2 style="color:#eba538; font-weight:300; margin-bottom:0px; font-size:1.3rem;">{}</h2>
+<div style="color:#efefef; font-weight:300; margin-bottom:25px; ">{}</div>
+<div style="color:#efefef; font-weight:300; margin-bottom:25px; ">Created {} Days Ago <span style="color:#949494;">[{}]</span></div>
+<span style="width:95%; height:100%; position:absolute; text-align:right; font-size:0.9rem; color:#949494; margin-left:-10px;">{}</span>
+<span style="width:95%; height:100%; position:absolute; text-align:left; color:#949494;">{}</span>
+</div>
+"""
+
+# guess you could make one thing and entire div and just send that based on every 2 tags?!
+TAGGED_HTML_TEMPLATE = """
+<div style="padding-left:15px;font-family: 'Roboto', sans-serif; font-weight:600; color:grey;">{}</div>
+<div style="width:90%; height:100%; margin:5px 20px 1px 1px; padding:1px 5px 35px 15px; position:relative; border-radius:5px;
+border=5px solid; box-shadow:0 0 1px 1px #eee; background-color:#31333F; font-weight:300;
+border-left:10px solid #484848; color:white; font-family: 'Roboto', sans-serif; box-shadow: 5px 5px 5px 5px rgba(0,0,0,0.15);">
+<h2 style="color:#eba538; font-weight:300; margin-bottom:0px; font-size:1.3rem;">{}</h2>
+<div style="color:#efefef; font-weight:300; margin-bottom:25px;">{}</div>
+<div style="color:#efefef; font-weight:300; margin-bottom:25px;">Created {} Days Ago <span style="color:#949494;">[{}]</span></div>
+{}
+<span style="width:95%; height:100%; position:absolute; text-align:right; font-size:0.9rem; color:#949494; margin-left:-10px;">{}</span>
+<span style="width:95%; height:100%; position:absolute; text-align:left; color:#949494;">{}</span>
+</div>
+"""
+
+# guess you could make one thing and entire div and just send that based on every 2 tags?!
+TAGGED_HTML_TEMPLATE_OG = """
+<div style="padding-left:15px;font-family: 'Roboto', sans-serif; font-weight:600; color:grey;">{}</div>
+<div style="width:90%; height:100%; margin:5px 20px 1px 1px; padding:1px 5px 35px 15px; position:relative; border-radius:5px;
+border=5px solid; box-shadow:0 0 1px 1px #eee; background-color:#31333F; font-weight:300;
+border-left:10px solid #484848; color:white; font-family: 'Roboto', sans-serif; box-shadow: 5px 5px 5px 5px rgba(0,0,0,0.15);">
+<h2 style="color:#eba538; font-weight:300; margin-bottom:0px; font-size:1.3rem;">{}</h2>
+<div style="color:#efefef; font-weight:300; margin-bottom:25px;">{}</div>
+<div style="color:#efefef; font-weight:300; margin-bottom:25px;">Created {} Days Ago <span style="color:#949494;">[{}]</span></div>
+<div style="color:#efefef; font-weight:500; margin-bottom:25px;">
+<span style="background-color:#eba538; color:#31333F; border-radius:2px; padding:2px 5px;">{}</span> &emsp; <span style="background-color:#eba538; color:#31333F; border-radius:2px; padding:2px 5px;">{}</span>
+</div>
+<span style="width:95%; height:100%; position:absolute; text-align:right; font-size:0.9rem; color:#949494; margin-left:-10px;">{}</span>
+<span style="width:95%; height:100%; position:absolute; text-align:left; color:#949494;">{}</span>
+</div>
+"""
 
 
 
@@ -310,8 +356,6 @@ def run():
             filter_tags = user_tagid
             filter_tags_list.append(user_tagid)
         
-
-
 
             
         # so (and obvs dont do this here but its just easier to sort and test it here without breaking the entire db module)
@@ -447,28 +491,63 @@ def run():
 
         for taskdict in taskdict_list_parent_ordered_complete: 
 
-            taskinfocol2, taskimgcol2 = st.columns(2)
 
-            # OBVS PARENT CHILD IS EASY JUST REQUIRES PREVIOUS HTML/CSS CODE
-            # ALSO FOR PRINT/SAVE, ONLY PRINT FOR MAIN TASKS, OBVS INCLUDE CHILD INFO IF RELEVANT THO
+            # WOULD LIKE 2 THINGS HERE THEN MOVE ON
+            # - grab all tags for each things and display them in the html box
+            # - way to grab all parent child info together so can print back without gap/margin issue?
+                # note is impacted by selection type so only do if valid, in simplest cases for now
+
+
+            task_tag_names = db.get_tagnames_from_taskid(db_username, taskdict['taskID'])
+            # leaving this switch incase want to utilise it in someway (was for debugging)
+            if isinstance(task_tag_names, list):
+                taskdict['tagNames'] = task_tag_names
+                # print(f"{task_tag_names = }")
+                tag_string_list = list(map(lambda a: f'{a[0]} [{a[1]}]', task_tag_names)) #dont_print = [task_tag_names_list.append(f"{a_tag[0]} [{a_tag[1]}]") for a_tag in task_tag_names] #task_tag_names_list = []
+                # print(tag_string_list)
+                taskdict['tagNames'] = tag_string_list
+            elif isinstance(task_tag_names, tuple):
+                tag_string = f"{task_tag_names[0]} [{task_tag_names[1]}]"
+                # print(tag_string)
+                taskdict['tagNames'] = tag_string
+            elif task_tag_names is None:
+                taskdict['tagNames'] = ""
+
+
+
+            # print divider above parents
+            if taskdict['taskType'] == "main_task":
+                st.write("---")
+
+            taskinfocol2, taskimgcol2 = st.columns([3,2])
 
             with taskinfocol2:
                 # st.markdown(f"##### {tagstaskdict['todoTaskID']}. {tagstaskdict['title']}")
-                st.markdown(f"##### {taskdict['title']}")
-                st.markdown(f"{taskdict['detail']}")
-
-                st.markdown(f"{taskdict['taskID']}")
-                st.markdown(f"{taskdict['taskType']}")
-                if taskdict['taskType'] == "sub_task":
-                    st.markdown(f"Subtask of -> {taskdict['taskParent']}")         
-
-                st.markdown(f"{taskdict['taskStatus']}")    
 
                 days_since_created = db.get_days_between_a_days_and_today(taskdict['createdDate'])
-                st.markdown(f"Created : {taskdict['createdDate']} - {days_since_created} Days Ago")
+
+                # WHAT IF LIST BUT ODD NUMBER THO (floor div will just cut one off, fix this?!)
+                if isinstance(taskdict['tagNames'], list):
+                    htmlstring = '<div style="color:#efefef; font-weight:500; margin-bottom:10px;"><span style="background-color:#eba538; color:#31333F; border-radius:2px; padding:2px 5px;">{}</span> &emsp; <span style="background-color:#eba538; color:#31333F; border-radius:2px; padding:2px 5px;">{}</span></div>'
+                    finalhtml = ""
+                    for i in range(len(taskdict['tagNames'])//2):
+                        forhtml = htmlstring.format(taskdict['tagNames'][i], taskdict['tagNames'][i+1])
+                        finalhtml += forhtml
+                    stc.html(TAGGED_HTML_TEMPLATE.format(taskdict["taskStatus"], taskdict["title"], taskdict["detail"], days_since_created, taskdict['createdDate'], finalhtml, taskdict["updatedDate"], taskdict["taskType"]), height=350)
+                else:              
+                    stc.html(PARENT_HTML_TEMPLATE.format(taskdict["taskStatus"], taskdict["title"], taskdict["detail"], days_since_created, taskdict['createdDate'], taskdict["updatedDate"], taskdict["taskType"]), height=250)
+
+                #st.markdown(f"##### {taskdict['title']}")
+                #st.markdown(f"{taskdict['detail']}")
+                #st.markdown(f"{taskdict['taskID']}")
+                #st.markdown(f"{taskdict['taskType']}")
+                #if taskdict['taskType'] == "sub_task":
+                #    st.markdown(f"Subtask of -> {taskdict['taskParent']}")         
+                #st.markdown(f"{taskdict['taskStatus']}")    
+                #st.markdown(f"Created : {taskdict['createdDate']} - {days_since_created} Days Ago")
                 if taskdict['updatedDate']:
                     days_since_updated = db.get_days_between_a_days_and_today(taskdict['updatedDate'])
-                    st.markdown(f"Last Updated : {taskdict['updatedDate']} - {days_since_updated} Days Ago")   
+                    #st.markdown(f"Last Updated : {taskdict['updatedDate']} - {days_since_updated} Days Ago")   
 
 
             with taskimgcol2:
@@ -479,15 +558,15 @@ def run():
 
                     parent_subtasks = get_subtasks_for_parent(db_username, taskdict['title'], todolistid)   
 
-                    print(f"{parent_subtasks = }")
+                    #print(f"{parent_subtasks = }")
                     parent_status_subtasks = []
                     for subtask in parent_subtasks:
-                        print(f"{subtask = }")
+                        #print(f"{subtask = }")
                         subtask_status = db.get_task_status_from_task_title(db_username, subtask)
-                        print(f"{subtask_status = }")
+                        #print(f"{subtask_status = }")
                         subtask = (subtask, subtask_status)
                         parent_status_subtasks.append(subtask)
-                    print(f"{parent_status_subtasks = }")
+                    #print(f"{parent_status_subtasks = }")
 
                     imgpath = arty.draw_dynamic_task_subtask_snapshot_updated(tempimgname, parent_status_subtasks, taskdict['title'])
                     st.image(imgpath)
@@ -517,7 +596,7 @@ def run():
                                 key=taskdict['taskID']
                             )
 
-            st.write("---")
+            #st.write("---")
 
 
 
