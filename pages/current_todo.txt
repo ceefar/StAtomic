@@ -1,23 +1,5 @@
 
 
-quickly doing some draft test ideas for
-- bearable style
-- saving things, needs a tag or toggle (which would need to be in the db too) to validate it to show in the new page 
-- insights (possibly, if so suuuuper basic)
-THEN
-pleeeeease just do the discord api tutorial to learn the basics of how interacts BEFORE starting refactor for snowflake!
-THEN...
-
-******************************************************************
-PLEEEEEEASE REWRITE THESE NOTES! (lmao) - and conglomorate others! (4 pages into one please!)
-******************************************************************
-THEN THINK IT MIGHT BE TIME TO...
-- move to v0.4 snowflake (or any db integration) + heavily simplified version for maybe just imgs at first
-- obvs users (and password?), and dashboard, proper crud, and basic insights (lmao real simple huh ceef)
-- want to implement stuff like that bearable app too (needs planning) 
-
-
-
 FUCKING DC MORON!!
 
 - notes save section (if details is long does automatically, else you can find a task and add)
@@ -42,6 +24,19 @@ FUCKING DC MORON!!
         - medication time?
         - any exterior stresses (like a gauge?)
         - mood rating (could be linked to/same/similar to above one)
+
+- some kinda super giga basic insights page
+
+
+
+******************************************************************
+PLEEEEEEASE REWRITE THESE NOTES! (lmao) - and conglomorate others! (4 pages into one please!)
+******************************************************************
+THEN THINK IT MIGHT BE TIME TO...
+- move to v0.4 snowflake (or any db integration) + heavily simplified version for maybe just imgs at first
+- obvs users (and password?), and dashboard, proper crud, and basic insights (lmao real simple huh ceef)
+- want to implement stuff like that bearable app too (needs planning) 
+
 
 
 
