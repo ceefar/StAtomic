@@ -1,4 +1,8 @@
 
+legit do the thing where you take either all the data or all the data up to the end of the parent
+and just display that formatted properly
+
+
 if details have a little (the task details) above it possibly with diff color bg?
 
 
@@ -11,6 +15,16 @@ FUCKING DC MORON!!
 - 100 what the first usecase should be IS a shopping list so create it with that in mind and add the tag 
     - it persists stuff and can give you a handy img, you can even create a separate thing here for it to save
     - ig in future you would allow these to be linked via tag or sumnt for easy access say like shopping list
+
+[SO BASICS FOR SAVE SECTION]
+- either create your own, or on tag #shopping or on tag #save (also ig in future super long details but meh for now)
+- prints them out differently and has like the save function also
+- also allows you to add more details on notes in a like a separate bit or sumnt 
+- would be sick if it stored versions too maybe
+- super super basic tho, could even be new (like not included things) for all intents and purposes but do kinda want it linked to shopping tag ig
+- really is just glorified saved notes, does need its own db table tho 
+
+
 
 - as per above a little personal journal too for you to get stuff out, writing helps (adhd)
 
@@ -30,7 +44,7 @@ FUCKING DC MORON!!
         - any exterior stresses (like a gauge?)
         - mood rating (could be linked to/same/similar to above one)
 
-- some kinda super giga basic insights page
+- some kinda super giga basic insights page and or timeline page (and or as in could be merged or separate idk)
 
 
 
