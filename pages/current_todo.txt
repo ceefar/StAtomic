@@ -19,6 +19,32 @@ THEN THINK IT MIGHT BE TIME TO...
 
 
 
+- notes save section (if details is long does automatically, else you can find a task and add)
+- 100 what the first usecase should be IS a shopping list so create it with that in mind and add the tag 
+    - it persists stuff and can give you a handy img, you can even create a separate thing here for it to save
+    - ig in future you would allow these to be linked via tag or sumnt for easy access say like shopping list
+
+- as per above a little personal journal too for you to get stuff out, writing helps (adhd)
+
+- bearable style tracking for adhd  
+- works like this
+    - important tasks (tagged adhd) which are then queued up in your 'day' page at the top
+    - toggle tasks just under that are just basic things you might forget, which you can set reminders for at certain times/intervals
+        - note that since distractability is a real thing you can have these through a set times like lunch for example instead of just (in 4 hours)
+    - then just say the very first simple track to be this, so you log these things and see how it impacts just one area, sleep
+        - did you walk, if so how long
+        - diet marker (good, avg, bad or whatever)
+        - social?
+        - water?
+        - exercise (even tho not doing for sure) (different types too as cardio diff to kickboxing diff to strength training)
+        - caffeine intake amount and last time
+        - medication time?
+        - any exterior stresses (like a gauge?)
+        - mood rating (could be linked to/same/similar to above one)
+
+
+
+
 
 actually then quickly go back to subtask view as would be nice to have an option for just show 1 instead of all! 
 - tbh would be a better default too, obvs still having an all option tho
