@@ -154,7 +154,7 @@ def run():
     # todo task create intro and setup
     with form_intro:
 
-        st.write(f"### View & Create Important Entries")
+        st.write(f"### View, Save, & Create Important Entries")
         
         col1A, _ = st.columns([4,1])
         col1A.write("Shopping list ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia, molestiae quas vel sint commodi repudiandae consequuntur \
@@ -163,9 +163,16 @@ def run():
 
     # ---- SECTION ----
 
+    with st.container():
+        st.radio("Journal Select", options=["Create New", "View Saved"], horizontal=True)
+        st.write("---") 
+
+
+    # ---- SECTION ----
+
     with st.container():  
 
-        st.write("**Your New Task**")
+        st.write("**Your Journal Entry**")
         todo_faux_title = st.text_input("Enter A Task Title", value="A simple example", key="td_fauxtitle")
         todo_faux_detail = st.text_area("Enter Any Additional Details (Optional)", value="A more thorough example", key="td_fauxdetail")
         st.write("---")
@@ -176,8 +183,6 @@ def run():
     # ---- SECTION ----
 
     with st.container():  
-        
-        #st.header("Setup Essentials")
         st.write("**Setup Essentials**")
         todo_list_names = create_todo_lists_list()
         assigned_todo_list = st.selectbox("Want To Find An Existing Entry?", todo_list_names)

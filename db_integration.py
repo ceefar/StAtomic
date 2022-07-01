@@ -7,49 +7,61 @@ from dotenv import load_dotenv
 import datetime
 # testing sumnt
 import streamlit as st
+# testing new db connector
+import mysql.connector
+
+# Connect to server
+cnx = mysql.connector.connect(
+    host="sql8.freemysqlhosting.net",
+    port=3306,
+    user="sql8503131",
+    database='sql8503131',
+    password="B5Zsf5HD56")
 
 
 # ---- DATABASE INIT ----
 
 # load environment variables from .env file
 # singleton doesnt rerun, unlike st.cache decorator -> theres not return value so does this even matter?
-@st.experimental_singleton
-def load_env():
-    load_dotenv()
+#@st.experimental_singleton
+#def load_env():
+#    load_dotenv()
 
-load_dotenv()
+#load_dotenv()
     
-host = os.environ.get("mysql_host")
-user = os.environ.get("mysql_user")
-password = os.environ.get("mysql_pass")
-database = os.environ.get("mysql_db")
+#host = os.environ.get("mysql_host")
+#user = os.environ.get("mysql_user")
+#password = os.environ.get("mysql_pass")
+#database = os.environ.get("mysql_db")
 
 # establishes the database connection from .env file
-connection = pymysql.connect(
-    host = host,
-    user = user,
-    password = password,
-    database = database
-)
+#connection = pymysql.connect(
+#    host = host,
+#    user = user,
+#    password = password,
+#    database = database
+#)
+
+
 
 def add_to_db(command):
     """ adds values to the db with no return value, based on the given command (query) """
-    cursor = connection.cursor()
+    cursor = cnx.cursor()
     cursor.execute(f"{command}") 
-    connection.commit()
+    cnx.commit()
     cursor.close()
 
 def get_from_db(command):
     """ gets a result from the db, based on the given command (query) """
-    cursor = connection.cursor()
+    cursor = cnx.cursor()
     cursor.execute(f"{command}") 
     myresult = cursor.fetchall()
-    connection.commit()
+    cnx.commit()
     cursor.close()
     return(myresult)
 
 def close_connection():
-    connection.close()
+    cnx.close()
 
 # ---- END DATABASE INIT ----
 
