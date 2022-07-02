@@ -249,39 +249,50 @@ def run():
 
 
 
-    # OBVS ACTUALLY ADD TO DB - WITH NOTES TOO TBF
-    # OH ACTUALLY OBVS THE COLOR TING LIKE THE IMG DUH! (could use dataframe yanno!)
-    # ONCE THIS ONE IS DONE IT'S DONE?!, WELL ITS FINE FOR NOW, TIDY UP, MAYBE SUMNT AT BOTTOM FOR WEEKS OR WHATEVER BUT THEN 100% DONE FOR NOW!
-    # THEN JOURNAL AND DC!
-
-    # OMG HUGE BUT USE IMG CREATION HERE TOO DUHHH!!! #FIXME
 
     # ---- SECTION ----
 
     with st.container():
         st.write("Basic Stats or Sumnt Here? Maybe Not Idk - Dont Forget Need To Display Notes Somewhere Too Btw!")
-        st.write("---")
+        st.write("##")
 
         def style_specific_cell(x):
             color = 'background-color:#0083b8'
             color2 = 'background-color:green'
             df1 = pd.DataFrame('', index=x.index, columns=x.columns)
-            df1.iloc[2, 1] = color
-            df1.iloc[5, 2] = color2
-            df1.iloc[24, 3] = color
-            df1.iloc[26, 2] = color
+            #df1.iloc[2, 1] = color
+            #df1.iloc[5, 2] = color2
+            #df1.iloc[24, 3] = color
+            #df1.iloc[26, 2] = color
             return df1
 
-        data = {'Day':['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-        f'Week Number {weeknumb}':[5, None, 4, 3, None, None, None]}
 
-        mood_week_data = pd.DataFrame(data)
+        data = (5, None, 4, 3, None, None, None),(5, None, 4, 3, None, None, None)
+
+        mood_week_data = pd.DataFrame(data, columns=('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'), index=["Week 22","Week 23"])
+
+        # BUG: START FROM HERE !
+
+        # JUST FUNCTION THAT DOES IT BASED ON THE CELLS VALUE (WHICH IVE SEEN LOADS OF TUTS FOR BEFORE)
+        # THEN THE DYNAMIC DATA IN DATAFRAME
+        # THEN IG MAYBE PREVIOUS WEEK OR MONTH VIEW
+        # AND MAYBE SUMNT TO DO WITH NOTES
+        # THEN LEGIT THIS IS DONE!
+        
+        # OBVS ACTUALLY ADD TO DB - WITH NOTES TOO TBF
+        # OH ACTUALLY OBVS THE COLOR TING LIKE THE IMG DUH! (could use dataframe yanno!)
+        # ONCE THIS ONE IS DONE IT'S DONE?!, WELL ITS FINE FOR NOW, TIDY UP, MAYBE SUMNT AT BOTTOM FOR WEEKS OR WHATEVER BUT THEN 100% DONE FOR NOW!
+        # THEN JOURNAL AND DC!
+
+        # OMG HUGE BUT USE IMG CREATION HERE TOO DUHHH!!! #FIXME
 
         st.dataframe(mood_week_data.style.apply(style_specific_cell, axis=None))
 
-        st.dataframe(mood_week_data.head(31).style.highlight_null(null_color='#ff3632')) #
+        st.dataframe(mood_week_data.head(2).style.highlight_null(null_color='#efefef')) 
 
         # visualisation of weeks left in year would be nice too, could go in below bit tbf #FIXME
+
+        st.write("---")
     
 
     # index, userid, day, mood entry (as enum?), notes
@@ -295,7 +306,8 @@ def run():
 
 
 
-
+    # data2 = {'Day':['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+    # f'Week Number {weeknumb}':[5, None, 4, 3, None, None, None]}
 
 
 
