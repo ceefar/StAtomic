@@ -587,6 +587,83 @@ def get_tagid_from_formatted_tag(username, formatted_tag:str):
     return(user_tagid[0][0])
 
 
+# ---- stats / insights ----
+
+def get_count_all_tasks(username) -> int:
+    """ write me pls """
+    main_task_count = get_from_db(f"SELECT COUNT(taskType) FROM {username}_todo WHERE taskType = 'main_task'")
+    main_task_count = int(main_task_count[0][0])
+    # print(f"{main_task_count = }")
+    return(main_task_count)
+
+
+# ---- mood tracker ----
+
+def create_mood_table():
+    """ from manual sql query """
+    create_mood_table_query = "CREATE TABLE IF NOT EXISTS mood_monitor (mood_indx INT AUTO_INCREMENT NOT NULL PRIMARY KEY, user_id INT NOT NULL, mood_entry ENUM('worst','awful','bad','below average','average','above average','good','great','amazing') NOT NULL, mood_notes VARCHAR(1000), day_number INT DEFAULT (WEEKDAY(CURDATE())), week_number INT DEFAULT (WEEK(CURDATE())), entry_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL)"
+    add_to_db(create_mood_table_query)
+
+
+# could be one function and parameters, but better -> make it a class! oooo
+def get_current_date():
+    """ self referencing """
+    current_date = get_from_db("SELECT CURDATE()")
+    current_date = str(current_date[0][0])
+    return(current_date)
+
+
+def get_current_dayname():
+    """ self referencing """
+    current_dayname = get_from_db(f"SELECT DAYNAME(CURDATE())")
+    current_dayname = str(current_dayname[0][0])
+    return(current_dayname)
+
+
+def get_current_week_number():
+    """ self referencing """
+    current_weeknumb = get_from_db(f"SELECT WEEK(CURDATE())")
+    current_weeknumb = current_weeknumb[0][0]
+    return(current_weeknumb)
+
+
+def get_this_weeks_logged_mood_basics(username:str):
+    """ write me pls """
+    # obvs need to do username number shit but just forcing for now
+    if username == "ceefar":
+        user_id = 3
+    current_weeknumb = get_current_week_number()
+    get_weeks_mood_basics_query = f"SELECT day_number, mood_entry+0 FROM mood_monitor WHERE user_id = {user_id} AND week_number = {current_weeknumb}"
+    weeks_mood_basics = get_from_db(get_weeks_mood_basics_query)
+    # print(weeks_mood_basics)
+    return(weeks_mood_basics)
+
+
+def get_previous_sunday_mood_int(username:str) -> int:
+    """ used for ... """
+    # BIG TO N0TE - MONDAY IS 0, DOES THAT FUCK UP ANYTHING?
+    # obvs need this function to get username to id from user_info table 
+    if username == "ceefar":
+        user_id = 3
+    previous_week_numb = (get_current_week_number() - 1)
+    get_previous_sunday_mood = get_from_db(f"SELECT mood_entry+0 FROM mood_monitor WHERE user_id = {user_id} AND week_number = {previous_week_numb} AND day_number = 6")
+    get_previous_sunday_mood = int(get_previous_sunday_mood[0][0])
+    # return if not empty clause pls
+    return(get_previous_sunday_mood)
+
+
+def log_user_mood_for_day(username:str, mood_entry, mood_notes:str = None):
+    """ write me """
+    if username == "ceefar":
+        user_id = 3
+    if mood_notes:    
+        # truncate the notes if too long (unless can force that in the text entry)
+        add_to_db(f"INSERT INTO mood_monitor (user_id, mood_entry, mood_notes) VALUES {user_id}, '{mood_entry}', '{mood_notes}'")
+    else:
+        add_to_db(f"INSERT INTO mood_monitor (user_id, mood_entry) VALUES {user_id}, '{mood_entry}'")
+    
+
+
 # ---- main ----
 
 def main():

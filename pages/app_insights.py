@@ -25,7 +25,7 @@ db_username = user_name.lower()
 # either use more or remove pls, as barely using rn
 
 topper = st.container()
-form_intro = st.container()
+intro = st.container()
 
 
 # ---- page functions ----
@@ -147,90 +147,50 @@ def run():
     # header topper
     with topper:
 
-        st.write("##### Your Journal")
+        st.write("##### Your Insights")
 
     # ---- SECTION ----
 
     # todo task create intro and setup
-    with form_intro:
+    with intro:
 
-        st.write(f"### View, Save, & Create Important Entries")
+        st.write(f"### Stats, Insights, Reports, and Timeline")
+
+
+        # LIKE THIS IS GUNA NEED ITS OWN DB TABLE RIGHT BUT KEEP HELLA SIMPLE TO START OBVS!
         
         col1A, _ = st.columns([4,1])
-        col1A.write("Shopping list ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia, molestiae quas vel sint commodi repudiandae consequuntur \
+        col1A.write("Everything you need to lorem ipsum dolor sit amet consectetur adipisicing elit.\
+                    Maxime mollitia, molestiae quas vel sint commodi repudiandae consequuntur \
                     voluptatum laborum ")
         st.write("---")      
 
     # ---- SECTION ----
 
     with st.container():
-        st.radio("Journal Select", options=["Create New", "View Saved"], horizontal=True)
+        st.radio("Journal Select", options=["Stats", "Insights", "Reports", "Timeline"], horizontal=True)
         st.write("---") 
 
 
     # ---- SECTION ----
 
     with st.container():  
-
-        st.write("**Your Journal Entry**")
-        todo_faux_title = st.text_input("Enter A Task Title", value="A simple example", key="td_fauxtitle")
-        todo_faux_detail = st.text_area("Enter Any Additional Details (Optional)", value="A more thorough example", key="td_fauxdetail")
-        st.write("---")
-
-        # skip to end/quick add button?
+        st.write("Stats")
+        basic_main_task_count = db.get_count_all_tasks(db_username)
+        st.metric(label="Active Tasks", value=basic_main_task_count, delta=1, delta_color="normal")
 
 
-    # ---- SECTION ----
 
-    with st.container():  
-        st.write("**Setup Essentials**")
-        todo_list_names = create_todo_lists_list()
-        assigned_todo_list = st.selectbox("Want To Find An Existing Entry?", todo_list_names)
-        todolistid = get_id_numb_from_formatted_list_name(assigned_todo_list)
 
-        st.write("**Something Task**")
 
-        checkboxcol1, checkboxcol2, checkboxcol3 = st.columns(3)
-        with checkboxcol1:
-            is_subtask = st.checkbox("Make It A Sub Task?")
-        with checkboxcol2:
-            is_datesensitive = st.checkbox("Give It An End Date?")
-        with checkboxcol3:
-            if is_datesensitive:
-                is_timesensitive = st.checkbox("Give It An End Time?")
-            else:
-                is_timesensitive = st.checkbox("Give It An End Time?", disabled=True)
 
-        if is_subtask:
-            st.write("---")
-            subtaskcol1, subtaskcol2 = st.columns([3,2])
-            with subtaskcol1:
-                todo_lists_main_tasks_listed = get_main_tasks_for_todo_list_from_db_with_subcount(user_name, assigned_todo_list)
-                # print(f"{todo_lists_main_tasks_listed = }")
-                taskparentName = st.selectbox("Choose A Main Task To Assign To",todo_lists_main_tasks_listed)       
-                # could make dis a function but meh
-                braceindex = taskparentName.rfind("[")
-                if braceindex != -1:
-                    taskparentName = taskparentName[:braceindex-1]
 
-            with subtaskcol2:
-                st.write("**What's A Sub Task?**")
-                st.write("Explain it to me senpai")
 
-        task_end_date = ""
 
-        if is_datesensitive:
-            st.write("---")
-            timesenscol1, timesenscol2 = st.columns(2)
-            with timesenscol1:
-                # should sql command to grab the current date and use it as the default
-                task_end_date = st.date_input("End Date", datetime.date(2022, 7, 1))
-            with timesenscol2:
-                if is_timesensitive:
-                    task_end_time = st.time_input('End Time', datetime.time(16, 00))
-        
-        st.write("---")
-        st.write("##")
+
+
+
+
 
 
 
