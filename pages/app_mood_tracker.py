@@ -267,6 +267,9 @@ def run():
             return df1
 
 
+        
+
+
         data = (5, None, 4, 3, None, None, None),(5, None, 4, 3, None, None, None)
 
         mood_week_data = pd.DataFrame(data, columns=('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'), index=["Week 22","Week 23"])
@@ -286,7 +289,21 @@ def run():
 
         # OMG HUGE BUT USE IMG CREATION HERE TOO DUHHH!!! #FIXME
 
+        def style_df(val):
+            """ write me """
+            if val != None:
+                if val == 5:
+                    return("background-color: green")
+                elif val == 4:
+                    return("background-color: blue")
+                elif val == 3:
+                    return("background-color: yellow")
+            else:                                       
+                return("background-color: #efefef")
+
         st.dataframe(mood_week_data.style.apply(style_specific_cell, axis=None))
+
+        st.dataframe(mood_week_data.style.applymap(style_df))
 
         st.dataframe(mood_week_data.head(2).style.highlight_null(null_color='#efefef')) 
 
