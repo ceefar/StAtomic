@@ -141,10 +141,13 @@ def run():
     # ---- SECTION ----
 
     with st.container():
-        st.write("Weekly Mood Snapshot")
-        st.write("Lorem ipsum 1 is the lowest mood score and 9 is the best sit amet dolor etc")
+        st.markdown("##### Weekly Mood Snapshot")
+        col1B, _ = st.columns([4,1])
+        col1B.write("Lorem ipsum 1 is the lowest mood score and 9 is the best sit amet dolor etc also be sure to note how the delta works here so it's clear")
         current_date = db.get_current_date()
         current_dayname = db.get_current_dayname()
+        st.write("##")
+        st.markdown(f"### Your Mood This Week")
         st.markdown(f"##### Current Day is {current_dayname} [{current_date}]")
         st.write("##")
 
@@ -216,6 +219,8 @@ def run():
         weeknumb = db.get_current_week_number()
         st.write(f"Week {weeknumb} of 52")
 
+        # ACTUALLY 100 HAVE AN EXPANDER OF NOTES HERE TOO BTW! #FIXME
+
         # COULD HAVE A LIL BIT OF INFO ABOUT THE WEEK HERE TOO LIKE THE AVG AND AVG COMPARED TO PREVIOUS WEEK
         # AND MAYBE SOME TIPS LIKE JUST SUPER GENERAL IF BAD WEEK OR GOOD WEEK
         # BUT IN FUTURE INSIGHTS WOULD BE BASED ON THINGS YOU HAVE DONE IN GOOD WEEKS UR MISSING OR TO CONTINUE OR WHATEVER LIKE INSIGHTS AF BOSH! #TODO
@@ -244,6 +249,12 @@ def run():
             else:
                 db.log_user_mood_for_day(db_username, user_mood)
             st.success(f'Mood Added for {current_dayname} {current_date}')
+            # FIXME
+            # EITHER HAVE THIS HAPPEN AFTER X TIME OR HAVE SUMNT THAT FORCES IT TO HAPPEN IDK BUT THE FIELDS SHOULD WIPE AND SHIT SO FIGURE IT OUT PLS!
+            # DONT HAVE TO HAVE RERUN BTW 
+            # LIKE ABOVE COULD EVEN BE A BUTTON, UPDATE WEEK CHARTS! (legit could just be a faux button too, this might be the best idea! test anyway!!)
+            st.experimental_rerun()
+            
         
         st.write("---") 
 
@@ -293,11 +304,11 @@ def run():
             """ write me """
             if val != None:
                 if val == 5:
-                    return("background-color: green")
+                    return("background-color: #69B34C")
                 elif val == 4:
-                    return("background-color: blue")
+                    return("background-color: #FAB833")
                 elif val == 3:
-                    return("background-color: yellow")
+                    return("background-color: #FF4E11")
             else:                                       
                 return("background-color: #efefef")
 
@@ -307,6 +318,7 @@ def run():
 
         st.dataframe(mood_week_data.head(2).style.highlight_null(null_color='#efefef')) 
 
+        # AVG FOR WEEK WOULD BE NICE HERE TOO BTW DUH! #FIXME
         # visualisation of weeks left in year would be nice too, could go in below bit tbf #FIXME
 
         st.write("---")
@@ -336,3 +348,14 @@ def run():
 
 if __name__ == "__main__":
     run()
+
+
+
+
+
+
+
+
+
+## WRITE OUT ALL NOTES T0DO FROM HERE FIRST
+## THEN IMPLEMENT SHIT (this (+ imgs for here too basic), then journal basic af, then dc basic af?, then cv and bio and techinterview prep (note can do first 2 also on monday morning and 3rd on monday evening/tuesday morning) )

@@ -658,9 +658,9 @@ def log_user_mood_for_day(username:str, mood_entry, mood_notes:str = None):
         user_id = 3
     if mood_notes:    
         # truncate the notes if too long (unless can force that in the text entry)
-        add_to_db(f"INSERT INTO mood_monitor (user_id, mood_entry, mood_notes) VALUES {user_id}, '{mood_entry}', '{mood_notes}'")
+        add_to_db(f"INSERT INTO mood_monitor (user_id, mood_entry, mood_notes) VALUES ({user_id}, '{mood_entry}', '{mood_notes}')")
     else:
-        add_to_db(f"INSERT INTO mood_monitor (user_id, mood_entry) VALUES {user_id}, '{mood_entry}'")
+        add_to_db(f"INSERT INTO mood_monitor (user_id, mood_entry) VALUES ({user_id}, '{mood_entry}')")
     
 
 
