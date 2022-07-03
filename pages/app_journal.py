@@ -147,24 +147,24 @@ def run():
     # header topper
     with topper:
 
-        st.write("##### Your Journal")
+        st.write("##### Check out Your Checkouts")
 
     # ---- SECTION ----
 
     # todo task create intro and setup
     with form_intro:
 
-        st.write(f"### View, Save, & Create Important Entries")
+        st.write(f"### Journal Beta")
         
         col1A, _ = st.columns([4,1])
-        col1A.write("Shopping list ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia, molestiae quas vel sint commodi repudiandae consequuntur \
+        col1A.write("Anytime you use the shopping list tag we'll automatically save and store the list for your here in a handy lorem, simple for now, will expand to proper journal shortly, to be view, save, and create important entries or just document your life one entry at a time lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia, molestiae quas vel sint commodi repudiandae consequuntur \
                     voluptatum laborum ")
         st.write("---")      
 
     # ---- SECTION ----
 
     with st.container():
-        st.radio("Journal Select", options=["Create New", "View Saved"], horizontal=True)
+        st.radio("List Select", options=["Create New", "View Saved"], horizontal=True)
         st.write("---") 
 
 
@@ -178,6 +178,13 @@ def run():
         st.write("---")
 
         # skip to end/quick add button?
+
+
+    # ---- TEST SECTION ----
+
+    stc.html(SHOP_CARD_1_HTML_TEMPLATE.format(db_username), height=550)
+
+    stc.html(SHOP_CARD_2_HTML_TEMPLATE.format(db_username), height=550)
 
 
     # ---- SECTION ----
@@ -207,7 +214,7 @@ def run():
             with subtaskcol1:
                 todo_lists_main_tasks_listed = get_main_tasks_for_todo_list_from_db_with_subcount(user_name, assigned_todo_list)
                 # print(f"{todo_lists_main_tasks_listed = }")
-                taskparentName = st.selectbox("Choose A Main Task To Assign To",todo_lists_main_tasks_listed)       
+                taskparentName = st.selectbox("Choose A Main Task To Assign To", todo_lists_main_tasks_listed)       
                 # could make dis a function but meh
                 braceindex = taskparentName.rfind("[")
                 if braceindex != -1:
@@ -231,6 +238,65 @@ def run():
         
         st.write("---")
         st.write("##")
+
+
+
+SHOP_CARD_1_HTML_TEMPLATE = """
+<div style="width:40%; height:100%; padding:50px 0px 0px 0px; position:relative; border-radius:40px; 
+box-shadow: 5px 5px 5px 5px rgba(0,0,0,0.15); background: linear-gradient(120deg,  #343A4F, #0F1620);>
+<div style="width:100%; height:100%; position:relative;">
+<div style="font-size:1.3rem; font-family: 'Roboto', sans-serif; color:#efefef; padding-left:15px;">Shopping</div>
+<div style="font-size:1.3rem; font-family: 'Roboto', sans-serif; color:#efefef; padding-left:15px;">List</div>
+<div style="height:100%; padding:0px 10px 160px 0px"><img src ="https://www.shareicon.net/data/256x256/2016/05/05/760099_food_512x512.png" 
+style="display: flex; flex-direction: column; justify-content: space-between; position: relative;
+min-height: 100px; max-height:120px; float:right;
+box-shadow: 5px 5px 5px 5px rgba(0,0,0,0.15);">
+</div>
+<div style="width:auto; height:100%; positiion:relative; background-color:white; box-shadow: 5px 5px 5px 5px rgba(0,0,0,0.15); 
+padding: 10px 0px 50px 15px; border-radius:0px 0px 40px 40px; font-family: 'Roboto', sans-serif;">
+Some Text
+<h2 style="color:#151515; font-weight:500; margin-bottom:10px; font-size:1.3rem; font-family: 'Roboto', sans-serif;">{}</h2>
+</div>
+</div>
+</div>
+"""
+
+SHOP_CARD_2_HTML_TEMPLATE = """
+<div style="width:40%; height:100%; padding:50px 0px 0px 0px; position:relative; border-radius:40px; 
+box-shadow: 5px 5px 5px 5px rgba(0,0,0,0.15); background: linear-gradient(120deg,  #343A4F, #0F1620);>
+<div style="width:100%; height:100%; position:relative;">
+<div style="font-size:1.3rem; font-family: 'Roboto', sans-serif; color:#efefef; padding-left:15px;">Shopping</div>
+<div style="font-size:1.3rem; font-family: 'Roboto', sans-serif; color:#efefef; padding-left:15px;">List</div>
+<div style="height:100%; padding:0px 10px 100px 0px"><img src ="https://www.shareicon.net/data/256x256/2016/05/05/760099_food_512x512.png" 
+style="display: flex; flex-direction: column; justify-content: space-between; position: relative;
+min-height: 100px; max-height:120px; float:right">
+</div>
+<div style="width:auto; height:100%; positiion:relative; background-color:white; box-shadow: 5px 5px 5px 5px rgba(0,0,0,0.15); 
+padding: 10px 0px 50px 15px; border-radius:0px 0px 40px 40px; font-family: 'Roboto', sans-serif;">
+Some Text
+<h2 style="color:#151515; font-weight:500; margin-bottom:10px; font-size:1.3rem; font-family: 'Roboto', sans-serif;">{}</h2>
+</div>
+</div>
+</div>
+"""
+
+
+SHOP_CARD_1_HTML_TEMPLATE_OG = """
+<div style="padding-left:15px;font-family: 'Roboto', sans-serif; font-weight:600; color:grey;">{}</div>
+<div class="card" style="width:90%; height:100%; margin:5px 20px 1px 1px; padding:1px 5px 35px 15px; position:relative; border-radius:5px;
+border=5px solid; box-shadow:0 0 1px 1px #eee; 
+background: radial-gradient(rgba(255,255,255,0.2)8%,transparent 8%); background-position:0%, 0%; background-size:5vmin 5vmin;
+font-weight:300; border-left:10px solid #484848; color:white; font-family: 'Roboto', sans-serif; box-shadow: 5px 5px 5px 5px rgba(0,0,0,0.15);">
+<h2 style="color:#eba538; font-weight:500; margin-bottom:10px; font-size:1.3rem;">{}</h2>
+<div style="color:#efefef; font-weight:300; margin-bottom:5px; margin-left:-15px"><span style="background-color:#484848; color:#ffffff; border-radius:2px; padding:2px 5px;">details</span></div>
+<div style="color:#efefef; font-weight:300; margin-bottom:25px;">{}</div>
+<div style="border-top: 1px dashed #7e7e7e; padding-bottom:10px"></div>
+<div style="color:#efefef; font-weight:300; margin-bottom:15px;">Created {} Days Ago <span style="color:#949494;">[{}]</span></div>
+{}
+<span style="width:95%; height:100%; position:absolute; text-align:right; font-size:0.9rem; color:#949494; margin-left:-10px;">{}</span>
+<span style="width:95%; height:100%; position:absolute; text-align:left; color:#949494;">{}</span>
+</div>
+"""
 
 
 
