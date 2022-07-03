@@ -164,93 +164,102 @@ def run():
     # ---- SECTION ----
 
     with st.container():
-        st.radio("List Select", options=["Create New", "View Saved"], horizontal=True)
+        saved_or_new = st.radio("List Select", options=["View Saved", "Create New"], horizontal=True)
         st.write("---") 
-
 
     # ---- SECTION ----
 
-    with st.container():  
+    if saved_or_new == "View Saved":
+        with st.container():  
+            st.write("**Your Shopping Lists**")
+            todo_list_names = create_todo_lists_list()
+            assigned_todo_list = st.selectbox("Want To Find An Existing Entry?", todo_list_names)
+            todolistid = get_id_numb_from_formatted_list_name(assigned_todo_list)
 
-        st.write("**Your Journal Entry**")
-        todo_faux_title = st.text_input("Enter A Task Title", value="A simple example", key="td_fauxtitle")
-        todo_faux_detail = st.text_area("Enter Any Additional Details (Optional)", value="A more thorough example", key="td_fauxdetail")
-        st.write("---")
+    # ---- NEW CARD SECTION ----
+
+        st.write("##") 
+
+        cardcol1, cardcol2 = st.columns(2)
+        with cardcol1:
+            stc.html(SHOP_CARD_3_HTML_TEMPLATE.format(db_username), height=550)
+        with cardcol2:
+            stc.html(SHOP_CARD_3_HTML_TEMPLATE.format(db_username), height=550)
+
+    else:
+        with st.container():  
+
+            st.write("**Your Journal Entry**")
+            todo_faux_title = st.text_input("Enter A Task Title", value="A simple example", key="td_fauxtitle")
+            todo_faux_detail = st.text_area("Enter Any Additional Details (Optional)", value="A more thorough example", key="td_fauxdetail")
+            st.write("---")
 
         # skip to end/quick add button?
 
 
-    # ---- TEST SECTION ----
-
-    stc.html(SHOP_CARD_1_HTML_TEMPLATE.format(db_username), height=550)
-
-    stc.html(SHOP_CARD_2_HTML_TEMPLATE.format(db_username), height=550)
-
-
-    # ---- SECTION ----
-
-    with st.container():  
-        st.write("**Setup Essentials**")
-        todo_list_names = create_todo_lists_list()
-        assigned_todo_list = st.selectbox("Want To Find An Existing Entry?", todo_list_names)
-        todolistid = get_id_numb_from_formatted_list_name(assigned_todo_list)
-
-        st.write("**Something Task**")
-
-        checkboxcol1, checkboxcol2, checkboxcol3 = st.columns(3)
-        with checkboxcol1:
-            is_subtask = st.checkbox("Make It A Sub Task?")
-        with checkboxcol2:
-            is_datesensitive = st.checkbox("Give It An End Date?")
-        with checkboxcol3:
-            if is_datesensitive:
-                is_timesensitive = st.checkbox("Give It An End Time?")
-            else:
-                is_timesensitive = st.checkbox("Give It An End Time?", disabled=True)
-
-        if is_subtask:
-            st.write("---")
-            subtaskcol1, subtaskcol2 = st.columns([3,2])
-            with subtaskcol1:
-                todo_lists_main_tasks_listed = get_main_tasks_for_todo_list_from_db_with_subcount(user_name, assigned_todo_list)
-                # print(f"{todo_lists_main_tasks_listed = }")
-                taskparentName = st.selectbox("Choose A Main Task To Assign To", todo_lists_main_tasks_listed)       
-                # could make dis a function but meh
-                braceindex = taskparentName.rfind("[")
-                if braceindex != -1:
-                    taskparentName = taskparentName[:braceindex-1]
-
-            with subtaskcol2:
-                st.write("**What's A Sub Task?**")
-                st.write("Explain it to me senpai")
-
-        task_end_date = ""
-
-        if is_datesensitive:
-            st.write("---")
-            timesenscol1, timesenscol2 = st.columns(2)
-            with timesenscol1:
-                # should sql command to grab the current date and use it as the default
-                task_end_date = st.date_input("End Date", datetime.date(2022, 7, 1))
-            with timesenscol2:
-                if is_timesensitive:
-                    task_end_time = st.time_input('End Time', datetime.time(16, 00))
-        
-        st.write("---")
-        st.write("##")
 
 
 
-SHOP_CARD_1_HTML_TEMPLATE = """
+    # SHOULD ONLY SHOW VALID IN DD BTW
+    # K NOW OBVS GET THE SHIT FORMATTED PROPERLY CARDS (v basic nice and quick)
+        # HAVE THOSE IMGS RANDOMISE PLS?!! (or more based on whats in the basket, maybe you set it idk)
+    # ADD A BASE SHOPPING LIST ENTRY IF DON'T ALREADY HAVE
+    # WITH ITS TAG
+    # I THINK FOR THIS MAYBE SHOULD ONLY BE THE PARENT FOR NOW
+        # THO DEFO KIDS IN FUTURE WHICH CAN BE LIKE SMALL ITERATIONS 
+        # i.e. mexican, obvs shopping list still has the main shit but then sometimes u have a list with a few changes bosh
+        # ACTUALLY FUCK IT IMPLEMENT THIS IF IS EASY ENOUGH
+    # THEN WHEN YOU TAP A CARD ITS JUST GUNA OPEN IT IN HERE! 
+        # button might have to be under the card unless see if can merge st and html?! or even just own html button as trigger/link>!
+    # WHEN OPEN ITS GUNA SHOW YOU THE DETAILED LIST
+    # PLUS OPTION TO DOWNLOAD AS IMG!
+    # OPTION TO TICK OFF AS YOU GO
+    # OPTION TO MAKE EDITS, ADD NEW ?????
+    # OMG REPLACE ICON THAT SHOWS SIMILAR (not functional but can implement slowly machine learning similar foods)
+    # WHEN DONE SAVE EDITS IF HAVING ???? WOULD BE AS CHILD AS NEVER WANNA DELETE (tho you can if you want to)
+    # ENTER HOW MUCH IT COST, LOCATION, ETC?
+
+
+# top div centers card
+# 2nd div main top setup with gradient bg
+# 3rd div for card structure
+# 4th and 5th div for text
+# 6th div for img
+# 7th div main bottom setup with white bg and text
+# 8th h2 for text
+SHOP_CARD_3_HTML_TEMPLATE = """
+<div style="  display: flex; justify-content: center; align-items: center;">
+<div style="width:90%; height:100%; padding:50px 0px 0px 0px; position:relative; border-radius:40px; 
+box-shadow: 5px 5px 5px 5px rgba(0,0,0,0.15); background: linear-gradient(120deg, #343A4F, #483d8b);>
+<div style="width:100%; height:100%; position:relative;">
+<div style="font-size:1.3rem; font-family: 'Roboto', sans-serif; color:#efefef; padding-left:15px;">Shopping</div>
+<div style="font-size:1.3rem; font-family: 'Roboto', sans-serif; color:#efefef; padding-left:15px;">List</div>
+<div style="height:100%; padding:0px 10px 100px 0px;"><img src ="https://www.shareicon.net/data/256x256/2016/05/05/760099_food_512x512.png" 
+style="display: flex; flex-direction: column; justify-content: space-between; position: relative; filter: drop-shadow(5px 5px 10px #0F1620);
+min-height: 100px; max-height:120px; float:right">
+</div>
+<div style="width:auto; height:100%; positiion:relative; background-color:white; box-shadow: 5px 5px 5px 5px rgba(0,0,0,0.15); 
+padding: 10px 0px 50px 15px; border-radius:0px 0px 40px 40px; font-family: 'Roboto', sans-serif;">
+Some Text
+<h2 style="color:#151515; font-weight:500; margin-bottom:10px; font-size:1.3rem; font-family: 'Roboto', sans-serif;">{}</h2>
+</div>
+</div>
+</div>
+</div>
+"""
+
+
+#stc.html(SHOP_CARD_2_HTML_TEMPLATE.format(db_username), height=550)
+
+SHOP_CARD_2_HTML_TEMPLATE = """
 <div style="width:40%; height:100%; padding:50px 0px 0px 0px; position:relative; border-radius:40px; 
 box-shadow: 5px 5px 5px 5px rgba(0,0,0,0.15); background: linear-gradient(120deg,  #343A4F, #0F1620);>
 <div style="width:100%; height:100%; position:relative;">
 <div style="font-size:1.3rem; font-family: 'Roboto', sans-serif; color:#efefef; padding-left:15px;">Shopping</div>
 <div style="font-size:1.3rem; font-family: 'Roboto', sans-serif; color:#efefef; padding-left:15px;">List</div>
-<div style="height:100%; padding:0px 10px 160px 0px"><img src ="https://www.shareicon.net/data/256x256/2016/05/05/760099_food_512x512.png" 
-style="display: flex; flex-direction: column; justify-content: space-between; position: relative;
-min-height: 100px; max-height:120px; float:right;
-box-shadow: 5px 5px 5px 5px rgba(0,0,0,0.15);">
+<div style="height:100%; padding:0px 10px 100px 0px;"><img src ="https://www.shareicon.net/data/256x256/2016/05/05/760099_food_512x512.png" 
+style="display: flex; flex-direction: column; justify-content: space-between; position: relative; filter: drop-shadow(5px 5px 10px #0F1620);
+min-height: 100px; max-height:120px; float:right">
 </div>
 <div style="width:auto; height:100%; positiion:relative; background-color:white; box-shadow: 5px 5px 5px 5px rgba(0,0,0,0.15); 
 padding: 10px 0px 50px 15px; border-radius:0px 0px 40px 40px; font-family: 'Roboto', sans-serif;">
@@ -261,15 +270,19 @@ Some Text
 </div>
 """
 
-SHOP_CARD_2_HTML_TEMPLATE = """
+
+# ---- NOT USING RN BUT PLS SAVE AS WILL WANT TO REFERENCE FOR SURE! ----
+
+SHOP_CARD_1_HTML_TEMPLATE = """
 <div style="width:40%; height:100%; padding:50px 0px 0px 0px; position:relative; border-radius:40px; 
 box-shadow: 5px 5px 5px 5px rgba(0,0,0,0.15); background: linear-gradient(120deg,  #343A4F, #0F1620);>
 <div style="width:100%; height:100%; position:relative;">
 <div style="font-size:1.3rem; font-family: 'Roboto', sans-serif; color:#efefef; padding-left:15px;">Shopping</div>
 <div style="font-size:1.3rem; font-family: 'Roboto', sans-serif; color:#efefef; padding-left:15px;">List</div>
-<div style="height:100%; padding:0px 10px 100px 0px"><img src ="https://www.shareicon.net/data/256x256/2016/05/05/760099_food_512x512.png" 
-style="display: flex; flex-direction: column; justify-content: space-between; position: relative;
-min-height: 100px; max-height:120px; float:right">
+<div style="height:100%; padding:0px 10px 160px 0px"><img src ="https://www.shareicon.net/data/256x256/2016/05/05/760099_food_512x512.png" 
+style="display: flex; flex-direction: column; justify-content: space-between; position: relative; filter: drop-shadow(5px 5px 10px #0F1620);
+min-height: 100px; max-height:120px; float:right;
+box-shadow: 5px 5px 5px 5px rgba(0,0,0,0.15);">
 </div>
 <div style="width:auto; height:100%; positiion:relative; background-color:white; box-shadow: 5px 5px 5px 5px rgba(0,0,0,0.15); 
 padding: 10px 0px 50px 15px; border-radius:0px 0px 40px 40px; font-family: 'Roboto', sans-serif;">
