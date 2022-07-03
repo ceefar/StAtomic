@@ -8,6 +8,8 @@ import streamlit.components.v1 as stc # < unused at present
 import datetime
 # for regular expressions
 import re
+# for randomisation
+import random
 # ---- my module imports ----
 # for db access
 import db_integration as db
@@ -169,6 +171,11 @@ def run():
 
     # ---- SECTION ----
 
+    basket_images = ["https://cdn-icons-png.flaticon.com/512/3724/3724788.png",
+                "https://i0.wp.com/img.talkandroid.com/uploads/2015/08/cinnamon-icon.png",
+                "https://www.shareicon.net/data/256x256/2016/05/05/760099_food_512x512.png"]
+
+
     if saved_or_new == "View Saved":
         with st.container():  
             st.write("**Your Shopping Lists**")
@@ -176,15 +183,15 @@ def run():
             assigned_todo_list = st.selectbox("Want To Find An Existing Entry?", todo_list_names)
             todolistid = get_id_numb_from_formatted_list_name(assigned_todo_list)
 
-    # ---- NEW CARD SECTION ----
+        # ---- NEW CARD SECTION ----
 
         st.write("##") 
-
+ 
         cardcol1, cardcol2 = st.columns(2)
         with cardcol1:
-            stc.html(SHOP_CARD_3_HTML_TEMPLATE.format(db_username), height=550)
+            stc.html(SHOP_CARD_4_HTML_TEMPLATE.format(basket_images[random.randint(0, 2)], db_username), height=550)
         with cardcol2:
-            stc.html(SHOP_CARD_3_HTML_TEMPLATE.format(db_username), height=550)
+            stc.html(SHOP_CARD_4_HTML_TEMPLATE.format(basket_images[random.randint(0, 2)], db_username), height=550)
 
     else:
         with st.container():  
@@ -195,12 +202,12 @@ def run():
             st.write("---")
 
         # skip to end/quick add button?
+ 
 
 
 
 
-
-    # SHOULD ONLY SHOW VALID IN DD BTW
+    # SHOULD ONLY SHOW VALID IN DD BTW - SO DO THAT RN WRITE THE QUERY!
     # K NOW OBVS GET THE SHIT FORMATTED PROPERLY CARDS (v basic nice and quick)
         # HAVE THOSE IMGS RANDOMISE PLS?!! (or more based on whats in the basket, maybe you set it idk)
     # ADD A BASE SHOPPING LIST ENTRY IF DON'T ALREADY HAVE
@@ -219,6 +226,14 @@ def run():
     # WHEN DONE SAVE EDITS IF HAVING ???? WOULD BE AS CHILD AS NEVER WANNA DELETE (tho you can if you want to)
     # ENTER HOW MUCH IT COST, LOCATION, ETC?
 
+    # ONCE THIS IS DONE EITHER...
+    # DC BASIC WEBHOOK SUMNT 
+    #   - say like if it was every day at x time for example ooooo DO THIS TBF! SO HAVE BASICS! 
+    #   - and send an img via dc of a current task or sumnt ooooo!!!!
+    # OTHER PAGES (OR THIS PAGE TBF) FULL WEB/DB REFACTOR TEST
+    # &/OR CV
+
+
 
 # top div centers card
 # 2nd div main top setup with gradient bg
@@ -227,14 +242,48 @@ def run():
 # 6th div for img
 # 7th div main bottom setup with white bg and text
 # 8th h2 for text
+
+#FIXME : format the card img size and could sort better overlay & dimensions on it as img too tbf!
+
+SHOP_CARD_4_HTML_TEMPLATE = """
+<div style="display:flex; justify-content:center; align-items:center;">
+<div style="width:90%; height:100%; padding:50px 0px 0px 0px; position:relative; border-radius:40px; 
+box-shadow: 5px 5px 5px 5px rgba(0,0,0,0.15); 
+background: url('https://thehardgainerbible.com/wp-content/uploads/2022/07/abstract-blur-defocused-supermarket.jpg');
+background-size: cover; background-color:rgba(42,46,63,0.95); background-blend-mode: overlay;>
+<div style="width:100%; height:100%; position:relative;">
+<div style="font-size:1.7rem; font-family: 'Roboto', sans-serif; color:#efefef; padding-left:20px; font-weight:500;">Shopping</div>
+<div style="font-size:1.7rem; font-family: 'Roboto', sans-serif; color:#efefef; padding-left:20px; font-weight:500;">List</div>
+<div style="height:100%; padding:0px 10px 90px 0px;"><img src ="{}" 
+style="display: flex; flex-direction: column; justify-content: space-between; position: relative; filter: drop-shadow(5px 5px 10px #0F1620);
+min-height: 100px; max-height:120px; float:right">
+</div>
+<div style="width:auto; height:100%; positiion:relative; background-color:white; box-shadow: 5px 5px 5px 5px rgba(0,0,0,0.15); 
+padding: 20px 0px 50px 15px; border-radius:0px 0px 40px 40px; font-family: 'Roboto', sans-serif;">
+Some Text
+<h2 style="color:#151515; font-weight:500; margin-bottom:10px; font-size:1.3rem; font-family: 'Roboto', sans-serif;">{}</h2>
+</div>
+</div>
+</div>
+</div>
+"""
+
+# https://thehardgainerbible.com/wp-content/uploads/2022/07/abstract-blur-defocused-supermarket.jpg
+# https://thehardgainerbible.com/wp-content/uploads/2022/07/abstract-blur-supermarket.jpg
+# background-position: center;
+# background-color:rgba(71,71,71,0.95);
+# rgba(52,58,79,0.95)
+# 42,46,63
+
+
 SHOP_CARD_3_HTML_TEMPLATE = """
-<div style="  display: flex; justify-content: center; align-items: center;">
+<div style="display: flex; justify-content: center; align-items: center;">
 <div style="width:90%; height:100%; padding:50px 0px 0px 0px; position:relative; border-radius:40px; 
 box-shadow: 5px 5px 5px 5px rgba(0,0,0,0.15); background: linear-gradient(120deg, #343A4F, #483d8b);>
 <div style="width:100%; height:100%; position:relative;">
 <div style="font-size:1.3rem; font-family: 'Roboto', sans-serif; color:#efefef; padding-left:15px;">Shopping</div>
 <div style="font-size:1.3rem; font-family: 'Roboto', sans-serif; color:#efefef; padding-left:15px;">List</div>
-<div style="height:100%; padding:0px 10px 100px 0px;"><img src ="https://www.shareicon.net/data/256x256/2016/05/05/760099_food_512x512.png" 
+<div style="height:100%; padding:0px 10px 100px 0px;"><img src ="{}" 
 style="display: flex; flex-direction: column; justify-content: space-between; position: relative; filter: drop-shadow(5px 5px 10px #0F1620);
 min-height: 100px; max-height:120px; float:right">
 </div>
@@ -247,6 +296,8 @@ Some Text
 </div>
 </div>
 """
+
+
 
 
 #stc.html(SHOP_CARD_2_HTML_TEMPLATE.format(db_username), height=550)
