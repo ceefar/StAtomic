@@ -270,6 +270,24 @@ border-left:10px solid #484848; color:white; font-family: 'Roboto', sans-serif; 
 # test tagged version for details idea 
 TAGGED_DEETS_HTML_TEMPLATE = """
 <div style="padding-left:15px;font-family: 'Roboto', sans-serif; font-weight:600; color:grey;">{}</div>
+<div class="card" style="width:90%; height:100%; margin:5px 20px 1px 1px; padding:1px 5px 35px 15px; position:relative; border-radius:5px;
+border=5px solid; box-shadow:0 0 1px 1px #eee; 
+background: radial-gradient(rgba(255,255,255,0.2)8%,transparent 8%); background-position:0%, 0%; background-size:5vmin 5vmin;
+font-weight:300; border-left:10px solid #484848; color:white; font-family: 'Roboto', sans-serif; box-shadow: 5px 5px 5px 5px rgba(0,0,0,0.15);">
+<h2 style="color:#eba538; font-weight:500; margin-bottom:10px; font-size:1.3rem;">{}</h2>
+<div style="color:#efefef; font-weight:300; margin-bottom:5px; margin-left:-15px"><span style="background-color:#484848; color:#ffffff; border-radius:2px; padding:2px 5px;">details</span></div>
+<div style="color:#efefef; font-weight:300; margin-bottom:25px;">{}</div>
+<div style="border-top: 1px dashed #7e7e7e; padding-bottom:10px"></div>
+<div style="color:#efefef; font-weight:300; margin-bottom:15px;">Created {} Days Ago <span style="color:#949494;">[{}]</span></div>
+{}
+<span style="width:95%; height:100%; position:absolute; text-align:right; font-size:0.9rem; color:#949494; margin-left:-10px;">{}</span>
+<span style="width:95%; height:100%; position:absolute; text-align:left; color:#949494;">{}</span>
+</div>
+"""
+
+# backup currently working version of card
+TAGGED_DEETS_HTML_TEMPLATE_OG_BACKUP = """
+<div style="padding-left:15px;font-family: 'Roboto', sans-serif; font-weight:600; color:grey;">{}</div>
 <div style="width:90%; height:100%; margin:5px 20px 1px 1px; padding:1px 5px 35px 15px; position:relative; border-radius:5px;
 border=5px solid; box-shadow:0 0 1px 1px #eee; background-color:#31333F; font-weight:300;
 border-left:10px solid #484848; color:white; font-family: 'Roboto', sans-serif; box-shadow: 5px 5px 5px 5px rgba(0,0,0,0.15);">
@@ -287,13 +305,12 @@ border-left:10px solid #484848; color:white; font-family: 'Roboto', sans-serif; 
 
 
 
-
 # ---- main page ----
 
 def run():
 
     # PAGE DEF THING SHOULD BE HERE BTW!
-
+    
     # ---- SECTION ----
     
     # header topper
@@ -618,7 +635,6 @@ def run():
                             )
 
             #st.write("---")
-
 
 
 

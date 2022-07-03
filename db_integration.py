@@ -646,10 +646,15 @@ def get_previous_sunday_mood_int(username:str) -> int:
     if username == "ceefar":
         user_id = 3
     previous_week_numb = (get_current_week_number() - 1)
+    #print(f"{get_current_week_number() = }")
+    #print(f"{previous_week_numb = }")
     get_previous_sunday_mood = get_from_db(f"SELECT mood_entry+0 FROM mood_monitor WHERE user_id = {user_id} AND week_number = {previous_week_numb} AND day_number = 6")
-    get_previous_sunday_mood = int(get_previous_sunday_mood[0][0])
-    # return if not empty clause pls
-    return(get_previous_sunday_mood)
+    try:
+        get_previous_sunday_mood = int(get_previous_sunday_mood[0][0])
+        # return if not empty clause pls
+        return(get_previous_sunday_mood)
+    except IndexError:
+        return(None)
 
 
 def log_user_mood_for_day(username:str, mood_entry, mood_notes:str = None):
@@ -662,6 +667,43 @@ def log_user_mood_for_day(username:str, mood_entry, mood_notes:str = None):
     else:
         add_to_db(f"INSERT INTO mood_monitor (user_id, mood_entry) VALUES ({user_id}, '{mood_entry}')")
     
+
+def get_all_week_numbs_for_user(username:str):
+    """ constraining to this year only btw """
+    if username == "ceefar":
+        user_id = 3
+    get_week_numbs = get_from_db(f"SELECT DISTINCT week_number FROM mood_monitor WHERE user_id = {user_id} AND YEAR(entry_date) = 2022 ORDER BY week_number") 
+    week_numb_list = []
+    [week_numb_list.append(week_numb[0]) for week_numb in get_week_numbs] 
+    return(week_numb_list)
+
+
+def get_mood_data_for_given_week_numb(username:str, givenweek:int) -> tuple:
+    """ write me """
+    if username == "ceefar":
+        user_id = 3
+    get_week_mood_data = f"SELECT day_number, mood_entry+0 FROM mood_monitor WHERE user_id = {user_id} AND week_number = {givenweek} ORDER BY day_number"
+    weeks_mood_data = get_from_db(get_week_mood_data)
+    #print(f"{weeks_mood_data = }") 
+    final_week_list = []
+
+    def add_day(j):
+        """ if you find the day numb in the given week data tuple then add its mood int else add none, pls note bool here is critical """
+        daydone = False
+        for week in weeks_mood_data:
+            if week[0] == j:
+                final_week_list.append(int(week[1]))
+                daydone = True
+        if daydone == False:
+            final_week_list.append(None)
+    
+    for i in range(7):
+        add_day(i)
+
+    #print(f"{final_week_list = }") 
+    final_week_tuple = tuple(final_week_list)
+    #print(f"{final_week_tuple = }") 
+    return(final_week_tuple)
 
 
 # ---- main ----
@@ -679,3 +721,65 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+
+"""
+    for i in range(7):
+        if i == 0:
+            mondone = False
+            for week in weeks_mood_data:           
+                if week[0] == 0:
+                    final_week_list.append(week[1])
+                    mondone = True
+            if mondone == False:
+                final_week_list.append(None)
+        if i == 1:
+            tuedone = False
+            for week in weeks_mood_data:           
+                if week[0] == 1:
+                    final_week_list.append(week[1])
+                    tuedone = True
+            if tuedone == False:
+                final_week_list.append(None)
+        if i == 2:
+            weddone = False
+            for week in weeks_mood_data:           
+                if week[0] == 2:
+                    final_week_list.append(week[1])
+                    weddone = True
+            if weddone == False:
+                final_week_list.append(None)
+        if i == 3:
+            thudone = False
+            for week in weeks_mood_data:           
+                if week[0] == 3:
+                    final_week_list.append(week[1])
+                    thudone = True
+            if thudone == False:
+                final_week_list.append(None)                
+        if i == 4:
+            fridone = False
+            for week in weeks_mood_data:           
+                if week[0] == 4:
+                    final_week_list.append(week[1])
+                    fridone = True
+            if fridone == False:
+                final_week_list.append(None)     
+        if i == 5:
+            satdone = False
+            for week in weeks_mood_data:           
+                if week[0] == 5:
+                    final_week_list.append(week[1])
+                    satdone = True
+            if satdone == False:
+                final_week_list.append(None)
+        if i == 6:
+            sundone = False
+            for week in weeks_mood_data:           
+                if week[0] == 6:
+                    final_week_list.append(week[1])
+                    sundone = True
+            if sundone == False:
+                final_week_list.append(None)      
+"""

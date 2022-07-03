@@ -17,6 +17,16 @@ import artist as arty
 import pandas as pd
 
 
+########### IMPORTANT #############
+# SO THIS KINDA FUCKIN BREAKS ON SUNDAYS
+# FIX WILL BE EASY ENOUGH IG
+# IN REFACTOR (which 100 wanna do asap of just this too)
+# HAVE GLOBAL OVERRIDE FOR DAY, WEEKNUM, DAYNUMB, ETC SO TESTING IS MUCH MUCH EASIER
+# AND PRE FILL A LARGER AMOUNT OF INFO!
+
+
+
+
 # ---- temp globals ----
 # for testing/setup
 
@@ -143,7 +153,7 @@ def run():
     with st.container():
         st.markdown("##### Weekly Mood Snapshot")
         col1B, _ = st.columns([4,1])
-        col1B.write("Lorem ipsum 1 is the lowest mood score and 9 is the best sit amet dolor etc also be sure to note how the delta works here so it's clear")
+        col1B.write("Lorem ipsum week starts on sunday (for now), 1 is the lowest mood score and 9 is the best sit amet dolor etc also be sure to note how the delta works here so it's clear")
         current_date = db.get_current_date()
         current_dayname = db.get_current_dayname()
         st.write("##")
@@ -267,27 +277,43 @@ def run():
         st.write("Basic Stats or Sumnt Here? Maybe Not Idk - Dont Forget Need To Display Notes Somewhere Too Btw!")
         st.write("##")
 
-        def style_specific_cell(x):
-            color = 'background-color:#0083b8'
-            color2 = 'background-color:green'
-            df1 = pd.DataFrame('', index=x.index, columns=x.columns)
-            #df1.iloc[2, 1] = color
-            #df1.iloc[5, 2] = color2
-            #df1.iloc[24, 3] = color
-            #df1.iloc[26, 2] = color
-            return df1
-
-
-        
-
 
         data = (5, None, 4, 3, None, None, None),(5, None, 4, 3, None, None, None)
 
         mood_week_data = pd.DataFrame(data, columns=('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'), index=["Week 22","Week 23"])
 
-        # BUG: START FROM HERE !
+        # get list of week numbers with logged data for the user from 2022
+        weeknumbs = db.get_all_week_numbs_for_user(db_username)
+        # create a new list of week numbers formatted with the word week at the start 
+        formattedweeknumbs = []
+        dont_print = [formattedweeknumbs.append(f"Week {weekn}") for weekn in weeknumbs] 
+        #print(f"{formattedweeknumbs = }")
 
-        # JUST FUNCTION THAT DOES IT BASED ON THE CELLS VALUE (WHICH IVE SEEN LOADS OF TUTS FOR BEFORE)
+        # get all mood data for each week, always 7 long and ordered, returns none if no data for a given day else returns its mood as int
+        all_weeks_mood_list = []
+        for weekint in weeknumbs:
+            week_tuple = db.get_mood_data_for_given_week_numb(db_username, weekint)
+            all_weeks_mood_list.append(week_tuple)
+        #print(f"{all_weeks_mood_list = }")
+
+        # convert to tuple of tuples for dataframe
+        all_weeks_mood_tuple = tuple(all_weeks_mood_list)
+        #print(f"{all_weeks_mood_tuple = }")
+
+        data = all_weeks_mood_tuple
+        mood_week_data = pd.DataFrame(data, columns=('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'), index=formattedweeknumbs)
+        
+
+        # grab first week by finding lowest number in week ting (will only work for 1 year but is fine for now?????!!!!)
+            # maybe set constraint just for just this year for now so doesnt rawly break?
+        # grab all that weeks data
+        # format it as needed
+        # grab next week by inc the week and seeing if data
+            # if has add
+            # if not check if has anything else 
+            # (maybe check how much it has before duh! -> check how many weeknumbs there are for the user then loop those bosh)
+        # then done and test
+
         # THEN THE DYNAMIC DATA IN DATAFRAME
         # THEN IG MAYBE PREVIOUS WEEK OR MONTH VIEW
         # AND MAYBE SUMNT TO DO WITH NOTES
@@ -303,16 +329,27 @@ def run():
         def style_df(val):
             """ write me """
             if val != None:
-                if val == 5:
-                    return("background-color: #69B34C")
+                if val == 9:
+                    return("background-color: #56ce27")
+                elif val == 8:
+                    return("background-color: #7ec000")
+                elif val == 7:
+                    return("background-color: #9ab100")
+                elif val == 6:
+                    return("background-color: #b1a000")
+                elif val == 5:
+                    return("background-color: #c48e00")
                 elif val == 4:
-                    return("background-color: #FAB833")
+                    return("background-color: #d47a00")
                 elif val == 3:
-                    return("background-color: #FF4E11")
+                    return("background-color: #df6400")                                                                                                                        
+                elif val == 2:
+                    return("background-color: #e64b0f")
+                elif val == 1:
+                    return("background-color: #e92d2d")
             else:                                       
                 return("background-color: #efefef")
 
-        st.dataframe(mood_week_data.style.apply(style_specific_cell, axis=None))
 
         st.dataframe(mood_week_data.style.applymap(style_df))
 
@@ -320,6 +357,8 @@ def run():
 
         # AVG FOR WEEK WOULD BE NICE HERE TOO BTW DUH! #FIXME
         # visualisation of weeks left in year would be nice too, could go in below bit tbf #FIXME
+        # for real need a way to see previous weeks too! (date selector ig? or week number toggle or sumnt idk) #FIXME
+        # 100% need if saving again and exist it overwrites not creates duplicates! #FIXME
 
         st.write("---")
     
