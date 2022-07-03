@@ -403,17 +403,11 @@ if __name__ == "__main__":
 
 
 
-# WRITE OUT ALL NOTES T0DO FROM HERE FIRST
-# THEN IMPLEMENT SHIT (this (+ imgs for here too basic), then journal basic af, then dc basic af?, 
-# then cv and bio and techinterview prep (note can do first 2 also on monday morning and 3rd on monday evening/tuesday morning) )
-
-        # AND MAYBE SUMNT TO DO WITH NOTES, AND MAYBE ARTIST BUT NAH SKIP FOR NOW
-        # THEN LEGIT THIS IS DONE!
         
-        # THEN SOME LIGHT CV FOR A BIT (time it)
+
         # THEN JOURNAL AND DC! 
         #   - note pomdoro too but nah?? - note also timers dont need to be every sec when its not fitness so its easier ig
         #   - basically just never show tbh or you risk fucking the user, maybe only send pomdoro via discord ooo i LOVE that
-        # THEN CV
+        # THEN CV, BIO, & TECH PREP?
         # THEN THIS PAGE ONLY BUT REFACTOR WITH USER AND LIVE DB AND MAYBE CLASSES TOO ooooo
 
