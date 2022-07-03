@@ -308,6 +308,8 @@ def view_tasks_basic(username:str, anID:int, parent_child_or_all:str = "parent")
     elif parent_child_or_all == "child":
         task_type = "sub_task"
         get_tasks_basic_af_query = f"SELECT taskTitle, taskDetail, taskType, taskParentID, taskStatus, dueDate, DATE(created), DATE(updated), taskid, DATEDIFF(DATE(updated), DATE(created)) FROM {username}_todo WHERE taskParentID = {anID} AND taskType = '{task_type}'"
+    elif parent_child_or_all == "shop":
+        get_tasks_basic_af_query = f"SELECT taskTitle, taskDetail, taskType, taskParentID, taskStatus, dueDate, DATE(created), DATE(updated), taskid, DATEDIFF(DATE(updated), DATE(created)) FROM {username}_todo WHERE taskid = {anID}"
     else:
         get_tasks_basic_af_query = f"SELECT taskTitle, taskDetail, taskType, taskParentID, taskStatus, dueDate, DATE(created), DATE(updated), taskid, DATEDIFF(DATE(updated), DATE(created)) FROM {username}_todo WHERE todoListID = {anID}"
     
@@ -719,7 +721,21 @@ def get_mood_notes(username:str):
         # this case will be no info
         return(None)
 
-    
+
+# ---- shopping list ----
+
+
+def get_shopping_list_tag_tasks_only(username:str):
+    """ write me """
+    get_shopping_tag_tasks_query = f"SELECT todoTaskID FROM {username}_todotags WHERE tagID = 10 or tagID = 11 or tagID = 12 or tagID = 13"
+    shopping_tag_tasks = get_from_db(get_shopping_tag_tasks_query)
+    shop_task_list = []
+    [shop_task_list.append(shop_task[0]) for shop_task in shopping_tag_tasks]
+    print(f"{shop_task_list = }")
+    return(shop_task_list)
+
+
+
 # ---- main ----
 
 def main():

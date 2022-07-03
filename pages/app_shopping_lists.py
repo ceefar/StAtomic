@@ -149,14 +149,14 @@ def run():
     # header topper
     with topper:
 
-        st.write("##### Check out Your Checkouts")
+        st.write("##### Shopping List Beta")
 
     # ---- SECTION ----
 
     # todo task create intro and setup
     with form_intro:
 
-        st.write(f"### Journal Beta")
+        st.write(f"### Check Out Before The Checkout")
         
         col1A, _ = st.columns([4,1])
         col1A.write("Anytime you use the shopping list tag we'll automatically save and store the list for your here in a handy lorem, simple for now, will expand to proper journal shortly, to be view, save, and create important entries or just document your life one entry at a time lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia, molestiae quas vel sint commodi repudiandae consequuntur \
@@ -180,8 +180,29 @@ def run():
         with st.container():  
             st.write("**Your Shopping Lists**")
             todo_list_names = create_todo_lists_list()
-            assigned_todo_list = st.selectbox("Want To Find An Existing Entry?", todo_list_names)
-            todolistid = get_id_numb_from_formatted_list_name(assigned_todo_list)
+            shopping_tasks = db.get_shopping_list_tag_tasks_only(db_username)
+
+            shop_tasks_dict_list = []
+            for task in shopping_tasks:
+                shoptask = db.view_tasks_basic(db_username, task, "shop")
+                shop_tasks_dict_list.append(shoptask)
+
+            shop_task_titles = []
+            dont_print = [shop_task_titles.append(task[0]["title"]) for task in shop_tasks_dict_list]
+            print(f"{shop_task_titles = }")
+            
+            # NEED CASE FOR IF NONE BTW!
+            amount_of_shop_tasks = len(shop_tasks_dict_list)
+            if (amount_of_shop_tasks % 2) != 0:
+                cards_one = amount_of_shop_tasks // 2
+                cards_two = cards_one + 1
+
+            shop_task_titles_for_titles = shop_task_titles.copy()
+
+            shop_task_titles_for_titles.insert(0, "All Shopping Lists")
+
+            assigned_todo_list = st.selectbox("Choose An Existing Shopping List", shop_task_titles_for_titles)
+            st.button(label="Go To This List")
 
         # ---- NEW CARD SECTION ----
 
@@ -189,9 +210,21 @@ def run():
  
         cardcol1, cardcol2 = st.columns(2)
         with cardcol1:
-            stc.html(SHOP_CARD_4_HTML_TEMPLATE.format(basket_images[random.randint(0, 2)], db_username), height=550)
+            temptitlestwo = shop_task_titles[cards_two:]
+            #print(f"{temptitlesone = }")
+            for i in range (cards_one):
+                # FIXME: do this properly using the tags not the title! 
+                if "Toiletries" in temptitlestwo[i]:
+                    img = "https://cdn-icons-png.flaticon.com/512/3419/3419660.png"
+                    stc.html(SHOP_CARD_4_HTML_TEMPLATE_TOIL.format(temptitlestwo[i], img, "Some Text"), height=420)
+                else:
+                    img = basket_images[random.randint(0, 2)]
+                    stc.html(SHOP_CARD_4_HTML_TEMPLATE.format(temptitlestwo[i], img, "Some Text"), height=420)
         with cardcol2:
-            stc.html(SHOP_CARD_4_HTML_TEMPLATE.format(basket_images[random.randint(0, 2)], db_username), height=550)
+            temptitlesone = shop_task_titles[:cards_one+1]
+            #print(f"{temptitlestwo = }")
+            for i in range (cards_two):
+                stc.html(SHOP_CARD_4_HTML_TEMPLATE.format(temptitlesone[i], basket_images[random.randint(0, 2)], "Some Text"), height=420)
 
     else:
         with st.container():  
@@ -205,13 +238,18 @@ def run():
  
 
 
+    # ON WAKE - QUICKLY DO THIS PAPER TING THEN DO CV!
+    # LEGIT ITS NOT ATOMIC ITS AN ADHD APP NOW LOL (tho not just adhd tbf but best for it so think about shit exclusively for you - yay!)
 
+    # DO CARD INFO SO IS WORKING (NOT JUST DUMMY BS TEXT) 
+    # IF SELECT ONE VIA DROPDOWN YOU GET A BIT MORE INFO (slightly larger (maybe full width) card)
+    # THEN IF BUTTON IT DOES A PROPER DISPLAY TING WITH PRINT ETC && THIS PAPER IDEA TING!
 
-    # SHOULD ONLY SHOW VALID IN DD BTW - SO DO THAT RN WRITE THE QUERY!
     # K NOW OBVS GET THE SHIT FORMATTED PROPERLY CARDS (v basic nice and quick)
         # HAVE THOSE IMGS RANDOMISE PLS?!! (or more based on whats in the basket, maybe you set it idk)
-    # ADD A BASE SHOPPING LIST ENTRY IF DON'T ALREADY HAVE
-    # WITH ITS TAG
+
+    # QUICKLY TRY THE ENTRY WITH THE CSS PAPER THINGS LOOKS SO SICK OMD
+
     # I THINK FOR THIS MAYBE SHOULD ONLY BE THE PARENT FOR NOW
         # THO DEFO KIDS IN FUTURE WHICH CAN BE LIKE SMALL ITERATIONS 
         # i.e. mexican, obvs shopping list still has the main shit but then sometimes u have a list with a few changes bosh
@@ -252,8 +290,8 @@ box-shadow: 5px 5px 5px 5px rgba(0,0,0,0.15);
 background: url('https://thehardgainerbible.com/wp-content/uploads/2022/07/abstract-blur-defocused-supermarket.jpg');
 background-size: cover; background-color:rgba(42,46,63,0.95); background-blend-mode: overlay;>
 <div style="width:100%; height:100%; position:relative;">
-<div style="font-size:1.7rem; font-family: 'Roboto', sans-serif; color:#efefef; padding-left:20px; font-weight:500;">Shopping</div>
-<div style="font-size:1.7rem; font-family: 'Roboto', sans-serif; color:#efefef; padding-left:20px; font-weight:500;">List</div>
+<div style="font-size:1.7rem; font-family: 'Roboto', sans-serif; color:#efefef; padding-left:20px; padding-right:100px; padding-bottom:20px;
+font-weight:500;">{}</div>
 <div style="height:100%; padding:0px 10px 90px 0px;"><img src ="{}" 
 style="display: flex; flex-direction: column; justify-content: space-between; position: relative; filter: drop-shadow(5px 5px 10px #0F1620);
 min-height: 100px; max-height:120px; float:right">
@@ -267,6 +305,33 @@ Some Text
 </div>
 </div>
 """
+
+
+SHOP_CARD_4_HTML_TEMPLATE_TOIL = """
+<div style="display:flex; justify-content:center; align-items:center;">
+<div style="width:90%; height:100%; padding:50px 0px 0px 0px; position:relative; border-radius:40px; 
+box-shadow: 5px 5px 5px 5px rgba(0,0,0,0.15); 
+background: url('https://www.ayewanderful.com/wp-content/uploads/2018/03/Travel-Toiletry-Bag-Essentials-Carry-On-Luggage-1440x809.jpg');
+background-size: auto 100vh; background-color:rgba(42,46,63,0.95); background-blend-mode: overlay; background-repeat: no-repeat;>
+<div style="width:100%; height:100%; position:relative;">
+<div style="font-size:1.7rem; font-family: 'Roboto', sans-serif; color:#efefef; padding-left:20px; padding-right:100px; padding-bottom:20px;
+font-weight:500;">{}</div>
+<div style="height:100%; padding:0px 10px 90px 0px;"><img src ="{}" 
+style="display: flex; flex-direction: column; justify-content: space-between; position: relative; filter: drop-shadow(5px 5px 10px #0F1620);
+min-height: 100px; max-height:120px; float:right">
+</div>
+<div style="width:auto; height:100%; positiion:relative; background-color:white; box-shadow: 5px 5px 5px 5px rgba(0,0,0,0.15); 
+padding: 20px 0px 50px 15px; border-radius:0px 0px 40px 40px; font-family: 'Roboto', sans-serif;">
+Some Text
+<h2 style="color:#151515; font-weight:500; margin-bottom:10px; font-size:1.3rem; font-family: 'Roboto', sans-serif;">{}</h2>
+</div>
+</div>
+</div>
+</div>
+"""
+
+
+# https://www.smartertravel.com/wp-content/uploads/2015/01/toiletries-flat-lay-toothbrush-shampoo-brush-towel.jpg
 
 # https://thehardgainerbible.com/wp-content/uploads/2022/07/abstract-blur-defocused-supermarket.jpg
 # https://thehardgainerbible.com/wp-content/uploads/2022/07/abstract-blur-supermarket.jpg
@@ -359,6 +424,29 @@ font-weight:300; border-left:10px solid #484848; color:white; font-family: 'Robo
 {}
 <span style="width:95%; height:100%; position:absolute; text-align:right; font-size:0.9rem; color:#949494; margin-left:-10px;">{}</span>
 <span style="width:95%; height:100%; position:absolute; text-align:left; color:#949494;">{}</span>
+</div>
+"""
+
+SHOP_CARD_4_HTML_TEMPLATE_BACKUP = """
+<div style="display:flex; justify-content:center; align-items:center;">
+<div style="width:90%; height:100%; padding:50px 0px 0px 0px; position:relative; border-radius:40px; 
+box-shadow: 5px 5px 5px 5px rgba(0,0,0,0.15); 
+background: url('https://thehardgainerbible.com/wp-content/uploads/2022/07/abstract-blur-defocused-supermarket.jpg');
+background-size: cover; background-color:rgba(42,46,63,0.95); background-blend-mode: overlay;>
+<div style="width:100%; height:100%; position:relative;">
+<div style="font-size:1.7rem; font-family: 'Roboto', sans-serif; color:#efefef; padding-left:20px; font-weight:500;">Shopping</div>
+<div style="font-size:1.7rem; font-family: 'Roboto', sans-serif; color:#efefef; padding-left:20px; font-weight:500;">List</div>
+<div style="height:100%; padding:0px 10px 90px 0px;"><img src ="{}" 
+style="display: flex; flex-direction: column; justify-content: space-between; position: relative; filter: drop-shadow(5px 5px 10px #0F1620);
+min-height: 100px; max-height:120px; float:right">
+</div>
+<div style="width:auto; height:100%; positiion:relative; background-color:white; box-shadow: 5px 5px 5px 5px rgba(0,0,0,0.15); 
+padding: 20px 0px 50px 15px; border-radius:0px 0px 40px 40px; font-family: 'Roboto', sans-serif;">
+Some Text
+<h2 style="color:#151515; font-weight:500; margin-bottom:10px; font-size:1.3rem; font-family: 'Roboto', sans-serif;">{}</h2>
+</div>
+</div>
+</div>
 </div>
 """
 
