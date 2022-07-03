@@ -695,7 +695,7 @@ def get_mood_data_for_given_week_numb(username:str, givenweek:int) -> tuple:
                 final_week_list.append(int(week[1]))
                 daydone = True
         if daydone == False:
-            final_week_list.append(None)
+            final_week_list.append(0)
     
     for i in range(7):
         add_day(i)

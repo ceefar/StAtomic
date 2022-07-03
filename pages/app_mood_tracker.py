@@ -274,7 +274,7 @@ def run():
     # ---- SECTION ----
 
     with st.container():
-        st.write("Basic Stats or Sumnt Here? Maybe Not Idk - Dont Forget Need To Display Notes Somewhere Too Btw!")
+        st.markdown("##### Basic Subtitle")
         st.write("##")
 
 
@@ -304,15 +304,6 @@ def run():
         mood_week_data = pd.DataFrame(data, columns=('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'), index=formattedweeknumbs)
         
 
-        # grab first week by finding lowest number in week ting (will only work for 1 year but is fine for now?????!!!!)
-            # maybe set constraint just for just this year for now so doesnt rawly break?
-        # grab all that weeks data
-        # format it as needed
-        # grab next week by inc the week and seeing if data
-            # if has add
-            # if not check if has anything else 
-            # (maybe check how much it has before duh! -> check how many weeknumbs there are for the user then loop those bosh)
-        # then done and test
 
         # THEN THE DYNAMIC DATA IN DATAFRAME
         # THEN IG MAYBE PREVIOUS WEEK OR MONTH VIEW
@@ -347,18 +338,24 @@ def run():
                     return("background-color: #e64b0f")
                 elif val == 1:
                     return("background-color: #e92d2d")
+                elif val == 0:
+                    return("background-color: #efefef") # bfbfbf efefef 999999
             else:                                       
                 return("background-color: #efefef")
 
+        st.write("Some general info and clarify that 0 means no data")
 
         st.dataframe(mood_week_data.style.applymap(style_df))
+        #st.dataframe(mood_week_data.head(2).style.highlight_null(null_color='#efefef')) 
 
-        st.dataframe(mood_week_data.head(2).style.highlight_null(null_color='#efefef')) 
-
+        # website is awesome and everything https://colordesigner.io/gradient-generator so still use to some degree but please god more vibrant colours
+        # ability to print this as cool img with artist.py would be awesome! #FIXME
+        #   - like u can choose which month and then THERE you could have even more info) #FIXME
         # AVG FOR WEEK WOULD BE NICE HERE TOO BTW DUH! #FIXME
         # visualisation of weeks left in year would be nice too, could go in below bit tbf #FIXME
         # for real need a way to see previous weeks too! (date selector ig? or week number toggle or sumnt idk) #FIXME
         # 100% need if saving again and exist it overwrites not creates duplicates! #FIXME
+        # 100$ need notes somewhere ffs! #FIXME
 
         st.write("---")
     
