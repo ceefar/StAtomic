@@ -265,18 +265,15 @@ def run():
             # LIKE ABOVE COULD EVEN BE A BUTTON, UPDATE WEEK CHARTS! (legit could just be a faux button too, this might be the best idea! test anyway!!)
             st.experimental_rerun()
             
-        
         st.write("---") 
-
 
 
 
     # ---- SECTION ----
 
     with st.container():
-        st.markdown("##### Basic Subtitle")
+        st.markdown("##### Mood Timeline")
         st.write("##")
-
 
         data = (5, None, 4, 3, None, None, None),(5, None, 4, 3, None, None, None)
 
@@ -303,19 +300,6 @@ def run():
         data = all_weeks_mood_tuple
         mood_week_data = pd.DataFrame(data, columns=('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'), index=formattedweeknumbs)
         
-
-
-        # THEN THE DYNAMIC DATA IN DATAFRAME
-        # THEN IG MAYBE PREVIOUS WEEK OR MONTH VIEW
-        # AND MAYBE SUMNT TO DO WITH NOTES
-        # THEN LEGIT THIS IS DONE!
-        
-        # OBVS ACTUALLY ADD TO DB - WITH NOTES TOO TBF
-        # OH ACTUALLY OBVS THE COLOR TING LIKE THE IMG DUH! (could use dataframe yanno!)
-        # ONCE THIS ONE IS DONE IT'S DONE?!, WELL ITS FINE FOR NOW, TIDY UP, MAYBE SUMNT AT BOTTOM FOR WEEKS OR WHATEVER BUT THEN 100% DONE FOR NOW!
-        # THEN JOURNAL AND DC!
-
-        # OMG HUGE BUT USE IMG CREATION HERE TOO DUHHH!!! #FIXME
 
         def style_df(val):
             """ write me """
@@ -351,28 +335,54 @@ def run():
         # website is awesome and everything https://colordesigner.io/gradient-generator so still use to some degree but please god more vibrant colours
         # ability to print this as cool img with artist.py would be awesome! #FIXME
         #   - like u can choose which month and then THERE you could have even more info) #FIXME
+        #   - if not must do something with artist.py even if basic af #FIXME
         # AVG FOR WEEK WOULD BE NICE HERE TOO BTW DUH! #FIXME
         # visualisation of weeks left in year would be nice too, could go in below bit tbf #FIXME
         # for real need a way to see previous weeks too! (date selector ig? or week number toggle or sumnt idk) #FIXME
         # 100% need if saving again and exist it overwrites not creates duplicates! #FIXME
         # 100$ need notes somewhere ffs! #FIXME
 
-        st.write("---")
-    
-
-    # index, userid, day, mood entry (as enum?), notes
-    # can metrics be derived entirely from the table, probably so just meh do like that for now
+        # index, userid, day, mood entry (as enum?), notes
+        # can metrics be derived entirely from the table, probably so just meh do like that for now
         # things like missed entries and done entries for week month
         # avg mood
         # tasks completed vs mood
         # visualisation of mood over time
 
+        st.write("---")
 
 
+    # ---- SECTION ----
+
+    MOOD_NOTES_TEMPLATE = """
+    <div style="padding-left:15px;font-family: 'Roboto', sans-serif; font-weight:600; color:grey;">{}</div>
+    <div style="background-color:#151515; width:90%; height:100%; position:relative; border-radius:5px;
+    border=5px solid; box-shadow:0 0 1px 1px #eee;">
+    <div style="margin:5px 2px 1px 1px; padding:1px 25px 25px 15px; background: radial-gradient(rgba(255,255,255,0.2)8%,transparent 8%); background-position:0%, 0%; background-size:5vmin 5vmin;
+    font-weight:300; border-radius:5px; border-left:10px solid #484848; color:white; font-family: 'Roboto', sans-serif; box-shadow: 5px 5px 5px 5px rgba(0,0,0,0.15);">
+    <div style="color:#efefef; font-weight:300; margin-top:20px; margin-bottom:5px; margin-left:-15px"><span style="background-color:#484848; color:#ffffff; border-radius:2px; padding:2px 5px;">notes</span></div>
+    <h2 style="color:#efefef; font-weight:300; margin-bottom:10px; font-size:1.3rem;">{}</h2>
+    <div style="color:#eba538; font-weight:500; font-size:1.5rem; margin-bottom:5px;">Mood : {}</div>
+    </div>
+    </div>
+    """
+
+    with st.container():
+        st.markdown("##### Your Mood Journal")
+        col1C, _ = st.columns([4,1])
+        col1C.write("Lorem ipsum sit amet dolor etc")
+        #st.write("##")
+
+        user_mood_notes = db.get_mood_notes(db_username)
+        if user_mood_notes:
+            for note in user_mood_notes:
+                # amount of lines dictates the needed height btw (easy calc based on amount of chars * a multiplier) #FIXME
+                if len(note[0]) < 65:
+                    stc.html(MOOD_NOTES_TEMPLATE.format(str(note[3]),note[0],note[2].title()), height=250)
+                else:
+                    stc.html(MOOD_NOTES_TEMPLATE.format(str(note[3]),note[0],note[2].title()), height=300)
 
 
-    # data2 = {'Day':['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-    # f'Week Number {weeknumb}':[5, None, 4, 3, None, None, None]}
 
 
 
@@ -393,5 +403,17 @@ if __name__ == "__main__":
 
 
 
-## WRITE OUT ALL NOTES T0DO FROM HERE FIRST
-## THEN IMPLEMENT SHIT (this (+ imgs for here too basic), then journal basic af, then dc basic af?, then cv and bio and techinterview prep (note can do first 2 also on monday morning and 3rd on monday evening/tuesday morning) )
+# WRITE OUT ALL NOTES T0DO FROM HERE FIRST
+# THEN IMPLEMENT SHIT (this (+ imgs for here too basic), then journal basic af, then dc basic af?, 
+# then cv and bio and techinterview prep (note can do first 2 also on monday morning and 3rd on monday evening/tuesday morning) )
+
+        # AND MAYBE SUMNT TO DO WITH NOTES, AND MAYBE ARTIST BUT NAH SKIP FOR NOW
+        # THEN LEGIT THIS IS DONE!
+        
+        # THEN SOME LIGHT CV FOR A BIT (time it)
+        # THEN JOURNAL AND DC! 
+        #   - note pomdoro too but nah?? - note also timers dont need to be every sec when its not fitness so its easier ig
+        #   - basically just never show tbh or you risk fucking the user, maybe only send pomdoro via discord ooo i LOVE that
+        # THEN CV
+        # THEN THIS PAGE ONLY BUT REFACTOR WITH USER AND LIVE DB AND MAYBE CLASSES TOO ooooo
+

@@ -682,8 +682,8 @@ def get_mood_data_for_given_week_numb(username:str, givenweek:int) -> tuple:
     """ write me """
     if username == "ceefar":
         user_id = 3
-    get_week_mood_data = f"SELECT day_number, mood_entry+0 FROM mood_monitor WHERE user_id = {user_id} AND week_number = {givenweek} ORDER BY day_number"
-    weeks_mood_data = get_from_db(get_week_mood_data)
+    get_week_mood_data_query = f"SELECT day_number, mood_entry+0 FROM mood_monitor WHERE user_id = {user_id} AND week_number = {givenweek} ORDER BY day_number"
+    weeks_mood_data = get_from_db(get_week_mood_data_query)
     #print(f"{weeks_mood_data = }") 
     final_week_list = []
 
@@ -706,6 +706,20 @@ def get_mood_data_for_given_week_numb(username:str, givenweek:int) -> tuple:
     return(final_week_tuple)
 
 
+def get_mood_notes(username:str):
+    """ write me """    
+    if username == "ceefar":
+        user_id = 3
+    user_mood_notes_data = get_from_db(f"SELECT mood_notes, mood_entry+0, mood_entry, entry_date FROM mood_monitor WHERE user_id = {user_id} AND mood_notes IS NOT NULL ORDER BY week_number")
+    if len(user_mood_notes_data) == 1:
+       return(user_mood_notes_data[0])
+    elif len(user_mood_notes_data) > 1:
+        return(user_mood_notes_data)
+    else:
+        # this case will be no info
+        return(None)
+
+    
 # ---- main ----
 
 def main():
