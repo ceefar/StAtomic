@@ -30,6 +30,8 @@ topper = st.container()
 form_intro = st.container()
 
 
+
+
 # ---- page functions ----
 
 @st.cache
@@ -187,6 +189,8 @@ def run():
                 shoptask = db.view_tasks_basic(db_username, task, "shop")
                 shop_tasks_dict_list.append(shoptask)
 
+            print(f"{shop_tasks_dict_list = }")
+
             shop_task_titles = []
             dont_print = [shop_task_titles.append(task[0]["title"]) for task in shop_tasks_dict_list]
             print(f"{shop_task_titles = }")
@@ -233,6 +237,10 @@ def run():
             todo_faux_title = st.text_input("Enter A Task Title", value="A simple example", key="td_fauxtitle")
             todo_faux_detail = st.text_area("Enter Any Additional Details (Optional)", value="A more thorough example", key="td_fauxdetail")
             st.write("---")
+
+            stc.html(TEST_PAPER_HTML_TEMPLATE.format("Click to write your message bro"), height=420)
+
+            
 
         # skip to end/quick add button?
  
@@ -451,6 +459,83 @@ Some Text
 """
 
 
+TEST_PAPER_HTML_TEMPLATE = """
+<style>
+
+body {{
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 50px 30px;
+}}
+
+.notepad {{
+  width: 80%;
+  max-width: 600px;
+  box-shadow: 10px 10px 40px rgba(black, .15);
+  border-radius: 0 0 10px 10px;
+  overflow: hidden;
+}}
+
+.top {{
+  width: 100%;
+  height: 50px;
+  background: #333;
+  border-radius: 5px 5px 0 0;
+}}
+
+.paper {{
+  width: 100%;
+  height: 100%;
+  min-height: 60vh;
+  padding: 35px 20px;
+  background: repeating-linear-gradient(#F1EDE9, #F1EDE9 31px, #94ACD4 31px, #94ACD4 32px);
+  font-family: 'Shadows Into Light', cursive;
+  line-height: 32px;
+  outline: 0;
+  font-size: 22px;
+}}
+</style>
+
+<div class="notepad">
+  <div class="top"></div>
+  <div class="paper" contenteditable="true">
+    Hello, this is a paper.<br>
+    {}
+  </div>
+</div>
+"""
+
+
+# GIGA TEST - DELETE ME
+
+TEST_CARD_HTML_TEMPLATE = """
+<style>
+.cardy{{background-color: aqua;}}
+.cardy:hover{{background-color: red;}}
+</style>
+<div class="cardy">
+<div style="width:40%; height:100%; padding:50px 0px 0px 0px; position:relative; border-radius:40px; 
+box-shadow: 5px 5px 5px 5px rgba(0,0,0,0.15);>
+<div style="width:100%; height:100%; position:relative;">
+<div style="font-size:1.3rem; font-family: 'Roboto', sans-serif; color:#efefef; padding-left:15px;">Shopping</div>
+<div style="font-size:1.3rem; font-family: 'Roboto', sans-serif; color:#efefef; padding-left:15px;">List</div>
+<div style="height:100%; padding:0px 10px 160px 0px"><img src ="https://www.shareicon.net/data/256x256/2016/05/05/760099_food_512x512.png" 
+style="display: flex; flex-direction: column; justify-content: space-between; position: relative; filter: drop-shadow(5px 5px 10px #0F1620);
+min-height: 100px; max-height:120px; float:right;
+box-shadow: 5px 5px 5px 5px rgba(0,0,0,0.15);">
+</div>
+<div style="width:auto; height:100%; positiion:relative; background-color:white; box-shadow: 5px 5px 5px 5px rgba(0,0,0,0.15); 
+padding: 10px 0px 50px 15px; border-radius:0px 0px 40px 40px; font-family: 'Roboto', sans-serif;">
+Some Text
+<h2 style="color:#151515; font-weight:500; margin-bottom:10px; font-size:1.3rem; font-family: 'Roboto', sans-serif;">{}</h2>
+</div>
+</div>
+</div>
+</div>
+"""
 
 
 

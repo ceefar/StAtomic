@@ -330,6 +330,25 @@ def view_tasks_basic(username:str, anID:int, parent_child_or_all:str = "parent")
         task_dict["updatedDate"] = task[7]
         task_dict["taskID"] = task[8]  
         task_dict["dateDiff"] = task[9]
+
+        # for shop case only, which is when getting data based on taskid for a task with the shopping list tag
+        if parent_child_or_all == "shop":
+            shopTags = []
+            # grab a list (or tuple, or none tbf) from the tasks id
+            all_tags = get_tagnames_from_taskid(username, anID)
+            # if is a list then it is multiple results (more than 1 tag - but remember tags consist of 2 parts tagname and tagtype)
+            if isinstance(all_tags, list):
+                # append the shopping tags to new list
+                [shopTags.append(tag) for tag in all_tags if "shopping" in tag]
+            # if is a tuple then is just 1 tag (but still 2 parts)
+            elif isinstance(all_tags, tuple):
+                if "shopping" in all_tags:
+                    # so append them as they are if they include shopping in either part of the tuple
+                    shopTags.append(all_tags) 
+                    # note append not set so we have consistency in return types even tho its list with nested tuple
+            # finally set the task_dict return dictionary to have a new item 'shopTags' which is the list we have appended to prior  
+            task_dict["shopTags"] = shopTags
+            
         subtasks_listed.append(task_dict)      
 
     #[subtasks_listed.append(task) for task in tasks_basic_af]
