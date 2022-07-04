@@ -180,7 +180,8 @@ def run():
 
     if saved_or_new == "View Saved":
         with st.container():  
-            st.write("**Your Shopping Lists**")
+            st.markdown("#### Your Shopping Lists")
+            st.write("**To view the items on your shopping list use the dropdown selector below**")
             todo_list_names = create_todo_lists_list()
             shopping_tasks = db.get_shopping_list_tag_tasks_only(db_username)
 
@@ -241,21 +242,40 @@ def run():
               list_items_counter = len(listdetail.split(","))
               st.markdown(f"#### {list_items_counter} Total Items")
               #BUG - WORK FROM HERE FIX THE CHECKBOX!
-              list_style_details = listdetail.replace(",",f"{CHECKBOX_HTML_CODE} <br>")
 
+              
+              newlist = listdetail.split(",")
+              checkboxlist = []
+              for item in newlist:
+                checkitem = f"{CHECKBOX_HTML_CODE} {item} <br>"
+                checkboxlist.append(checkitem)
+              
+              finalcheckboxlist = []
+              for item in checkboxlist:
+                checkboxitem = item.replace("\n","")
+                finalcheckboxlist.append(checkboxitem)
+
+              
+              checkboxliststring = "".join(str(item) for item in finalcheckboxlist)
+              print(checkboxliststring)
+
+              #CHECKBOX_HTML_CODE
+              list_style_details = listdetail.replace(",", f"{CHECKBOX_HTML_CODE} <br>")
+             
               # OWN FUNCTION! #FIXME
-              paper_base_height = 620 # idk if this is accurate btw
+              paper_base_height = 650 # idk if this is accurate btw
               paper_height_incremenet = 40 # for every 2 over 11 add x and define x so is easy to change 
               extra_lines = list_items_counter - 11
               extra_height = extra_lines * paper_height_incremenet
               paper_height = paper_base_height + extra_height
-              paper_height = 620 if paper_height < 620 else paper_height
-              stc.html(TEST_PAPER_HTML_TEMPLATE.format(listtitle, list_style_details), height=paper_height) 
+              paper_height = 650 if paper_height < 650 else paper_height
+              stc.html(TEST_PAPER_HTML_TEMPLATE.format(listtitle, checkboxliststring), height=paper_height) 
             
     else:
         with st.container():  
 
-            st.write("**New Shopping List**")
+            st.markdown("#### New Shopping List")
+            st.write("**Use commas to separate items on your shopping list for a truly integrated experience**")
             todo_faux_title = st.text_input("Enter A List Title", value="A simple example", key="td_fauxtitle")
             todo_faux_detail = st.text_area("Enter Items", value="A more thorough example", key="td_fauxdetail")
             st.write("---")
@@ -423,10 +443,9 @@ CHECKBOX_HTML_CODE = """
 </container>
 """
 
+
 TEST_PAPER_HTML_TEMPLATE = """
-
 <style>
-
 body {{
   width: 100%;
   min-height: 100vh;
@@ -435,7 +454,6 @@ body {{
   justify-content: center;
   padding: 50px 30px;
 }}
-
 .notepad {{
   width: 80%;
   max-width: 600px;
@@ -443,14 +461,12 @@ body {{
   border-radius: 0 0 10px 10px;
   overflow: hidden;
 }}
-
 .top {{
   width: 100%;
   height: 50px;
   background: #333;
   border-radius: 5px 5px 0 0;
 }}
-
 .paper {{
   width: 90%;
   height: 100%;
@@ -463,7 +479,6 @@ body {{
   font-size: 22px;
 }}
 </style>
-
 <div class="notepad">
   <div class="top"></div>
   <div class="paper" contenteditable="true">
