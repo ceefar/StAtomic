@@ -205,42 +205,62 @@ def run():
             shop_task_titles.insert(0, "All Shopping Lists")
 
             assigned_todo_list = st.selectbox("Choose An Existing Shopping List", shop_task_titles)
-            st.button(label="Go To This List")
+
+            st.write("##")
+
 
         # ---- NEW CARD SECTION ----
 
-        st.write("##") 
- 
-        cardcol1, cardcol2 = st.columns(2)
-        with cardcol1:
-            temptitlestwo = shop_tasks_dict_list[cards_two:]
-            for task in temptitlestwo:
-                if "Toiletries" in task[0]["title"]:
-                    # BUG - DO THIS ASAP
-                    # FIXME - DO THIS FOR BG IMG TOO, NOT TWO TYPES OF TEMPLATE FFS!
-                    img = "https://cdn-icons-png.flaticon.com/512/3419/3419660.png"
-                    #shop tags, created date, detail... 
+        # IF DROPDOWN IS ALL
+        if assigned_todo_list == "All Shopping Lists":
+          with st.container():
+            cardcol1, cardcol2 = st.columns(2)
+            with cardcol1:
+                temptitlestwo = shop_tasks_dict_list[cards_two:]
+                for task in temptitlestwo:
+                    if "Toiletries" in task[0]["title"]:
+                        img = "https://cdn-icons-png.flaticon.com/512/3419/3419660.png"
+                        #shop tags, created date, detail... 
+                        task_detail = task[0]["detail"][:40]
+                        stc.html(SHOP_CARD_4_HTML_TEMPLATE_TOIL.format(task[0]["title"], img, task[0]["createdDate"], task_detail), height=450)
+                    else:
+                        img = basket_images[random.randint(0, 2)]
+                        stc.html(SHOP_CARD_4_HTML_TEMPLATE.format(task[0]["title"], img, task[0]["createdDate"], task_detail), height=450)
+            with cardcol2:
+                temptitlesone = shop_tasks_dict_list[:cards_one+1]
+                for task in temptitlesone:
                     task_detail = task[0]["detail"][:40]
-                    stc.html(SHOP_CARD_4_HTML_TEMPLATE_TOIL.format(task[0]["title"], img, task[0]["createdDate"], task_detail), height=450)
-                else:
-                    img = basket_images[random.randint(0, 2)]
-                    stc.html(SHOP_CARD_4_HTML_TEMPLATE.format(task[0]["title"], img, task[0]["createdDate"], task_detail), height=450)
-        with cardcol2:
-            temptitlesone = shop_tasks_dict_list[:cards_one+1]
-            for task in temptitlesone:
-                task_detail = task[0]["detail"][:40]
-                stc.html(SHOP_CARD_4_HTML_TEMPLATE.format(task[0]["title"], basket_images[random.randint(0, 2)], task[0]["createdDate"], task_detail), height=450)
+                    stc.html(SHOP_CARD_4_HTML_TEMPLATE.format(task[0]["title"], basket_images[random.randint(0, 2)], task[0]["createdDate"], task_detail), height=450)
+        else:
+          for task in shop_tasks_dict_list:
+            if task[0]["title"] == assigned_todo_list:
+              #FIXME - FUNCTION FOR SIZE OF IT AND (maybe) REFORMAT TO LIST ITEMS?
+              listdetail = str(task[0]["detail"])
+              listtitle = task[0]["title"]
 
+              list_items_counter = len(listdetail.split(","))
+              st.markdown(f"#### {list_items_counter} Total Items")
+              list_style_details = listdetail.replace(",",f"{CHECKBOX_HTML_CODE} <br>")
+
+              # OWN FUNCTION! #FIXME
+              paper_base_height = 620 # idk if this is accurate btw
+              paper_height_incremenet = 40 # for every 2 over 11 add x and define x so is easy to change 
+              extra_lines = list_items_counter - 11
+              extra_height = extra_lines * paper_height_incremenet
+              paper_height = paper_base_height + extra_height
+              paper_height = 620 if paper_height < 620 else paper_height
+              stc.html(TEST_PAPER_HTML_TEMPLATE.format(listtitle, list_style_details), height=paper_height) 
+            
     else:
         with st.container():  
 
-            st.write("**Your Journal Entry**")
-            todo_faux_title = st.text_input("Enter A Task Title", value="A simple example", key="td_fauxtitle")
-            todo_faux_detail = st.text_area("Enter Any Additional Details (Optional)", value="A more thorough example", key="td_fauxdetail")
+            st.write("**New Shopping List**")
+            todo_faux_title = st.text_input("Enter A List Title", value="A simple example", key="td_fauxtitle")
+            todo_faux_detail = st.text_area("Enter Items", value="A more thorough example", key="td_fauxdetail")
             st.write("---")
 
-            stc.html(TEST_PAPER_HTML_TEMPLATE.format("Click to write your message bro"), height=420)
-            stc.html(TEST_PAPER_HTML_TEMPLATE_2.format("You can edit this text!"), height=600)
+            # THIS HEIGHT DYNAMIC BASED ON AMOUNT OF /N AND CHARS! #FIXME
+            stc.html(TEST_PAPER_HTML_TEMPLATE.format("New List","Click to write your message bro"), height=620)
             
 
             
@@ -395,85 +415,18 @@ Some Text
 """
 
 
-TEST_PAPER_HTML_TEMPLATE_2 = """
-<style>
-@import url(https://fonts.googleapis.com/css?family=Indie+Flower);
-body {{
-  margin: 0;
-  padding: 0;
-  background: lightgoldenrodyellow;
-}}
-.paper {{
-  position: absolute;
-  height: 550px;
-  width: 450px;
-  background: rgba(255,255,255,0.9);
-  margin: -275px -225px;
-  left: 50%;
-  top: 50%;
-  box-shadow: 0px 0px 5px 0px #888;
-}}
-.paper::before {{
-  content: '';
-  position: absolute;
-  left: 45px;
-  height: 100%;
-  width: 2px;
-  background: rgba(255,0,0,0.4);
-}}
-.lines {{
-  margin-top: 40px;
-  height: calc(100% - 40px);
-  width: 100%;
-  background-image: repeating-linear-gradient(white 0px, white 24px, steelblue 25px);
-}}
-.text {{
-  position: absolute;
-  top: 65px;
-  left: 55px;
-  bottom: 10px;
-  right: 10px;
-  line-height: 25px;
-  font-family: 'Indie Flower';
-  overflow: hidden;
-  outline: none;
-}}
-.holes {{
-  position: absolute;
-  left: 10px;
-  height: 25px;
-  width: 25px;
-  background: lightgoldenrodyellow;
-  border-radius: 50%;
-  box-shadow: inset 0px 0px 2px 0px #888;
-}}
-.hole-top {{
-  top: 10%;
-}}
-.hole-middle {{
-  top: 50%;
-}}
-.hole-bottom {{
-  bottom: 10%;
-}}
-</style>
-
-<div class="paper">
-  <div class="lines">
-    <div class="text" contenteditable spellcheck="false">
-      {} <br /><br />
-      Cupcake ipsum dolor sit amet liquorice fruitcake. Candy canes jelly beans sweet roll cupcake lollipop. Powder carrot cake toffee brownie. Marshmallow sweet roll donut. Chocolate cake apple pie candy canes tiramisu dragée wafer. Croissant cookie lemon drops tiramisu jelly-o donut. Sweet gummi bears ice cream.</div>
-  </div>
-  <div class="holes hole-top"></div>
-  <div class="holes hole-middle"></div>
-  <div class="holes hole-bottom"></div>
-</div>
+CHECKBOX_HTML_CODE = """
+<container>
+<input type="checkbox">
+<span class="checkmark"></span>
+</container>
 """
 
-
-
 TEST_PAPER_HTML_TEMPLATE = """
+
 <style>
+
+
 
 body {{
   width: 100%;
@@ -500,10 +453,10 @@ body {{
 }}
 
 .paper {{
-  width: 100%;
+  width: 90%;
   height: 100%;
   min-height: 60vh;
-  padding: 35px 20px;
+  padding: 35px 50px 50px 20px;
   background: repeating-linear-gradient(#F1EDE9, #F1EDE9 31px, #94ACD4 31px, #94ACD4 32px);
   font-family: 'Shadows Into Light', cursive;
   line-height: 32px;
@@ -515,7 +468,7 @@ body {{
 <div class="notepad">
   <div class="top"></div>
   <div class="paper" contenteditable="true">
-    Hello, this is a paper.<br>
+    <b>{}</b><br>
     {}
   </div>
 </div>
