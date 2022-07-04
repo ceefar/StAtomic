@@ -15,6 +15,9 @@ import random
 import db_integration as db
 # for creating images
 import artist as arty
+# for pushing to dc via webhook 
+import discord_webhook as dc
+
 
 
 # ---- temp globals ----
@@ -211,6 +214,7 @@ def run():
 
 
         # ---- NEW CARD SECTION ----
+        
 
         # IF DROPDOWN IS ALL
         if assigned_todo_list == "All Shopping Lists":
@@ -266,6 +270,17 @@ def run():
               extra_height = extra_lines * paper_height_incremenet
               paper_height = paper_base_height + extra_height
               paper_height = 720 if paper_height < 720 else paper_height
+
+              dc_button = st.button(label="Send To Discord")
+              if dc_button:
+                fordc = (listdetail.split(","))
+                fordc.insert(0,f"**{listtitle}**")
+                fordc.append("- - - - -")
+                fordcstripped = []
+                dont_print_three = [fordcstripped.append(item.strip().capitalize()) for item in fordc]
+                fordc_final = "\n".join(fordcstripped)
+                dc.push_msg_to_dc(fordc_final)
+
               stc.html(TEST_PAPER_HTML_TEMPLATE.format(listtitle, checkboxliststring, list_items_counter), height=paper_height) 
             
     else:
@@ -280,10 +295,11 @@ def run():
             # THIS HEIGHT DYNAMIC BASED ON AMOUNT OF /N AND CHARS! #FIXME
             stc.html(TEST_PAPER_HTML_TEMPLATE.format("New List","Click to write your message bro"), height=620)
             
-        
+    
 
         # skip to end/quick add button?
- 
+    
+
 
     # FIXME 
     # BIG CHANGE MUST N0TE GENERALLY AND FOR REFACTORS! 
@@ -291,8 +307,16 @@ def run():
 
 
     # BUG 
-    # SEND TO DC FOR SHOP LIST && SHOP LIST IMAGE ARTIST HERE TOO!
-    # TWO PAPER THINGS QUICKLY IN SHOP LIST PAGE (why not fuck it?)
+    # SEND TO DC FOR SHOP LIST && SHOP LIST IMAGE ARTIST HERE TOO! - & SEND IMG VERSION, LEGIT OPTION FOR EACH IN BUTTONS OR WHATEVER
+    # USE THE NEW PAPER BG FOR THIS IMG (try to get looking dece + watermark + else?)
+    # ALSO HAVE A SMALL WIDGET YANNO! (or atleast like an anchor thats in icon that hops u to the bottom of the page idk)
+
+    # TWO PAPER THINGS QUICKLY FOR HOME PAGE AND ANYWHERE ELSE TBH LOOK SICK AF
+    #   - have post it at the top of lots of pages (or which every tbh, with a current reminder!)
+    #   - tho for shop list another style could be better tbf but meh
+            # stc.html(POST_IT_HTML_TEMPLATE.format(), height=500)
+            # stc.html(PAPER_TEMPLATE_NEW.format(), height=500)
+
     # IMPROVE EXISTING DC WEBHOOK IMPLEMENTATION A TAD FFS!
     # NEW PAGE IDEA (sleep tracker (wake and sleep time) with caffeine (and meds) entry)
     # AFTER THIS ONLY WEB DB IMPLEMENTATION - NEW REPO?
@@ -483,6 +507,297 @@ body {{
 </div>
 """
 
+
+PAPER_TEMPLATE_NEW = """"
+<style>
+:root {{
+  --pink: #ecb2ba;
+  --pink-dark: #c6939a;
+  --tape-gray: #dbd8be;
+  --tape-edge-gray: #b7b49d;
+  --transparent: rgba(255, 255, 255, 0);
+}}
+
+body {{
+  background: #ebf4e9;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}}
+
+.pink {{
+  --paper-color: var(--pink);
+  --paper-dark: var(--pink-dark);
+  --shadow-size: 1px;
+  --transparent: rgba(236, 178, 186, 0);
+}}
+
+.blue {{
+  --paper-color: #d5e0f9;
+  --paper-dark: #c2d0ea;
+  --shadow-size: 3px;
+  --transparent: rgba(213, 224, 249, 0);
+}}
+
+.paper {{
+  position: relative;
+  background: linear-gradient(
+      to bottom right,
+      var(--paper-dark),
+      20%,
+      var(--transparent)
+    ),
+    var(--paper-color);
+  min-width: 250px;
+  min-height: 130px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Caveat", cursive;
+  font-size: 2rem;
+  box-shadow: var(--shadow-size) var(--shadow-size) 2px var(--paper-dark);
+  margin: auto;
+  margin-top: 50px;
+}}
+
+.paper::after {{
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+      var(--transparent),
+      50%,
+      var(--paper-dark),
+      51%,
+      var(--transparent)
+    ),
+    linear-gradient(
+      to right,
+      var(--transparent),
+      50%,
+      var(--paper-dark),
+      51%,
+      var(--transparent)
+    );
+}}
+
+.tape-section {{
+  position: absolute;
+  width: 100%;
+}}
+
+.top-tape {{
+  position: absolute;
+  height: 4vmin;
+  top: -5px;
+  width: 110%;
+  background-color: var(--tape-gray);
+  border-right: 1px dotted var(--tape-edge-gray);
+  border-left: 1px dotted var(--tape-edge-gray);
+  opacity: 0.5;
+}}
+
+.tape-section:first-of-type {{
+  top: 0;
+}}
+
+.tape-section:last-of-type {{
+  bottom: 0;
+}}
+
+.tape-section::before,
+.tape-section::after {{
+  content: "";
+  width: 10vmin;
+  height: 4vmin;
+  position: absolute;
+  background-color: var(--tape-gray);
+  opacity: 0.5;
+  border-right: 1px dotted var(--tape-edge-gray);
+  border-left: 1px dotted var(--tape-edge-gray);
+}}
+
+.tape-section:last-of-type::after {{
+  transform: rotate(-45deg);
+  right: -4vmin;
+  top: -3vmin;
+}}
+
+.tape-section:first-of-type::before {{
+  transform: rotate(-45deg);
+  left: -4vmin;
+}}
+
+.tape-section:first-of-type::after {{
+  transform: rotate(45deg);
+  right: -4vmin;
+  top: 0;
+}}
+
+.tape-section:last-of-type::before {{
+  transform: rotate(45deg);
+  left: -4vmin;
+  bottom: 0;
+}}
+</style>
+
+
+<body>
+  <div class="paper pink">
+    <div class="tape-section"></div>
+    <p>drink more water</p>
+    <div class="tape-section"></div>
+  </div>
+  <div class="paper blue">
+    <div class="top-tape"></div>
+    <p>code more pens</p>
+  </div>
+</body>
+"""
+
+
+
+POST_IT_HTML_TEMPLATE="""
+<style>
+
+:root {{
+  --papery-shadow: #c9bf8d;
+}}
+
+body {{
+  display: flex;
+  justify-content: center;
+  padding: 10vmin;
+  background-color: #c3cde8;
+  font-family: "Caveat", cursive;
+  font-size: 2rem;
+}}
+
+.papery {{
+  --papery-dark: #e5c93d;
+  --papery-color: #ffed87;
+
+  position: relative;
+  display: flex;
+  justify-content: center;
+  min-width: 325px;
+  min-height: 175px;
+  background: linear-gradient(
+    135deg,
+    var(--papery-dark),
+    30%,
+    var(--papery-color)
+  );
+  box-shadow: 3px 3px 2px var(--papery-shadow);
+  transform: rotate(10deg);
+  transform-origin: top left;
+}}
+
+.papery p {{
+  margin: auto;
+}}
+
+.pin {{
+  --pin-color: #d02627;
+  --pin-dark: #9e0608;
+  --pin-light: #fc7e7d;
+
+  position: absolute;
+  left: 20px;
+  width: 60px;
+  height: 50px;
+}}
+
+.shadowy {{
+  position: absolute;
+  top: 18px;
+  left: -8px;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  background: radial-gradient(var(--paper-shadow), 20%, rgba(201, 191, 141, 0));
+}}
+
+.metal {{
+  position: absolute;
+  width: 5px;
+  height: 20px;
+  background: linear-gradient(to right, #808080, 40%, #eae8e8, 50%, #808080);
+  border-radius: 0 0 15px 15px
+  transform: rotate(50deg);
+  transform-origin: bottom left;
+  top: 15px;
+  border-bottom: 1px solid #808080;
+}}
+
+.bottom-circle {{
+  position: absolute;
+  right: 15px;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  background-color: var(--pin-color);
+  background: radial-gradient(
+    circle at bottom right,
+    var(--pin-light),
+    25%,
+    var(--pin-dark),
+    90%,
+    var(--pin-color)
+  );
+}}
+
+
+.bottom-circle::before {{
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -2px;
+  width: 20px;
+  height: 30px;
+  transform: rotate(55deg);
+  border-radius: 0 0 20px 20px;
+  background: linear-gradient(
+    to right,
+    var(--pin-dark),
+    30%,
+    var(--pin-color),
+    90%,
+    var(--pin-light)
+  );
+}}
+
+.bottom-circle::after {{
+  content: "";
+  position: absolute;
+  right: -10px;
+  top: -5px;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at right,
+    var(--pin-light),
+    30%,
+    var(--pin-color),
+    var(--pin-dark) 80%
+  );
+}}
+
+</style>
+
+<div class="papery">
+  <div class="pin">
+    <div class="shadowy"></div>
+    <div class="metal"></div>
+    <div class="bottom-circle"></div>
+  </div>
+  <p>zoom call @ 4pm</p>
+</div>
+
+"""
 
 
 if __name__ == "__main__":

@@ -10,7 +10,7 @@ import re
 import db_integration as db
 # for creating images
 import artist as arty
-# for pushing to dc via webhook and dc bot
+# for pushing to dc via webhook 
 import discord_webhook as dc
 
 # ---- temp globals ----
@@ -655,7 +655,7 @@ def run():
                                 mime="image/png",
                                 key=taskdict['taskID']
                             )
-                            
+
                     dc_button = st.button(label="Send To Discord", key=f"{taskdict['taskID']}_dc")
                     if dc_button:
                         dc.push_image_to_dc(imgpath)
