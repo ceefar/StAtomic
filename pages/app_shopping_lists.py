@@ -235,41 +235,38 @@ def run():
         else:
           for task in shop_tasks_dict_list:
             if task[0]["title"] == assigned_todo_list:
-              #FIXME - FUNCTION FOR SIZE OF IT AND (maybe) REFORMAT TO LIST ITEMS?
+              # defined for easier insert and easier tracking size(len)
               listdetail = str(task[0]["detail"])
               listtitle = task[0]["title"]
-
+              # for the amount of items in the list, displayed at the bottom of the list in the html
               list_items_counter = len(listdetail.split(","))
-              st.markdown(f"#### {list_items_counter} Total Items")
-              #BUG - WORK FROM HERE FIX THE CHECKBOX!
-
-              
+              # to get the checkbox at the start it has to be done this long way round          
               newlist = listdetail.split(",")
+              # after splitting at the comma, create new list that we'll append formatted strings to
               checkboxlist = []
               for item in newlist:
-                checkitem = f"{CHECKBOX_HTML_CODE} {item} <br>"
+                # create a new formatted string of the item stripped and capitalised with a breakline at the end and checkbox at the start
+                checkitem = f"{CHECKBOX_HTML_CODE}&nbsp&nbsp;{item.strip().capitalize()} <br>"
                 checkboxlist.append(checkitem)
-              
+              # the above list will be full of newline (\n) characters due to the checkbox code having endl's
               finalcheckboxlist = []
+              # so replace any \n characters for each item and append them to a final list, is fine since we use breakline to separate each list item
               for item in checkboxlist:
                 checkboxitem = item.replace("\n","")
                 finalcheckboxlist.append(checkboxitem)
-
-              
+              # finally join that all back into one string so it can be inserted into the html in one go
               checkboxliststring = "".join(str(item) for item in finalcheckboxlist)
-              print(checkboxliststring)
 
-              #CHECKBOX_HTML_CODE
-              list_style_details = listdetail.replace(",", f"{CHECKBOX_HTML_CODE} <br>")
+              # list_style_details = listdetail.replace(",", f"{CHECKBOX_HTML_CODE} <br>")
              
-              # OWN FUNCTION! #FIXME
-              paper_base_height = 650 # idk if this is accurate btw
+              # OWN FUNCTION PLS!! #FIXME
+              paper_base_height = 720 # idk if this is accurate btw
               paper_height_incremenet = 40 # for every 2 over 11 add x and define x so is easy to change 
               extra_lines = list_items_counter - 11
               extra_height = extra_lines * paper_height_incremenet
               paper_height = paper_base_height + extra_height
-              paper_height = 650 if paper_height < 650 else paper_height
-              stc.html(TEST_PAPER_HTML_TEMPLATE.format(listtitle, checkboxliststring), height=paper_height) 
+              paper_height = 720 if paper_height < 720 else paper_height
+              stc.html(TEST_PAPER_HTML_TEMPLATE.format(listtitle, checkboxliststring, list_items_counter), height=paper_height) 
             
     else:
         with st.container():  
@@ -448,17 +445,19 @@ TEST_PAPER_HTML_TEMPLATE = """
 <style>
 body {{
   width: 100%;
-  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 50px 30px;
+  margin-top:-25px;
+  margin-left:-30px;
 }}
 .notepad {{
   width: 80%;
   max-width: 600px;
-  box-shadow: 10px 10px 40px rgba(black, .15);
-  border-radius: 0 0 10px 10px;
+  box-shadow: 10px 10px 10px 5px rgba(0,0,0,0.10);
+  border-radius: 10px 10px 10px 10px;
+  border: 1px solid rgba(0,0,0,0.20);
   overflow: hidden;
 }}
 .top {{
@@ -483,7 +482,7 @@ body {{
   <div class="top"></div>
   <div class="paper" contenteditable="true">
     <b>{}</b><br>
-    {}
+    {}<br>{} total list items
   </div>
 </div>
 """
