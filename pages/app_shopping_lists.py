@@ -240,6 +240,7 @@ def run():
 
               list_items_counter = len(listdetail.split(","))
               st.markdown(f"#### {list_items_counter} Total Items")
+              #BUG - WORK FROM HERE FIX THE CHECKBOX!
               list_style_details = listdetail.replace(",",f"{CHECKBOX_HTML_CODE} <br>")
 
               # OWN FUNCTION! #FIXME
@@ -425,8 +426,6 @@ CHECKBOX_HTML_CODE = """
 TEST_PAPER_HTML_TEMPLATE = """
 
 <style>
-
-
 
 body {{
   width: 100%;
