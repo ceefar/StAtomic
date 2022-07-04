@@ -184,16 +184,17 @@ def run():
             todo_list_names = create_todo_lists_list()
             shopping_tasks = db.get_shopping_list_tag_tasks_only(db_username)
 
+            # CONSIDER WHAT HAPPENS WHEN THERE ARE NONE (no shop tags) - just try except should be fine tbf? but still need to do! #FIXME
             shop_tasks_dict_list = []
             for task in shopping_tasks:
                 shoptask = db.view_tasks_basic(db_username, task, "shop")
                 shop_tasks_dict_list.append(shoptask)
 
-            print(f"{shop_tasks_dict_list = }")
+            #print(f"{shop_tasks_dict_list = }")
 
             shop_task_titles = []
             dont_print = [shop_task_titles.append(task[0]["title"]) for task in shop_tasks_dict_list]
-            print(f"{shop_task_titles = }")
+            # print(f"{shop_task_titles = }")
             
             # NEED CASE FOR IF NONE BTW!
             amount_of_shop_tasks = len(shop_tasks_dict_list)
@@ -201,11 +202,9 @@ def run():
                 cards_one = amount_of_shop_tasks // 2
                 cards_two = cards_one + 1
 
-            shop_task_titles_for_titles = shop_task_titles.copy()
+            shop_task_titles.insert(0, "All Shopping Lists")
 
-            shop_task_titles_for_titles.insert(0, "All Shopping Lists")
-
-            assigned_todo_list = st.selectbox("Choose An Existing Shopping List", shop_task_titles_for_titles)
+            assigned_todo_list = st.selectbox("Choose An Existing Shopping List", shop_task_titles)
             st.button(label="Go To This List")
 
         # ---- NEW CARD SECTION ----
@@ -214,21 +213,23 @@ def run():
  
         cardcol1, cardcol2 = st.columns(2)
         with cardcol1:
-            temptitlestwo = shop_task_titles[cards_two:]
-            #print(f"{temptitlesone = }")
-            for i in range (cards_one):
-                # FIXME: do this properly using the tags not the title! 
-                if "Toiletries" in temptitlestwo[i]:
+            temptitlestwo = shop_tasks_dict_list[cards_two:]
+            for task in temptitlestwo:
+                if "Toiletries" in task[0]["title"]:
+                    # BUG - DO THIS ASAP
+                    # FIXME - DO THIS FOR BG IMG TOO, NOT TWO TYPES OF TEMPLATE FFS!
                     img = "https://cdn-icons-png.flaticon.com/512/3419/3419660.png"
-                    stc.html(SHOP_CARD_4_HTML_TEMPLATE_TOIL.format(temptitlestwo[i], img, "Some Text"), height=420)
+                    #shop tags, created date, detail... 
+                    task_detail = task[0]["detail"][:40]
+                    stc.html(SHOP_CARD_4_HTML_TEMPLATE_TOIL.format(task[0]["title"], img, task[0]["createdDate"], task_detail), height=450)
                 else:
                     img = basket_images[random.randint(0, 2)]
-                    stc.html(SHOP_CARD_4_HTML_TEMPLATE.format(temptitlestwo[i], img, "Some Text"), height=420)
+                    stc.html(SHOP_CARD_4_HTML_TEMPLATE.format(task[0]["title"], img, task[0]["createdDate"], task_detail), height=450)
         with cardcol2:
-            temptitlesone = shop_task_titles[:cards_one+1]
-            #print(f"{temptitlestwo = }")
-            for i in range (cards_two):
-                stc.html(SHOP_CARD_4_HTML_TEMPLATE.format(temptitlesone[i], basket_images[random.randint(0, 2)], "Some Text"), height=420)
+            temptitlesone = shop_tasks_dict_list[:cards_one+1]
+            for task in temptitlesone:
+                task_detail = task[0]["detail"][:40]
+                stc.html(SHOP_CARD_4_HTML_TEMPLATE.format(task[0]["title"], basket_images[random.randint(0, 2)], task[0]["createdDate"], task_detail), height=450)
 
     else:
         with st.container():  
@@ -239,17 +240,19 @@ def run():
             st.write("---")
 
             stc.html(TEST_PAPER_HTML_TEMPLATE.format("Click to write your message bro"), height=420)
+            stc.html(TEST_PAPER_HTML_TEMPLATE_2.format("You can edit this text!"), height=600)
+            
 
             
 
         # skip to end/quick add button?
  
 
-
-    # ON WAKE - QUICKLY DO THIS PAPER TING THEN DO CV!
+    # FIXME
+    # BIG CHANGE MUST N0TE GENERALLY AND FOR REFACTORS! 
     # LEGIT ITS NOT ATOMIC ITS AN ADHD APP NOW LOL (tho not just adhd tbf but best for it so think about shit exclusively for you - yay!)
 
-    # DO CARD INFO SO IS WORKING (NOT JUST DUMMY BS TEXT) 
+    # NEXT THIS AND IG SIMPLE CREATE TOO BTW - FIRST DO BOTH PAPER TUTS BTW
     # IF SELECT ONE VIA DROPDOWN YOU GET A BIT MORE INFO (slightly larger (maybe full width) card)
     # THEN IF BUTTON IT DOES A PROPER DISPLAY TING WITH PRINT ETC && THIS PAPER IDEA TING!
 
@@ -306,8 +309,8 @@ min-height: 100px; max-height:120px; float:right">
 </div>
 <div style="width:auto; height:100%; positiion:relative; background-color:white; box-shadow: 5px 5px 5px 5px rgba(0,0,0,0.15); 
 padding: 20px 0px 50px 15px; border-radius:0px 0px 40px 40px; font-family: 'Roboto', sans-serif;">
-Some Text
-<h2 style="color:#151515; font-weight:500; margin-bottom:10px; font-size:1.3rem; font-family: 'Roboto', sans-serif;">{}</h2>
+{}
+<h2 style="color:#151515; font-weight:500; margin-bottom:10px; font-size:1.3rem; font-family: 'Roboto', sans-serif;">{}...</h2>
 </div>
 </div>
 </div>
@@ -330,8 +333,8 @@ min-height: 100px; max-height:120px; float:right">
 </div>
 <div style="width:auto; height:100%; positiion:relative; background-color:white; box-shadow: 5px 5px 5px 5px rgba(0,0,0,0.15); 
 padding: 20px 0px 50px 15px; border-radius:0px 0px 40px 40px; font-family: 'Roboto', sans-serif;">
-Some Text
-<h2 style="color:#151515; font-weight:500; margin-bottom:10px; font-size:1.3rem; font-family: 'Roboto', sans-serif;">{}</h2>
+{}
+<h2 style="color:#151515; font-weight:500; margin-bottom:10px; font-size:1.3rem; font-family: 'Roboto', sans-serif;">{}...</h2>
 </div>
 </div>
 </div>
@@ -349,73 +352,6 @@ Some Text
 # 42,46,63
 
 
-SHOP_CARD_3_HTML_TEMPLATE = """
-<div style="display: flex; justify-content: center; align-items: center;">
-<div style="width:90%; height:100%; padding:50px 0px 0px 0px; position:relative; border-radius:40px; 
-box-shadow: 5px 5px 5px 5px rgba(0,0,0,0.15); background: linear-gradient(120deg, #343A4F, #483d8b);>
-<div style="width:100%; height:100%; position:relative;">
-<div style="font-size:1.3rem; font-family: 'Roboto', sans-serif; color:#efefef; padding-left:15px;">Shopping</div>
-<div style="font-size:1.3rem; font-family: 'Roboto', sans-serif; color:#efefef; padding-left:15px;">List</div>
-<div style="height:100%; padding:0px 10px 100px 0px;"><img src ="{}" 
-style="display: flex; flex-direction: column; justify-content: space-between; position: relative; filter: drop-shadow(5px 5px 10px #0F1620);
-min-height: 100px; max-height:120px; float:right">
-</div>
-<div style="width:auto; height:100%; positiion:relative; background-color:white; box-shadow: 5px 5px 5px 5px rgba(0,0,0,0.15); 
-padding: 10px 0px 50px 15px; border-radius:0px 0px 40px 40px; font-family: 'Roboto', sans-serif;">
-Some Text
-<h2 style="color:#151515; font-weight:500; margin-bottom:10px; font-size:1.3rem; font-family: 'Roboto', sans-serif;">{}</h2>
-</div>
-</div>
-</div>
-</div>
-"""
-
-
-
-
-#stc.html(SHOP_CARD_2_HTML_TEMPLATE.format(db_username), height=550)
-
-SHOP_CARD_2_HTML_TEMPLATE = """
-<div style="width:40%; height:100%; padding:50px 0px 0px 0px; position:relative; border-radius:40px; 
-box-shadow: 5px 5px 5px 5px rgba(0,0,0,0.15); background: linear-gradient(120deg,  #343A4F, #0F1620);>
-<div style="width:100%; height:100%; position:relative;">
-<div style="font-size:1.3rem; font-family: 'Roboto', sans-serif; color:#efefef; padding-left:15px;">Shopping</div>
-<div style="font-size:1.3rem; font-family: 'Roboto', sans-serif; color:#efefef; padding-left:15px;">List</div>
-<div style="height:100%; padding:0px 10px 100px 0px;"><img src ="https://www.shareicon.net/data/256x256/2016/05/05/760099_food_512x512.png" 
-style="display: flex; flex-direction: column; justify-content: space-between; position: relative; filter: drop-shadow(5px 5px 10px #0F1620);
-min-height: 100px; max-height:120px; float:right">
-</div>
-<div style="width:auto; height:100%; positiion:relative; background-color:white; box-shadow: 5px 5px 5px 5px rgba(0,0,0,0.15); 
-padding: 10px 0px 50px 15px; border-radius:0px 0px 40px 40px; font-family: 'Roboto', sans-serif;">
-Some Text
-<h2 style="color:#151515; font-weight:500; margin-bottom:10px; font-size:1.3rem; font-family: 'Roboto', sans-serif;">{}</h2>
-</div>
-</div>
-</div>
-"""
-
-
-# ---- NOT USING RN BUT PLS SAVE AS WILL WANT TO REFERENCE FOR SURE! ----
-
-SHOP_CARD_1_HTML_TEMPLATE = """
-<div style="width:40%; height:100%; padding:50px 0px 0px 0px; position:relative; border-radius:40px; 
-box-shadow: 5px 5px 5px 5px rgba(0,0,0,0.15); background: linear-gradient(120deg,  #343A4F, #0F1620);>
-<div style="width:100%; height:100%; position:relative;">
-<div style="font-size:1.3rem; font-family: 'Roboto', sans-serif; color:#efefef; padding-left:15px;">Shopping</div>
-<div style="font-size:1.3rem; font-family: 'Roboto', sans-serif; color:#efefef; padding-left:15px;">List</div>
-<div style="height:100%; padding:0px 10px 160px 0px"><img src ="https://www.shareicon.net/data/256x256/2016/05/05/760099_food_512x512.png" 
-style="display: flex; flex-direction: column; justify-content: space-between; position: relative; filter: drop-shadow(5px 5px 10px #0F1620);
-min-height: 100px; max-height:120px; float:right;
-box-shadow: 5px 5px 5px 5px rgba(0,0,0,0.15);">
-</div>
-<div style="width:auto; height:100%; positiion:relative; background-color:white; box-shadow: 5px 5px 5px 5px rgba(0,0,0,0.15); 
-padding: 10px 0px 50px 15px; border-radius:0px 0px 40px 40px; font-family: 'Roboto', sans-serif;">
-Some Text
-<h2 style="color:#151515; font-weight:500; margin-bottom:10px; font-size:1.3rem; font-family: 'Roboto', sans-serif;">{}</h2>
-</div>
-</div>
-</div>
-"""
 
 
 SHOP_CARD_1_HTML_TEMPLATE_OG = """
@@ -457,6 +393,83 @@ Some Text
 </div>
 </div>
 """
+
+
+TEST_PAPER_HTML_TEMPLATE_2 = """
+<style>
+@import url(https://fonts.googleapis.com/css?family=Indie+Flower);
+body {{
+  margin: 0;
+  padding: 0;
+  background: lightgoldenrodyellow;
+}}
+.paper {{
+  position: absolute;
+  height: 550px;
+  width: 450px;
+  background: rgba(255,255,255,0.9);
+  margin: -275px -225px;
+  left: 50%;
+  top: 50%;
+  box-shadow: 0px 0px 5px 0px #888;
+}}
+.paper::before {{
+  content: '';
+  position: absolute;
+  left: 45px;
+  height: 100%;
+  width: 2px;
+  background: rgba(255,0,0,0.4);
+}}
+.lines {{
+  margin-top: 40px;
+  height: calc(100% - 40px);
+  width: 100%;
+  background-image: repeating-linear-gradient(white 0px, white 24px, steelblue 25px);
+}}
+.text {{
+  position: absolute;
+  top: 65px;
+  left: 55px;
+  bottom: 10px;
+  right: 10px;
+  line-height: 25px;
+  font-family: 'Indie Flower';
+  overflow: hidden;
+  outline: none;
+}}
+.holes {{
+  position: absolute;
+  left: 10px;
+  height: 25px;
+  width: 25px;
+  background: lightgoldenrodyellow;
+  border-radius: 50%;
+  box-shadow: inset 0px 0px 2px 0px #888;
+}}
+.hole-top {{
+  top: 10%;
+}}
+.hole-middle {{
+  top: 50%;
+}}
+.hole-bottom {{
+  bottom: 10%;
+}}
+</style>
+
+<div class="paper">
+  <div class="lines">
+    <div class="text" contenteditable spellcheck="false">
+      {} <br /><br />
+      Cupcake ipsum dolor sit amet liquorice fruitcake. Candy canes jelly beans sweet roll cupcake lollipop. Powder carrot cake toffee brownie. Marshmallow sweet roll donut. Chocolate cake apple pie candy canes tiramisu dragée wafer. Croissant cookie lemon drops tiramisu jelly-o donut. Sweet gummi bears ice cream.</div>
+  </div>
+  <div class="holes hole-top"></div>
+  <div class="holes hole-middle"></div>
+  <div class="holes hole-bottom"></div>
+</div>
+"""
+
 
 
 TEST_PAPER_HTML_TEMPLATE = """
@@ -505,35 +518,6 @@ body {{
     Hello, this is a paper.<br>
     {}
   </div>
-</div>
-"""
-
-
-# GIGA TEST - DELETE ME
-
-TEST_CARD_HTML_TEMPLATE = """
-<style>
-.cardy{{background-color: aqua;}}
-.cardy:hover{{background-color: red;}}
-</style>
-<div class="cardy">
-<div style="width:40%; height:100%; padding:50px 0px 0px 0px; position:relative; border-radius:40px; 
-box-shadow: 5px 5px 5px 5px rgba(0,0,0,0.15);>
-<div style="width:100%; height:100%; position:relative;">
-<div style="font-size:1.3rem; font-family: 'Roboto', sans-serif; color:#efefef; padding-left:15px;">Shopping</div>
-<div style="font-size:1.3rem; font-family: 'Roboto', sans-serif; color:#efefef; padding-left:15px;">List</div>
-<div style="height:100%; padding:0px 10px 160px 0px"><img src ="https://www.shareicon.net/data/256x256/2016/05/05/760099_food_512x512.png" 
-style="display: flex; flex-direction: column; justify-content: space-between; position: relative; filter: drop-shadow(5px 5px 10px #0F1620);
-min-height: 100px; max-height:120px; float:right;
-box-shadow: 5px 5px 5px 5px rgba(0,0,0,0.15);">
-</div>
-<div style="width:auto; height:100%; positiion:relative; background-color:white; box-shadow: 5px 5px 5px 5px rgba(0,0,0,0.15); 
-padding: 10px 0px 50px 15px; border-radius:0px 0px 40px 40px; font-family: 'Roboto', sans-serif;">
-Some Text
-<h2 style="color:#151515; font-weight:500; margin-bottom:10px; font-size:1.3rem; font-family: 'Roboto', sans-serif;">{}</h2>
-</div>
-</div>
-</div>
 </div>
 """
 
