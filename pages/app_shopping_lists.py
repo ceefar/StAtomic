@@ -280,8 +280,7 @@ def run():
             # THIS HEIGHT DYNAMIC BASED ON AMOUNT OF /N AND CHARS! #FIXME
             stc.html(TEST_PAPER_HTML_TEMPLATE.format("New List","Click to write your message bro"), height=620)
             
-
-            
+        
 
         # skip to end/quick add button?
  
@@ -291,17 +290,25 @@ def run():
     # LEGIT ITS NOT ATOMIC ITS AN ADHD APP NOW LOL (tho not just adhd tbf but best for it so think about shit exclusively for you - yay!)
 
 
+    # BUG 
+    # SEND TO DC FOR SHOP LIST && SHOP LIST IMAGE ARTIST HERE TOO!
+    # TWO PAPER THINGS QUICKLY IN SHOP LIST PAGE (why not fuck it?)
+    # IMPROVE EXISTING DC WEBHOOK IMPLEMENTATION A TAD FFS!
+    # NEW PAGE IDEA (sleep tracker (wake and sleep time) with caffeine (and meds) entry)
+    # AFTER THIS ONLY WEB DB IMPLEMENTATION - NEW REPO?
+    #   - EITHER WAY FIRST TEST A SUUUPER BASIC VERSION TO BE SURE WORKS (with artist!)
+
+
+    # TODO FOR DC
+    # MORE SEND TO DISCORD THINGS, ALSO THINK ABOUT TIMED SHIT FOR THAT TOO LEGIT!
+
+
     # TODO 
     # OPTION TO MAKE (& SAVE!) EDITS, ADD NEW ACTUALLY WORKING
     # ENTER HOW MUCH IT COST, LOCATION, ETC? AND SAVE THAT STUFF TOO
     # SAVING ANY EDITS AS CHILDREN AND DISPLAY BACK EDIT VERSIONS (CHILD VERSIONS) OF LISTS IF THEY HAVE THEM THROUGH A DD
     # LEGIT ANY API TO LIKE PRICE UP THE BASKET OR WHATEVER LEGIT ANYTHING JUST TO SAY IMPLEMENTED ONE
     
-    # ONCE THIS IS DONE EITHER...
-    # DC BASIC WEBHOOK SUMNT 
-    #   - say like if it was every day at x time for example ooooo DO THIS TBF! SO HAVE BASICS! 
-    #   - and send an img via dc of a current task or sumnt ooooo!!!!
-    #   - LEGIT JUST A BUTTON - send X to my dc (do for shop list)
 
     # OTHER PAGES (OR THIS PAGE TBF) FULL WEB/DB REFACTOR TEST
     #   - LEGIT ANY PAGE FOR REFACTOR JUST IN ALL SERIOUSNESS GET SUMNT LOOKING TO FINAL AND THEN GET IT A LIVE DB

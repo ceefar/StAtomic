@@ -10,9 +10,8 @@ import re
 import db_integration as db
 # for creating images
 import artist as arty
-# for pushing to dc via webhook
+# for pushing to dc via webhook and dc bot
 import discord_webhook as dc
-
 
 # ---- temp globals ----
 # for testing/setup
@@ -640,7 +639,7 @@ def run():
 
                     dc_button = st.button(label="Send To Discord", key=f"{taskdict['taskID']}_dc")
                     if dc_button:
-                        dc.push_img_to_dc()
+                        dc.push_image_to_dc(imgpath)
 
                 elif taskdict['taskType'] == "main_task": 
                     imgpath = arty.draw_dynamic_task_subtask_snapshot_updated(tempimgname, [(taskdict['detail'],"in_progress")], taskdict['title'])
@@ -656,10 +655,17 @@ def run():
                                 mime="image/png",
                                 key=taskdict['taskID']
                             )
+                            
+                    dc_button = st.button(label="Send To Discord", key=f"{taskdict['taskID']}_dc")
+                    if dc_button:
+                        dc.push_image_to_dc(imgpath)
 
             #st.write("---")
-
-
+    
+    st.write("---")
+    st.markdown("#### See The Bot In Action")
+    stc.html("""<iframe src="https://discord.com/widget?id=972790226504282132&theme=dark" width="350" height="500" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>""", height=1000)
+    
 
     # css testing
     st.markdown(unsafe_allow_html=True, body=f"""
