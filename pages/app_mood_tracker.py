@@ -398,8 +398,12 @@ if __name__ == "__main__":
 
 
 
-
-
+# FIXME !
+# TODO !
+# - sunday shit is not working right either on week display bit ffs! (use current sunday now no backlog duh!) (also here try to have it in sun start order too)
+# - start dataframe from sunday to saturday so doesnt look dumb
+# - wipe notes on add mood
+# - improve df colours/general format
 
 
 

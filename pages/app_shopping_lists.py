@@ -286,39 +286,28 @@ def run():
         # skip to end/quick add button?
  
 
-    # FIXME
+    # FIXME 
     # BIG CHANGE MUST N0TE GENERALLY AND FOR REFACTORS! 
     # LEGIT ITS NOT ATOMIC ITS AN ADHD APP NOW LOL (tho not just adhd tbf but best for it so think about shit exclusively for you - yay!)
 
-    # NEXT THIS AND IG SIMPLE CREATE TOO BTW - FIRST DO BOTH PAPER TUTS BTW
-    # IF SELECT ONE VIA DROPDOWN YOU GET A BIT MORE INFO (slightly larger (maybe full width) card)
-    # THEN IF BUTTON IT DOES A PROPER DISPLAY TING WITH PRINT ETC && THIS PAPER IDEA TING!
 
-    # K NOW OBVS GET THE SHIT FORMATTED PROPERLY CARDS (v basic nice and quick)
-        # HAVE THOSE IMGS RANDOMISE PLS?!! (or more based on whats in the basket, maybe you set it idk)
-
-    # QUICKLY TRY THE ENTRY WITH THE CSS PAPER THINGS LOOKS SO SICK OMD
-
-    # I THINK FOR THIS MAYBE SHOULD ONLY BE THE PARENT FOR NOW
-        # THO DEFO KIDS IN FUTURE WHICH CAN BE LIKE SMALL ITERATIONS 
-        # i.e. mexican, obvs shopping list still has the main shit but then sometimes u have a list with a few changes bosh
-        # ACTUALLY FUCK IT IMPLEMENT THIS IF IS EASY ENOUGH
-    # THEN WHEN YOU TAP A CARD ITS JUST GUNA OPEN IT IN HERE! 
-        # button might have to be under the card unless see if can merge st and html?! or even just own html button as trigger/link>!
-    # WHEN OPEN ITS GUNA SHOW YOU THE DETAILED LIST
-    # PLUS OPTION TO DOWNLOAD AS IMG!
-    # OPTION TO TICK OFF AS YOU GO
-    # OPTION TO MAKE EDITS, ADD NEW ?????
-    # OMG REPLACE ICON THAT SHOWS SIMILAR (not functional but can implement slowly machine learning similar foods)
-    # WHEN DONE SAVE EDITS IF HAVING ???? WOULD BE AS CHILD AS NEVER WANNA DELETE (tho you can if you want to)
-    # ENTER HOW MUCH IT COST, LOCATION, ETC?
-
+    # TODO 
+    # OPTION TO MAKE (& SAVE!) EDITS, ADD NEW ACTUALLY WORKING
+    # ENTER HOW MUCH IT COST, LOCATION, ETC? AND SAVE THAT STUFF TOO
+    # SAVING ANY EDITS AS CHILDREN AND DISPLAY BACK EDIT VERSIONS (CHILD VERSIONS) OF LISTS IF THEY HAVE THEM THROUGH A DD
+    # LEGIT ANY API TO LIKE PRICE UP THE BASKET OR WHATEVER LEGIT ANYTHING JUST TO SAY IMPLEMENTED ONE
+    
     # ONCE THIS IS DONE EITHER...
     # DC BASIC WEBHOOK SUMNT 
     #   - say like if it was every day at x time for example ooooo DO THIS TBF! SO HAVE BASICS! 
     #   - and send an img via dc of a current task or sumnt ooooo!!!!
+    #   - LEGIT JUST A BUTTON - send X to my dc (do for shop list)
+
     # OTHER PAGES (OR THIS PAGE TBF) FULL WEB/DB REFACTOR TEST
-    # &/OR CV
+    #   - LEGIT ANY PAGE FOR REFACTOR JUST IN ALL SERIOUSNESS GET SUMNT LOOKING TO FINAL AND THEN GET IT A LIVE DB
+    #   - SLEEP TRACKER MIGHT BE BEST SINCE STARTING A NEW IS ALWAYS EASIEST IG
+    # SLEEP TRACKER VS CAFFEINE / MEDS TING! <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+    # &/OR TECHNICAL INTERVIEW PREP
 
 
 

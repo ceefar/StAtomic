@@ -10,6 +10,8 @@ import re
 import db_integration as db
 # for creating images
 import artist as arty
+# for pushing to dc via webhook
+import discord_webhook as dc
 
 
 # ---- temp globals ----
@@ -269,6 +271,23 @@ border-left:10px solid #484848; color:white; font-family: 'Roboto', sans-serif; 
 
 # test tagged version for details idea 
 TAGGED_DEETS_HTML_TEMPLATE = """
+<div style="padding-left:15px;font-family: 'Roboto', sans-serif; font-weight:600; color:grey;">{}</div>
+<div class="card" style="width:90%; height:100%; margin:5px 20px 1px 1px; padding:1px 5px 35px 15px; position:relative; border-radius:5px;
+border=5px solid; box-shadow:0 0 1px 1px #eee; 
+background: #191970; background-position:0%, 0%; background-size:5vmin 5vmin;
+font-weight:300; border-left:10px solid #484848; color:white; font-family: 'Roboto', sans-serif; box-shadow: 5px 5px 5px 5px rgba(0,0,0,0.15);">
+<h2 style="color:#eba538; font-weight:500; margin-bottom:10px; font-size:1.3rem;">{}</h2>
+<div style="color:#efefef; font-weight:300; margin-bottom:5px; margin-left:-15px"><span style="background-color:#484848; color:#ffffff; border-radius:2px; padding:2px 5px;">details</span></div>
+<div style="color:#efefef; font-weight:300; margin-bottom:25px;">{}</div>
+<div style="border-top: 1px dashed #7e7e7e; padding-bottom:10px"></div>
+<div style="color:#efefef; font-weight:300; margin-bottom:15px;">Created {} Days Ago <span style="color:#949494;">[{}]</span></div>
+{}
+<span style="width:95%; height:100%; position:absolute; text-align:right; font-size:0.9rem; color:#949494; margin-left:-10px;">{}</span>
+<span style="width:95%; height:100%; position:absolute; text-align:left; color:#949494;">{}</span>
+</div>
+"""
+
+TAGGED_DEETS_HTML_TEMPLATE_BACKUP_NEW = """
 <div style="padding-left:15px;font-family: 'Roboto', sans-serif; font-weight:600; color:grey;">{}</div>
 <div class="card" style="width:90%; height:100%; margin:5px 20px 1px 1px; padding:1px 5px 35px 15px; position:relative; border-radius:5px;
 border=5px solid; box-shadow:0 0 1px 1px #eee; 
@@ -618,6 +637,10 @@ def run():
                                 mime="image/png",
                                 key=taskdict['taskID']
                             )
+
+                    dc_button = st.button(label="Send To Discord", key=f"{taskdict['taskID']}_dc")
+                    if dc_button:
+                        dc.push_img_to_dc()
 
                 elif taskdict['taskType'] == "main_task": 
                     imgpath = arty.draw_dynamic_task_subtask_snapshot_updated(tempimgname, [(taskdict['detail'],"in_progress")], taskdict['title'])
