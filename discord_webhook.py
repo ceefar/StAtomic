@@ -1,10 +1,17 @@
+import os
 from dhooks import Webhook, File
 
-hook = Webhook("https://discord.com/api/webhooks/972807254757740594/ZPyet8Dn7A02xK49YGNoZXvRsKO7mwsX2lMyWQa4MDceLUUM4sEhv-AXpS2b2rFb7zoM")
+#dcwebhook = ""
+
+hook = Webhook(dcwebhook)
+
+image1 = "imgs/mood/mood-swings.png"
+image2 = "imgs/other/abstract-blur-supermarket.jpg"
 
 def push_image_to_dc(imgpath:str):
-    hook.send("check out this picture", file=imgpath)
+    imgpath = imgpath.replace("\\","/")
+    hook.send("Here's Your Image", file=File(imgpath))
 
-def push_img_to_dc():
-    discord_pic = File("imgs\\filter_view\\1_parent_test.png")
+def push_test_img_to_dc():
+    discord_pic = File("imgs/filter_view/1_parent_test.png")
     hook.send("check out this picture", file=discord_pic)
