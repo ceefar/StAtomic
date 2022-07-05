@@ -505,9 +505,113 @@ def draw_dynamic_task_subtask_snapshot_updated(imgname:str, userSubTasksList:lis
     img.save(imgpath)
 
 
+    # return the path to the created image
+    return(imgpath)
+
+
+
+# ---- NEW [TEST] SHOPPING LIST ARTIST ----
+
+
+def draw_dynamic_shopping_list(imgname:str, listItems:list, listTitle:str) -> str:
+    """ setting up for right aligned and maybe a bit smaller but will come back to improve tbf just need a basic ting rn"""
+
+    # path for image storage
+    imgpath = f'imgs/{imgname}.png'
+
+    # base bg dimensions
+    # FIXME - MAKE THIS DYNAMIC NOW!
+    #   - hmm its a bg tho so how, would have to stick extra img or if is longer use a different img?
+    width = 500
+    height = 393 
+
+    # define fonts 
+    fontTitle = ImageFont.truetype("imgs/font_files/AmaticSC-Bold.ttf", size=32) # AmaticSC-Bold.ttf
+    font = ImageFont.truetype("imgs/font_files/Caveat-SemiBold.ttf", size=20) # Caveat-SemiBold.ttf # GloriaHallelujah-Regular.ttf # PatrickHand-Regular.ttf
+
+    # open new img object of paper bg
+    img = Image.open('imgs/other/lined_paper_one.jpg')
+
+    # resize the image and save it as our bg
+    resized_img = img.resize((width, height))
+    resized_img.save(imgpath)
+
+    # ---- title ----
+
+    # setup base object from original resized img background and open it for drawing 
+    img = Image.open(imgpath)
+    imgDraw = ImageDraw.Draw(img)
+
+    # configure the title text position, and grab its dimensions based on its font incase we need them
+    shopTitle = listTitle
+    titleWidth, titleHeight = imgDraw.textsize(shopTitle, font=fontTitle)
+    xTitlePos = 70
+    yTitlePos = 15
+
+    # draw the title on the bg img
+    imgDraw.text((xTitlePos, yTitlePos), shopTitle, font=fontTitle, fill="#191970")
+
+    # save the result
+    img.save(imgpath)
+
+    # ---- list items ----
+
+    # how many subtasks there are (as may want to limit?)
+    amountOfListItems = len(listItems)
+    print(f"{amountOfListItems = }")
+
+    # var used for creating new spacing for each line
+    last_item_y_pos = 0
+    # var used for cropping & 2nd column x positioning, need to know what is the longest line on the page
+    longest_list_item = titleWidth
+    # runs (draws) for each item in the list
+    for item in listItems:
+
+        # FIXME 
+        # should add (only for now as will do proper but...)
+        # if item > 26 characters then trim it 
+
+        # setup base object
+        imgDraw = ImageDraw.Draw(img)
+
+        # configure list items x position, and grab its dimensions based on its font incase we need them
+        listItem = item
+        liWidth, liHeight = imgDraw.textsize(listItem, font=font)
+        xLiTextPos = 70
+
+        # if list item is the longest save it outside of loop, this is used to crop
+        if liWidth > longest_list_item:
+            longest_list_item = liWidth
+        
+        # if first iteration only
+        if last_item_y_pos == 0:
+            # slightly different as need to set the first position as it is the hinge for the remaining list items
+            last_item_y_pos = yTitlePos + 15.5 
+            print(f"{last_item_y_pos = }")
+
+        # after this every line is just added a set amount (dont use liHeight as this changes duhhh)
+        yLiTextPos = last_item_y_pos + 27.5
+        last_item_y_pos = yLiTextPos
+        print(f"{last_item_y_pos = }")
+
+        # draw the list item text
+        imgDraw.text((xLiTextPos, yLiTextPos), listItem, font=font, fill="#191970")
+
+        # save the result
+        img.save(imgpath)
+        
+
+    # crop if only 1 column (11 items or less)
+    if amountOfListItems <= 11:
+        # left pos of crop, top pos of crop, width of final img, height of final img
+        img = img.crop((0, 0, longest_list_item + xTitlePos + 40, height))
+    
+    # save the result
+        img.save(imgpath)
 
     # return the path to the created image
     return(imgpath)
+
 
 
 
@@ -518,5 +622,5 @@ if __name__ == "__main__":
     #draw_base_rectangle_text_img()
     #draw_improved_rectangle_text_img()
     #draw_dynamic_task_subtask_snapshot("ceefar", ["The First Child Shizzle", "Im The Second In Dis Biatch", "The Third Mofo", "A Fourth You Say!?", "Number 5 Wudup?"] , "Im The Bestest Task")
-
+    draw_dynamic_shopping_list("shoptest", ["item1","item2","item3","item4","item5","item6","im a really long list item","item8","item9","item10","im a kinda long list item","item12"], "Budget Shopping List")
     

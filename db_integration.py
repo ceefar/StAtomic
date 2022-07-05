@@ -750,7 +750,7 @@ def get_shopping_list_tag_tasks_only(username:str):
     shopping_tag_tasks = get_from_db(get_shopping_tag_tasks_query)
     shop_task_list = []
     [shop_task_list.append(shop_task[0]) for shop_task in shopping_tag_tasks]
-    print(f"{shop_task_list = }")
+    # print(f"{shop_task_list = }")
     return(shop_task_list)
 
 

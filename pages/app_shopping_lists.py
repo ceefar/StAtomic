@@ -273,13 +273,17 @@ def run():
 
               dc_button = st.button(label="Send To Discord")
               if dc_button:
-                fordc = (listdetail.split(","))
-                fordc.insert(0,f"**{listtitle}**")
-                fordc.append("- - - - -")
+                fordc = listdetail.split(",")
                 fordcstripped = []
-                dont_print_three = [fordcstripped.append(item.strip().capitalize()) for item in fordc]
+                dont_print_three = [fordcstripped.append(f"• {item.strip().capitalize()}") for item in fordc]
+                fordcstripped.insert(0,f"**{listtitle}**\n- - - - -")
+                fordcstripped.append("- - - - -")
                 fordc_final = "\n".join(fordcstripped)
                 dc.push_msg_to_dc(fordc_final)
+
+              arty_button = st.button(label="Create Image")
+              if arty_button:
+                forarty = listdetail.split(",")
 
               stc.html(TEST_PAPER_HTML_TEMPLATE.format(listtitle, checkboxliststring, list_items_counter), height=paper_height) 
             
@@ -319,12 +323,19 @@ def run():
 
     # IMPROVE EXISTING DC WEBHOOK IMPLEMENTATION A TAD FFS!
     # NEW PAGE IDEA (sleep tracker (wake and sleep time) with caffeine (and meds) entry)
+    # NEW DC IDEA, SEE BELOW!
     # AFTER THIS ONLY WEB DB IMPLEMENTATION - NEW REPO?
     #   - EITHER WAY FIRST TEST A SUUUPER BASIC VERSION TO BE SURE WORKS (with artist!)
 
 
     # TODO FOR DC
     # MORE SEND TO DISCORD THINGS, ALSO THINK ABOUT TIMED SHIT FOR THAT TOO LEGIT!
+    # ACTUALLY TO GET BOT TO WORK DO THIS
+    #   - when new user lands they idk confirm to the bot they staying or sumnt idk
+    #   - once confirmed you get your own (private?) channel, just you and the bot
+    #   - this is where you get your notifications and in turn send things to be stored in the db OOOOOOOOO!
+    # ALSO THEN REFACTOR LOADS OF SHIT ALREADY DONE BUT FROM ST PAGES TO THEIR OWN RELEVANT - JUST PY - FILE
+    # AND USE THESE TO MAKE A BOT DO THE EXACT SAME COMMANDS AS ST (like getting lists n shit! ooooo)
 
 
     # TODO 
