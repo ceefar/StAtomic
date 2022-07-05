@@ -316,8 +316,19 @@ def run():
     st.write("---")
 
     with st.sidebar:
-        stc.html("""<iframe src="https://discord.com/widget?id=972790226504282132&theme=dark" width="280" height="500" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>""", height=550)
-    
+        #stc.html("""<iframe src="https://discord.com/widget?id=972790226504282132&theme=dark" width="280" height="500" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>""", height=550)
+        
+        stc.html("""
+        <script src='https://cdn.jsdelivr.net/npm/@widgetbot/crate@3' async defer>
+        new Crate({
+        server: '972790226504282132', // new.Disaster
+        channel: '972790226504282135' // #general
+        })
+        </script>
+        """, height=550)
+
+ 
+
 
     # FIXME 
     # BIG CHANGE MUST N0TE GENERALLY AND FOR REFACTORS! 
