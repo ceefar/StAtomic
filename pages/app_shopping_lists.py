@@ -215,6 +215,7 @@ def run():
 
         # ---- NEW CARD SECTION ----
         
+        crate_notifier = "" 
 
         # IF DROPDOWN IS ALL
         if assigned_todo_list == "All Shopping Lists":
@@ -285,6 +286,8 @@ def run():
                 shoplistimg = arty.draw_dynamic_shopping_list(f"{db_username}_{listtitle}", fordcstrip, listtitle)
                 dc.push_msg_to_dc(fordc_final)
                 dc.push_image_to_dc(shoplistimg, f"Here's your shopping list {db_username}")
+                #crate_notifier = f"crate.notify('{listtitle} - Shopping List')"
+                crate_notifier = f"crate.notify({{content: '{listtitle} - Shopping List',timeout: 10000}})" # 10 second timeout
 
               arty_button = st.button(label="Get Downloadable Image")
               if arty_button:
@@ -309,23 +312,31 @@ def run():
             stc.html(TEST_PAPER_HTML_TEMPLATE.format("New List","Click to write your message bro"), height=620)
             
     
-
+            
         # skip to end/quick add button?
+        # https://cdn.discordapp.com/avatars/972807254757740594/4e69967669ca16c98ac325e5e6cd4a63.png
     
        
     st.write("---")
 
     with st.sidebar:
         #stc.html("""<iframe src="https://discord.com/widget?id=972790226504282132&theme=dark" width="280" height="500" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>""", height=550)
-        
-        stc.html("""
-        <script src='https://cdn.jsdelivr.net/npm/@widgetbot/crate@3' async defer>
-        new Crate({
-        server: '972790226504282132', // new.Disaster
-        channel: '972790226504282135' // #general
-        })
-        </script>
-        """, height=550)
+        st.markdown("### Hit The Brain Below For Discord") # hate this, give it a font or sumnt # FIXME - PLEEEASE !
+        stc.html(DISCORD_CRATE.format(crate_notifier), height=500)
+
+# FIXME !
+# 550 way better, without text - && find a way to cache this?
+# and also if wanna do some kinda hl text use success or warning or whatever and maybe just shows once then goes somehow
+DISCORD_CRATE = """
+<script src='https://cdn.jsdelivr.net/npm/@widgetbot/crate@3' async defer>
+new Crate({{
+server: '972790226504282132', // new.Disaster
+channel: '972790226504282135', // #general
+glyph: ['https://cdn.discordapp.com/avatars/972807254757740594/4e69967669ca16c98ac325e5e6cd4a63.png', '100%']
+}})
+{}
+</script>
+"""
 
  
 
@@ -336,7 +347,9 @@ def run():
 
 
     # BUG 
-    # ALSO HAVE A SMALL WIDGET YANNO! (or atleast like an anchor thats in icon that hops u to the bottom of the page idk)
+    # DC CHANNEL CREATE IDEA (unique for each user with permissions)
+    
+    # THEN
 
     # TWO PAPER THINGS QUICKLY FOR HOME PAGE AND ANYWHERE ELSE TBH LOOK SICK AF
     #   - have post it at the top of lots of pages (or which every tbh, with a current reminder!)
