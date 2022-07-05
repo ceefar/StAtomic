@@ -269,8 +269,6 @@ def draw_task_snapshot_test_af(todoTaskID:int, userTagsList:list, title:str, det
 
 
 
-
-
     ######## NEW ########
 
     # ---- details ----
@@ -514,7 +512,7 @@ def draw_dynamic_task_subtask_snapshot_updated(imgname:str, userSubTasksList:lis
 
 
 def draw_dynamic_shopping_list(imgname:str, listItems:list, listTitle:str) -> str:
-    """ setting up for right aligned and maybe a bit smaller but will come back to improve tbf just need a basic ting rn"""
+    """ does multi line only up to 22 list items currently and list item over 26 chars will likely break but is gravy for now """
 
     # path for image storage
     imgpath = f'imgs/{imgname}.png'
@@ -526,7 +524,7 @@ def draw_dynamic_shopping_list(imgname:str, listItems:list, listTitle:str) -> st
     height = 393 
 
     # define fonts 
-    fontTitle = ImageFont.truetype("imgs/font_files/AmaticSC-Bold.ttf", size=32) # AmaticSC-Bold.ttf
+    fontTitle = ImageFont.truetype("imgs/font_files/AmaticSC-Bold.ttf", size=38) # AmaticSC-Bold.ttf
     font = ImageFont.truetype("imgs/font_files/Caveat-SemiBold.ttf", size=20) # Caveat-SemiBold.ttf # GloriaHallelujah-Regular.ttf # PatrickHand-Regular.ttf
 
     # open new img object of paper bg
@@ -546,10 +544,10 @@ def draw_dynamic_shopping_list(imgname:str, listItems:list, listTitle:str) -> st
     shopTitle = listTitle
     titleWidth, titleHeight = imgDraw.textsize(shopTitle, font=fontTitle)
     xTitlePos = 70
-    yTitlePos = 15
+    yTitlePos = 10
 
     # draw the title on the bg img
-    imgDraw.text((xTitlePos, yTitlePos), shopTitle, font=fontTitle, fill="#191970")
+    imgDraw.text((xTitlePos, yTitlePos), shopTitle, font=fontTitle, fill="#7C0D0E") # 0D7C7B deep red
 
     # save the result
     img.save(imgpath)
@@ -563,30 +561,49 @@ def draw_dynamic_shopping_list(imgname:str, listItems:list, listTitle:str) -> st
     # var used for creating new spacing for each line
     last_item_y_pos = 0
     # var used for cropping & 2nd column x positioning, need to know what is the longest line on the page
-    longest_list_item = titleWidth
+    longest_list_item = 0
+    # vars for setting list items x position in second loop (dont want this to change)
+    secondloop = False
+    longest_li_second_loop = longest_list_item
     # runs (draws) for each item in the list
-    for item in listItems:
+    for i, item in enumerate(listItems):
 
         # FIXME 
-        # should add (only for now as will do proper but...)
-        # if item > 26 characters then trim it 
+        # do this shit proper so dont have this slice thing based on longer list items
+        # and obvs also need to do proper sized img n shit blah blah blah is fine for now just add this slice chars thing tbf
+
+        # temporary slice long lines if there are two columns on the page since could break formatting
+        if len(item) > 28 and amountOfListItems > 11:
+            item = item[:28]
 
         # setup base object
         imgDraw = ImageDraw.Draw(img)
 
+        # to set the new x pos for the second loop once and not have it change
+        if amountOfListItems > 11 and i > 10 and secondloop == False:
+            longest_li_second_loop = longest_list_item + 70
+            secondloop = True
+
         # configure list items x position, and grab its dimensions based on its font incase we need them
         listItem = item
         liWidth, liHeight = imgDraw.textsize(listItem, font=font)
-        xLiTextPos = 70
+        if i <= 10:
+            xLiTextPos = 70
+        else:
+            xLiTextPos = longest_li_second_loop + 30
 
         # if list item is the longest save it outside of loop, this is used to crop
         if liWidth > longest_list_item:
             longest_list_item = liWidth
         
+        # should reset for the second loop
+        if i == 11:
+            last_item_y_pos = 0
+
         # if first iteration only
         if last_item_y_pos == 0:
             # slightly different as need to set the first position as it is the hinge for the remaining list items
-            last_item_y_pos = yTitlePos + 15.5 
+            last_item_y_pos = yTitlePos + 20.5 
             print(f"{last_item_y_pos = }")
 
         # after this every line is just added a set amount (dont use liHeight as this changes duhhh)
@@ -595,7 +612,7 @@ def draw_dynamic_shopping_list(imgname:str, listItems:list, listTitle:str) -> st
         print(f"{last_item_y_pos = }")
 
         # draw the list item text
-        imgDraw.text((xLiTextPos, yLiTextPos), listItem, font=font, fill="#191970")
+        imgDraw.text((xLiTextPos, yLiTextPos), listItem, font=font, fill="#191970") # 191970 midnight blue
 
         # save the result
         img.save(imgpath)
@@ -603,11 +620,52 @@ def draw_dynamic_shopping_list(imgname:str, listItems:list, listTitle:str) -> st
 
     # crop if only 1 column (11 items or less)
     if amountOfListItems <= 11:
+        # find what is longer, the longest list item or the title, and use that as the base width for our crop calculation
+        longest = longest_list_item if longest_list_item > titleWidth else titleWidth
+        # set width here within if statement as width will be accurate for use in watermark print either way (if more or less than 11)
+        width = longest + xTitlePos + 40
         # left pos of crop, top pos of crop, width of final img, height of final img
-        img = img.crop((0, 0, longest_list_item + xTitlePos + 40, height))
+        img = img.crop((0, 0, width , height))
     
+
+
+    # ---- watermark text & icon img ----
+
+    # setup base object
+    imgDraw = ImageDraw.Draw(img)
+
+    # configure the title text and location
+    fontWatermark = ImageFont.truetype("Righteous-Regular.ttf", size=18)
+    #watermark = "St.Atomic"
+    watermark = "80HD"
+    watermarkWidth, watermarkHeight = imgDraw.textsize(watermark, font=fontWatermark)
+    xwaterText = (width - watermarkWidth) - 10
+    ywaterText = (height - watermarkHeight) - 15  
+
+    # draw the title
+    #imgDraw.text((xText, yText), message, font=font, fill=(255, 255, 0)) fb8500
+    imgDraw.text((xwaterText, ywaterText), watermark, font=fontWatermark, fill=(255,87,51))
+
     # save the result
-        img.save(imgpath)
+    img.save(imgpath)
+
+    #load icon img (svg not supported btw)
+    brainwaterimg = Image.open("imgs/icons/mental-health.png") # mental-health lightbulb artificial-intelligence
+    # resize it to the same size as the height (its a square) 
+    brainwaterimg = brainwaterimg.resize((int(watermarkHeight*2.5), int(watermarkHeight*2.5)))
+    # convert to rgba for masking (so it is transparent where there is no fill)
+    brainwaterimg = brainwaterimg.convert("RGBA")
+    # paste on top of current img (everything we have so far) with color, co-ordinates, then the img mask 
+    # - the mask is just itself with its full colour (i assume as like a jpg, then masks out the rest)
+    img.paste(brainwaterimg, ((xwaterText - (watermarkHeight*2) - 12), ywaterText-12), brainwaterimg) 
+    # save the result
+    img.save(imgpath)
+
+
+
+    # update the file name and save the result
+    imgpath = imgpath.lower().replace(" ","_")
+    img.save(imgpath)
 
     # return the path to the created image
     return(imgpath)
@@ -617,10 +675,10 @@ def draw_dynamic_shopping_list(imgname:str, listItems:list, listTitle:str) -> st
 
 
 if __name__ == "__main__":
-    pass
     #draw_task_snapshot_test_af("ceefar")
     #draw_base_rectangle_text_img()
     #draw_improved_rectangle_text_img()
     #draw_dynamic_task_subtask_snapshot("ceefar", ["The First Child Shizzle", "Im The Second In Dis Biatch", "The Third Mofo", "A Fourth You Say!?", "Number 5 Wudup?"] , "Im The Bestest Task")
-    draw_dynamic_shopping_list("shoptest", ["item1","item2","item3","item4","item5","item6","im a really long list item","item8","item9","item10","im a kinda long list item","item12"], "Budget Shopping List")
-    
+    draw_dynamic_shopping_list("shoptest", ["item1","item2","item3","item4","item5","item6","im a really long list item","item8","item9","item10","im a kinda long list item","item12","im a little teapot","short and stout","here is my handle","here is my spout"], "Long Shopping List")
+    draw_dynamic_shopping_list("shoptest1col", ["item1","item2","item3","item4","item5","item6","im a really really really really really long list item","item8","item9","item10","im a kinda long list item"], "Short  Shopping List")
+    draw_dynamic_shopping_list("shoptest2col", ["item1","item2","item3","item4","item5","item6","im a really really really really really long list item","item8","item9","item10","im a kinda long list item","im a little teapot","short and stout","here is my handle","here is my spout","when you tip me over","thats not very cash money of you"], "Budget Shopping List")

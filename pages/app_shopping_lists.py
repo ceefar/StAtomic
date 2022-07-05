@@ -279,11 +279,20 @@ def run():
                 fordcstripped.insert(0,f"**{listtitle}**\n- - - - -")
                 fordcstripped.append("- - - - -")
                 fordc_final = "\n".join(fordcstripped)
+                # TODO : ffs need to strip again due to minor spacing issues, ideally just 1 list comprehension strip creates 2 vars then do whatever afterwards
+                fordcstrip = []
+                dont_print_five = [fordcstrip.append(item.strip().capitalize()) for item in fordc]
+                shoplistimg = arty.draw_dynamic_shopping_list(f"{db_username}_{listtitle}", fordcstrip, listtitle)
                 dc.push_msg_to_dc(fordc_final)
+                dc.push_image_to_dc(shoplistimg, f"Here's your shopping list {db_username}")
 
-              arty_button = st.button(label="Create Image")
+              arty_button = st.button(label="Get Downloadable Image")
               if arty_button:
                 forarty = listdetail.split(",")
+                fordcstripper = []
+                dont_print_four = [fordcstripper.append(item.strip().capitalize()) for item in forarty]
+                shoplistimg = arty.draw_dynamic_shopping_list(f"{db_username}_{listtitle}", fordcstripper, listtitle)
+                st.image(shoplistimg)
 
               stc.html(TEST_PAPER_HTML_TEMPLATE.format(listtitle, checkboxliststring, list_items_counter), height=paper_height) 
             
@@ -303,7 +312,12 @@ def run():
 
         # skip to end/quick add button?
     
+       
+    st.write("---")
 
+    with st.sidebar:
+        stc.html("""<iframe src="https://discord.com/widget?id=972790226504282132&theme=dark" width="280" height="500" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>""", height=550)
+    
 
     # FIXME 
     # BIG CHANGE MUST N0TE GENERALLY AND FOR REFACTORS! 
@@ -311,8 +325,6 @@ def run():
 
 
     # BUG 
-    # SEND TO DC FOR SHOP LIST && SHOP LIST IMAGE ARTIST HERE TOO! - & SEND IMG VERSION, LEGIT OPTION FOR EACH IN BUTTONS OR WHATEVER
-    # USE THE NEW PAPER BG FOR THIS IMG (try to get looking dece + watermark + else?)
     # ALSO HAVE A SMALL WIDGET YANNO! (or atleast like an anchor thats in icon that hops u to the bottom of the page idk)
 
     # TWO PAPER THINGS QUICKLY FOR HOME PAGE AND ANYWHERE ELSE TBH LOOK SICK AF

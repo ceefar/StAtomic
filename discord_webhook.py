@@ -7,9 +7,9 @@ hook = Webhook(dcwebhook)
 image1 = "imgs/mood/mood-swings.png"
 image2 = "imgs/other/abstract-blur-supermarket.jpg"
 
-def push_image_to_dc(imgpath:str):
+def push_image_to_dc(imgpath:str, displaytext:str = "Here's Your Image"):
     imgpath = imgpath.replace("\\","/")
-    hook.send("Here's Your Image", file=File(imgpath))
+    hook.send(displaytext, file=File(imgpath))
 
 def push_test_img_to_dc():
     discord_pic = File("imgs/filter_view/1_parent_test.png")
@@ -24,6 +24,9 @@ def push_embed_to_dc(desc:str = "This is the **description** of the embed! :smil
                         field2_name:str = "Another Field", field2_value:str = "1234 :smile:", footer_text:str = "I'm the footer"):
 
     """ two fields + footer and images, color can be changed in function, supports emoji, note should improve whole function to be more dynamic """
+
+    # FOR LOCAL EMBED -> also see https://www.pythondiscord.com/pages/guides/python-guides/discordpy/
+    # embed.set_image(url=f"attachment://{filename}")
 
     # main embed object
     embed = Embed(
