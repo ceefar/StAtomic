@@ -1,6 +1,5 @@
 # ---- imports ---- 
 # for web app and test components
-from tkinter import PAGES
 import streamlit as st
 import streamlit.components.v1 as stc # < unused at present
 # for regular expressions

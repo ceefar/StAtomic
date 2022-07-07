@@ -34,7 +34,6 @@ form_intro = st.container()
 
 
 
-
 # ---- page functions ----
 
 @st.cache
@@ -324,6 +323,9 @@ def run():
         st.markdown("### Hit The Brain Below For Discord") # hate this, give it a font or sumnt # FIXME - PLEEEASE !
         stc.html(DISCORD_CRATE.format(crate_notifier), height=500)
 
+
+    
+
 # FIXME !
 # 550 way better, without text - && find a way to cache this?
 # and also if wanna do some kinda hl text use success or warning or whatever and maybe just shows once then goes somehow
@@ -338,7 +340,7 @@ glyph: ['https://cdn.discordapp.com/avatars/972807254757740594/4e69967669ca16c98
 </script>
 """
 
- 
+
 
 
     # FIXME 
@@ -350,6 +352,13 @@ glyph: ['https://cdn.discordapp.com/avatars/972807254757740594/4e69967669ca16c98
     # DC CHANNEL CREATE IDEA (unique for each user with permissions)
     
     # THEN
+
+    # HTML/CSS COMPONENT THINGS
+    # https://codepen.io/ahmadnasr/pen/VwvEbzX
+    # https://codepen.io/aaroniker/pen/oNbobKy
+    # https://codepen.io/aitchiss/pen/QWKmPqx
+
+
 
     # TWO PAPER THINGS QUICKLY FOR HOME PAGE AND ANYWHERE ELSE TBH LOOK SICK AF
     #   - have post it at the top of lots of pages (or which every tbh, with a current reminder!)
@@ -364,7 +373,15 @@ glyph: ['https://cdn.discordapp.com/avatars/972807254757740594/4e69967669ca16c98
     #   - EITHER WAY FIRST TEST A SUUUPER BASIC VERSION TO BE SURE WORKS (with artist!)
 
 
-    # TODO FOR DC
+    # BUG 
+    # FIXME 
+    # TODO FOR DC 
+    # IMPORTANT (considered hiroki btw but this looks much better)
+    #   - ACTUALLY THIS THO TOO TBF https://pypi.org/project/discord-py-slash-command/
+    #   - ACTUALLY FUCK YEAH USE THIS... MODALS, V2 PERMISSIONS, SLASH COMMANDS, ETC 
+    #     - https://discord-interactions.readthedocs.io/en/latest/quickstart.html
+    #   - AND MASSIVELY SEE CHAD TOO, WILL BE HELLA USEFUL
+
     # MORE SEND TO DISCORD THINGS, ALSO THINK ABOUT TIMED SHIT FOR THAT TOO LEGIT!
     # ACTUALLY TO GET BOT TO WORK DO THIS
     #   - when new user lands they idk confirm to the bot they staying or sumnt idk
@@ -399,11 +416,13 @@ glyph: ['https://cdn.discordapp.com/avatars/972807254757740594/4e69967669ca16c98
 
 #FIXME : format the card img size and could sort better overlay & dimensions on it as img too tbf!
 
+# load time was too annoying, if 7mb file loaded externally
+# under box shadow
+# background: url('https://thehardgainerbible.com/wp-content/uploads/2022/07/abstract-blur-defocused-supermarket.jpg');
 SHOP_CARD_4_HTML_TEMPLATE = """
 <div style="display:flex; justify-content:center; align-items:center;">
 <div style="width:90%; height:100%; padding:50px 0px 0px 0px; position:relative; border-radius:40px; 
 box-shadow: 5px 5px 5px 5px rgba(0,0,0,0.15); 
-background: url('https://thehardgainerbible.com/wp-content/uploads/2022/07/abstract-blur-defocused-supermarket.jpg');
 background-size: cover; background-color:rgba(42,46,63,0.95); background-blend-mode: overlay;>
 <div style="width:100%; height:100%; position:relative;">
 <div style="font-size:1.7rem; font-family: 'Roboto', sans-serif; color:#efefef; padding-left:20px; padding-right:100px; padding-bottom:20px;
@@ -422,12 +441,13 @@ padding: 20px 0px 50px 15px; border-radius:0px 0px 40px 40px; font-family: 'Robo
 </div>
 """
 
-
+# load time was too annoying, if 5mb file loaded externally
+# under box shadow
+# background: url('https://www.ayewanderful.com/wp-content/uploads/2018/03/Travel-Toiletry-Bag-Essentials-Carry-On-Luggage-1440x809.jpg');
 SHOP_CARD_4_HTML_TEMPLATE_TOIL = """
 <div style="display:flex; justify-content:center; align-items:center;">
 <div style="width:90%; height:100%; padding:50px 0px 0px 0px; position:relative; border-radius:40px; 
 box-shadow: 5px 5px 5px 5px rgba(0,0,0,0.15); 
-background: url('https://www.ayewanderful.com/wp-content/uploads/2018/03/Travel-Toiletry-Bag-Essentials-Carry-On-Luggage-1440x809.jpg');
 background-size: auto 100vh; background-color:rgba(42,46,63,0.95); background-blend-mode: overlay; background-repeat: no-repeat;>
 <div style="width:100%; height:100%; position:relative;">
 <div style="font-size:1.7rem; font-family: 'Roboto', sans-serif; color:#efefef; padding-left:20px; padding-right:100px; padding-bottom:20px;

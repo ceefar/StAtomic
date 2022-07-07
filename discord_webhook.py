@@ -1,7 +1,7 @@
 from dhooks import Webhook, File, Embed
 
-
-#dcwebhook = ""
+# webhook link goes here, stored in toml file
+dcwebhook = ""
 
 hook = Webhook(dcwebhook)
 
